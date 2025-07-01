@@ -12,18 +12,32 @@ interface RoomListProps {
 
 const RoomList: React.FC<RoomListProps> = ({ user }) => {
   const [rooms, setRooms] = useState<Room[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
   const [selectedRoom, setSelectedRoom] = useState<Room | null>(null);
   const [isReportModalOpen, setReportModalOpen] = useState(false);
   const [isRecleanModalOpen, setRecleanModalOpen] = useState(false);
 
   useEffect(() => {
-    const unsubscribe = onSnapshot(collection(db, 'rooms'), (snapshot) => {
+    const unsubscribeRooms = onSnapshot(collection(db, 'rooms'), (snapshot) => {
       const roomsData = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() } as Room));
       setRooms(roomsData);
     });
 
-    return () => unsubscribe();
+    const unsubscribeUsers = onSnapshot(collection(db, 'users'), (snapshot) => {
+      const usersData = snapshot.docs.map((doc) => ({ uid: doc.id, ...doc.data() } as User));
+      setUsers(usersData);
+    });
+
+    return () => {
+      unsubscribeRooms();
+      unsubscribeUsers();
+    };
   }, []);
+
+  const getUserEmail = (uid: string) => {
+    const foundUser = users.find((u) => u.uid === uid);
+    return foundUser ? foundUser.email : 'Usuario desconocido';
+  };
 
   const handleClean = async (roomId: string) => {
     const roomRef = doc(db, 'rooms', roomId);
@@ -81,6 +95,16 @@ const RoomList: React.FC<RoomListProps> = ({ user }) => {
                 Room {room.id} - <span className={`text-${getStatusColor(room.status)}`}>{room.status}</span>
               </div>
               <div className="card-body">
+                {room.status === 'clean' && room.lastCleanedAt && (
+                  <div className="mb-2">
+                    <p className="mb-0">
+                      <strong>Limpiado por:</strong> {getUserEmail(room.lastCleanedBy || '')}
+                    </p>
+                    <p className="mb-0">
+                      <strong>Hora:</strong> {room.lastCleanedAt.toDate().toLocaleString()}
+                    </p>
+                  </div>
+                )}
                 {room.recleaningReason && <p className="text-warning">Motivo relimpieza: {room.recleaningReason}</p>}
                 {room.reportedProblems.length > 0 && (
                   <div>
