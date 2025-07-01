@@ -1,0 +1,43 @@
+{
+  "login": {
+    "title": "Iniciar Sesión",
+    "emailLabel": "Correo Electrónico",
+    "passwordLabel": "Contraseña",
+    "loginButton": "Iniciar Sesión",
+    "error": "Error al iniciar sesión. Por favor, verifique sus credenciales."
+  },
+  "roomStatus": {
+    "title": "Estado de las Habitaciones",
+    "connectedAs": "Conectado como:",
+    "logoutButton": "Cerrar Sesión"
+  },
+  "roomCard": {
+    "room": "Habitación",
+    "cleanedBy": "Limpiado por:",
+    "cleanedAt": "Hora:",
+    "recleaningReason": "Motivo relimpieza:",
+    "reportedProblems": "Problemas Reportados:",
+    "resolved": "(Resuelto)",
+    "resolveButton": "Resolver",
+    "reportProblemButton": "Reportar Problema",
+    "markCleanButton": "Marcar como Limpia",
+    "markDirtyButton": "Marcar como Sucia",
+    "markOccupiedButton": "Marcar como Ocupada",
+    "recleanButton": "Relimpieza"
+  },
+  "reportProblemModal": {
+    "title": "Reportar Problema en Habitación {{roomNumber}}",
+    "descriptionLabel": "Descripción del Problema",
+    "reportButton": "Reportar"
+  },
+  "recleanModal": {
+    "title": "Marcar para Relimpieza - Habitación {{roomNumber}}",
+    "reasonLabel": "Motivo de la Relimpieza",
+    "markButton": "Marcar"
+  },
+  "states": {
+    "Sucia": "Sucia",
+    "Limpia": "Limpia",
+    "Ocupada": "Ocupada"
+  }
+}

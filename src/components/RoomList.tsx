@@ -1,17 +1,19 @@
-
 import React, { useState, useEffect } from 'react';
 import { collection, onSnapshot, doc, updateDoc, Timestamp } from 'firebase/firestore';
 import { signOut } from 'firebase/auth';
+import { useTranslation } from 'react-i18next';
 import { db, auth } from '../firebase';
 import { Room, User } from '../types';
 import ReportProblemModal from './ReportProblemModal';
 import RecleanModal from './RecleanModal';
+import LanguageSelector from './LanguageSelector';
 
 interface RoomListProps {
   user: User;
 }
 
 const RoomList: React.FC<RoomListProps> = ({ user }) => {
+  const { t } = useTranslation();
   const [rooms, setRooms] = useState<Room[]>([]);
   const [users, setUsers] = useState<User[]>([]);
   const [selectedRoom, setSelectedRoom] = useState<Room | null>(null);
@@ -90,33 +92,6 @@ const RoomList: React.FC<RoomListProps> = ({ user }) => {
     }
   };
 
-  const renderSupervisorActions = (room: Room) => {
-    if (user.role !== 'supervisor') return null;
-
-    return (
-      <div className="mt-2">
-        {room.status !== 'Limpia' && (
-          <button className="btn btn-sm btn-success mr-2" onClick={() => handleSetStatus(room.id, 'Limpia')}>
-            Marcar Limpia
-          </button>
-        )}
-        {room.status !== 'Sucia' && (
-          <button className="btn btn-sm btn-danger mr-2" onClick={() => handleSetStatus(room.id, 'Sucia')}>
-            Marcar Sucia
-          </button>
-        )}
-        {room.status !== 'Ocupada' && (
-          <button className="btn btn-sm btn-primary mr-2" onClick={() => handleSetStatus(room.id, 'Ocupada')}>
-            Marcar Ocupada
-          </button>
-        )}
-        <button className="btn btn-sm btn-warning" onClick={() => openRecleanModal(room)}>
-          Relimpieza
-        </button>
-      </div>
-    );
-  };
-
   const getBorderClass = (room: Room) => {
     if (room.reportedProblems.some(p => !p.isResolved)) {
       return 'border-purple';
@@ -143,15 +118,45 @@ const RoomList: React.FC<RoomListProps> = ({ user }) => {
     }
   };
 
+  const renderSupervisorActions = (room: Room) => {
+    if (user.role !== 'supervisor') return null;
+
+    return (
+      <div className="mt-2">
+        {room.status !== 'Limpia' && (
+          <button className="btn btn-sm btn-success mr-2" onClick={() => handleSetStatus(room.id, 'Limpia')}>
+            {t('roomCard.markCleanButton')}
+          </button>
+        )}
+        {room.status !== 'Sucia' && (
+          <button className="btn btn-sm btn-danger mr-2" onClick={() => handleSetStatus(room.id, 'Sucia')}>
+            {t('roomCard.markDirtyButton')}
+          </button>
+        )}
+        {room.status !== 'Ocupada' && (
+          <button className="btn btn-sm btn-primary mr-2" onClick={() => handleSetStatus(room.id, 'Ocupada')}>
+            {t('roomCard.markOccupiedButton')}
+          </button>
+        )}
+        <button className="btn btn-sm btn-warning" onClick={() => openRecleanModal(room)}>
+          {t('roomCard.recleanButton')}
+        </button>
+      </div>
+    );
+  };
+
   return (
     <div className="container">
       <div className="d-flex justify-content-between align-items-center my-4">
-        <h1>Room Status</h1>
-        <div>
-          <span className="mr-3">Conectado como: <strong>{user.email}</strong></span>
-          <button className="btn btn-outline-danger" onClick={handleLogout}>
-            Cerrar Sesión
-          </button>
+        <h1>{t('roomStatus.title')}</h1>
+        <div className="d-flex align-items-center">
+          <LanguageSelector />
+          <div className="ml-3">
+            <span className="mr-3">{t('roomStatus.connectedAs')} <strong>{user.email}</strong></span>
+            <button className="btn btn-outline-danger" onClick={handleLogout}>
+              {t('roomStatus.logoutButton')}
+            </button>
+          </div>
         </div>
       </div>
       <div className="row">
@@ -163,33 +168,33 @@ const RoomList: React.FC<RoomListProps> = ({ user }) => {
             <div key={room.id} className="col-md-4 mb-4">
               <div className={`card h-100 ${borderClass}`} style={style}>
                 <div className="card-header">
-                  Room {room.id} - <span className={`text-${getStatusColor(room.status)}`}>{room.status}</span>
+                  {t('roomCard.room')} {room.id} - <span className={`text-${getStatusColor(room.status)}`}>{t(`states.${room.status}`)}</span>
                 </div>
                 <div className="card-body">
                   {room.status === 'Limpia' && room.lastCleanedAt && (
                     <div className="mb-2">
                       <p className="mb-0">
-                        <strong>Limpiado por:</strong> {getUserEmail(room.lastCleanedBy || '')}
+                        <strong>{t('roomCard.cleanedBy')}</strong> {getUserEmail(room.lastCleanedBy || '')}
                       </p>
                       <p className="mb-0">
-                        <strong>Hora:</strong> {room.lastCleanedAt.toDate().toLocaleString()}
+                        <strong>{t('roomCard.cleanedAt')}</strong> {room.lastCleanedAt.toDate().toLocaleString()}
                       </p>
                     </div>
                   )}
-                  {room.recleaningReason && <p className="text-warning"><strong>Motivo relimpieza:</strong> {room.recleaningReason}</p>}
+                  {room.recleaningReason && <p className="text-warning"><strong>{t('roomCard.recleaningReason')}</strong> {room.recleaningReason}</p>}
                   {room.reportedProblems.length > 0 && (
                     <div>
-                      <h5>Problemas reportados:</h5>
+                      <h5>{t('roomCard.reportedProblems')}</h5>
                       <ul>
                         {room.reportedProblems.map((problem, index) => (
                           <li key={index} className={problem.isResolved ? 'text-muted' : ''}>
-                            {problem.description} {problem.isResolved && '(Resuelto)'}
+                            {problem.description} {problem.isResolved && `(${t('roomCard.resolved')})`}
                             {(user.role === 'maintenance' || user.role === 'supervisor') && !problem.isResolved && (
                               <button
                                 className="btn btn-sm btn-success ml-2"
                                 onClick={() => handleResolveProblem(room.id, index)}
                               >
-                                Resolver
+                                {t('roomCard.resolveButton')}
                               </button>
                             )}
                           </li>
@@ -201,12 +206,12 @@ const RoomList: React.FC<RoomListProps> = ({ user }) => {
                 <div className="card-footer">
                   {(user.role === 'cleaner' || user.role === 'supervisor') && (
                     <button className="btn btn-warning mr-2" onClick={() => openReportModal(room)}>
-                      Reportar Problema
+                      {t('roomCard.reportProblemButton')}
                     </button>
                   )}
                   {user.role === 'cleaner' && room.status === 'Sucia' && (
                     <button className="btn btn-success" onClick={() => handleSetStatus(room.id, 'Limpia')}>
-                      Marcar como Limpia
+                      {t('roomCard.markCleanButton')}
                     </button>
                   )}
                   {renderSupervisorActions(room)}

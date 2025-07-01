@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { doc, updateDoc } from 'firebase/firestore';
+import { useTranslation } from 'react-i18next';
 import { db } from '../firebase';
 import { Room } from '../types';
 
@@ -10,6 +11,7 @@ interface RecleanModalProps {
 }
 
 const RecleanModal: React.FC<RecleanModalProps> = ({ isOpen, onClose, room }) => {
+  const { t } = useTranslation();
   const [reason, setReason] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -33,7 +35,7 @@ const RecleanModal: React.FC<RecleanModalProps> = ({ isOpen, onClose, room }) =>
       <div className="modal-dialog">
         <div className="modal-content">
           <div className="modal-header">
-            <h5 className="modal-title">Marcar para Relimpieza - Habitación {room.id}</h5>
+            <h5 className="modal-title">{t('recleanModal.title', { roomNumber: room.id })}</h5>
             <button type="button" className="close" onClick={onClose}>
               <span>&times;</span>
             </button>
@@ -41,7 +43,7 @@ const RecleanModal: React.FC<RecleanModalProps> = ({ isOpen, onClose, room }) =>
           <div className="modal-body">
             <form onSubmit={handleSubmit}>
               <div className="form-group">
-                <label>Motivo de la Relimpieza</label>
+                <label>{t('recleanModal.reasonLabel')}</label>
                 <textarea
                   className="form-control"
                   value={reason}
@@ -50,7 +52,7 @@ const RecleanModal: React.FC<RecleanModalProps> = ({ isOpen, onClose, room }) =>
                 ></textarea>
               </div>
               <button type="submit" className="btn btn-primary mt-3">
-                Marcar
+                {t('recleanModal.markButton')}
               </button>
             </form>
           </div>

@@ -1,9 +1,11 @@
 
 import React, { useState } from 'react';
 import { signInWithEmailAndPassword } from 'firebase/auth';
+import { useTranslation } from 'react-i18next';
 import { auth } from '../firebase';
 
 const Login: React.FC = () => {
+  const { t } = useTranslation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -14,7 +16,7 @@ const Login: React.FC = () => {
     try {
       await signInWithEmailAndPassword(auth, email, password);
     } catch (err) {
-      setError('Failed to login. Please check your credentials.');
+      setError(t('login.error'));
     }
   };
 
@@ -24,10 +26,10 @@ const Login: React.FC = () => {
         <div className="col-md-6">
           <div className="card mt-5">
             <div className="card-body">
-              <h2 className="card-title text-center">Login</h2>
+              <h2 className="card-title text-center">{t('login.title')}</h2>
               <form onSubmit={handleLogin}>
                 <div className="form-group">
-                  <label>Email</label>
+                  <label>{t('login.emailLabel')}</label>
                   <input
                     type="email"
                     className="form-control"
@@ -37,7 +39,7 @@ const Login: React.FC = () => {
                   />
                 </div>
                 <div className="form-group">
-                  <label>Password</label>
+                  <label>{t('login.passwordLabel')}</label>
                   <input
                     type="password"
                     className="form-control"
@@ -47,7 +49,7 @@ const Login: React.FC = () => {
                   />
                 </div>
                 <button type="submit" className="btn btn-primary btn-block mt-3">
-                  Login
+                  {t('login.loginButton')}
                 </button>
                 {error && <p className="text-danger mt-3">{error}</p>}
               </form>

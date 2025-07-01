@@ -1,0 +1,43 @@
+{
+  "login": {
+    "title": "Logowanie",
+    "emailLabel": "Email",
+    "passwordLabel": "Hasło",
+    "loginButton": "Zaloguj się",
+    "error": "Logowanie nie powiodło się. Sprawdź swoje dane uwierzytelniające."
+  },
+  "roomStatus": {
+    "title": "Status Pokoi",
+    "connectedAs": "Zalogowany jako:",
+    "logoutButton": "Wyloguj się"
+  },
+  "roomCard": {
+    "room": "Pokój",
+    "cleanedBy": "Wyczyszczone przez:",
+    "cleanedAt": "Godzina:",
+    "recleaningReason": "Powód ponownego sprzątania:",
+    "reportedProblems": "Zgłoszone Problemy:",
+    "resolved": "(Rozwiązany)",
+    "resolveButton": "Rozwiąż",
+    "reportProblemButton": "Zgłoś Problem",
+    "markCleanButton": "Oznacz jako Czysty",
+    "markDirtyButton": "Oznacz jako Brudny",
+    "markOccupiedButton": "Oznacz jako Zajęty",
+    "recleanButton": "Ponowne Sprzątanie"
+  },
+  "reportProblemModal": {
+    "title": "Zgłoś Problem w Pokoju {{roomNumber}}",
+    "descriptionLabel": "Opis Problemu",
+    "reportButton": "Zgłoś"
+  },
+  "recleanModal": {
+    "title": "Oznacz do Ponownego Sprzątania - Pokój {{roomNumber}}",
+    "reasonLabel": "Powód Ponownego Sprzątania",
+    "markButton": "Oznacz"
+  },
+  "states": {
+    "Sucia": "Brudny",
+    "Limpia": "Czysty",
+    "Ocupada": "Zajęty"
+  }
+}

@@ -1,6 +1,7 @@
 
 import React, { useState } from 'react';
 import { doc, updateDoc, arrayUnion, Timestamp } from 'firebase/firestore';
+import { useTranslation } from 'react-i18next';
 import { db } from '../firebase';
 import { Room, User } from '../types';
 
@@ -12,6 +13,7 @@ interface ReportProblemModalProps {
 }
 
 const ReportProblemModal: React.FC<ReportProblemModalProps> = ({ isOpen, onClose, room, user }) => {
+  const { t } = useTranslation();
   const [description, setDescription] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -40,7 +42,7 @@ const ReportProblemModal: React.FC<ReportProblemModalProps> = ({ isOpen, onClose
       <div className="modal-dialog">
         <div className="modal-content">
           <div className="modal-header">
-            <h5 className="modal-title">Reportar Problema en Habitación {room.id}</h5>
+            <h5 className="modal-title">{t('reportProblemModal.title', { roomNumber: room.id })}</h5>
             <button type="button" className="close" onClick={onClose}>
               <span>&times;</span>
             </button>
@@ -48,7 +50,7 @@ const ReportProblemModal: React.FC<ReportProblemModalProps> = ({ isOpen, onClose
           <div className="modal-body">
             <form onSubmit={handleSubmit}>
               <div className="form-group">
-                <label>Descripción del Problema</label>
+                <label>{t('reportProblemModal.descriptionLabel')}</label>
                 <textarea
                   className="form-control"
                   value={description}
@@ -57,7 +59,7 @@ const ReportProblemModal: React.FC<ReportProblemModalProps> = ({ isOpen, onClose
                 ></textarea>
               </div>
               <button type="submit" className="btn btn-primary mt-3">
-                Reportar
+                {t('reportProblemModal.reportButton')}
               </button>
             </form>
           </div>

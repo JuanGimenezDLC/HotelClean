@@ -1,0 +1,43 @@
+{
+  "login": {
+    "title": "Anmeldung",
+    "emailLabel": "E-Mail",
+    "passwordLabel": "Passwort",
+    "loginButton": "Anmelden",
+    "error": "Anmeldung fehlgeschlagen. Bitte überprüfen Sie Ihre Anmeldedaten."
+  },
+  "roomStatus": {
+    "title": "Zimmerstatus",
+    "connectedAs": "Angemeldet als:",
+    "logoutButton": "Abmelden"
+  },
+  "roomCard": {
+    "room": "Zimmer",
+    "cleanedBy": "Gereinigt von:",
+    "cleanedAt": "Uhrzeit:",
+    "recleaningReason": "Grund für die Nachreinigung:",
+    "reportedProblems": "Gemeldete Probleme:",
+    "resolved": "(Erledigt)",
+    "resolveButton": "Lösen",
+    "reportProblemButton": "Problem Melden",
+    "markCleanButton": "Als Sauber Markieren",
+    "markDirtyButton": "Als Schmutzig Markieren",
+    "markOccupiedButton": "Als Besetzt Markieren",
+    "recleanButton": "Nachreinigung"
+  },
+  "reportProblemModal": {
+    "title": "Problem in Zimmer {{roomNumber}} Melden",
+    "descriptionLabel": "Problembeschreibung",
+    "reportButton": "Melden"
+  },
+  "recleanModal": {
+    "title": "Für Nachreinigung Markieren - Zimmer {{roomNumber}}",
+    "reasonLabel": "Grund für die Nachreinigung",
+    "markButton": "Markieren"
+  },
+  "states": {
+    "Sucia": "Schmutzig",
+    "Limpia": "Sauber",
+    "Ocupada": "Besetzt"
+  }
+}

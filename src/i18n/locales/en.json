@@ -1,0 +1,43 @@
+{
+  "login": {
+    "title": "Login",
+    "emailLabel": "Email",
+    "passwordLabel": "Password",
+    "loginButton": "Login",
+    "error": "Failed to login. Please check your credentials."
+  },
+  "roomStatus": {
+    "title": "Room Status",
+    "connectedAs": "Connected as:",
+    "logoutButton": "Logout"
+  },
+  "roomCard": {
+    "room": "Room",
+    "cleanedBy": "Cleaned by:",
+    "cleanedAt": "Time:",
+    "recleaningReason": "Reason for recleaning:",
+    "reportedProblems": "Reported Problems:",
+    "resolved": "(Resolved)",
+    "resolveButton": "Resolve",
+    "reportProblemButton": "Report Problem",
+    "markCleanButton": "Mark as Clean",
+    "markDirtyButton": "Mark as Dirty",
+    "markOccupiedButton": "Mark as Occupied",
+    "recleanButton": "Reclean"
+  },
+  "reportProblemModal": {
+    "title": "Report Problem in Room {{roomNumber}}",
+    "descriptionLabel": "Problem Description",
+    "reportButton": "Report"
+  },
+  "recleanModal": {
+    "title": "Mark for Recleaning - Room {{roomNumber}}",
+    "reasonLabel": "Reason for Recleaning",
+    "markButton": "Mark"
+  },
+  "states": {
+    "Sucia": "Dirty",
+    "Limpia": "Clean",
+    "Ocupada": "Occupied"
+  }
+}
