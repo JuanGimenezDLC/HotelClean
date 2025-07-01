@@ -23,7 +23,8 @@
     "markCleanButton": "Mark as Clean",
     "markDirtyButton": "Mark as Dirty",
     "markOccupiedButton": "Mark as Occupied",
-    "recleanButton": "Reclean"
+    "recleanButton": "Reclean",
+    "blockForMaintenanceButton": "Block for Maintenance"
   },
   "reportProblemModal": {
     "title": "Report Problem in Room {{roomNumber}}",
@@ -38,6 +39,7 @@
   "states": {
     "Sucia": "Dirty",
     "Limpia": "Clean",
-    "Ocupada": "Occupied"
+    "Ocupada": "Occupied",
+    "Bloqueada": "Blocked"
   }
 }

@@ -1,0 +1,421 @@
+/* src/styles/custom.css */
+
+/*
+  Este archivo CSS contiene estilos personalizados para sobrescribir
+  o extender las clases de Bootstrap utilizadas en RoomList.tsx.
+  Importa este archivo DESPUÉS de 'bootstrap.min.css' en tu App.tsx.
+*/
+
+/* --- Estilos Generales de la Aplicación --- */
+
+/* Contenedor principal de la aplicación */
+.container {
+  /* Ancho máximo del contenido para pantallas grandes, por defecto de Bootstrap es 1140px */
+  max-width: 1200px;
+  /* Centrar el contenedor en la página */
+  margin-left: auto;
+  margin-right: auto;
+  /* Padding lateral para evitar que el contenido se pegue a los bordes en móviles */
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+/* Encabezado principal de la aplicación (H1) */
+h1 {
+  /* Color del texto */
+  color: #6c5ce7; /* Ejemplo: Morado vibrante */
+  /* Grosor de la fuente */
+  font-weight: 700; /* Más negrita */
+  /* Tamaño de la fuente */
+  font-size: 2.5rem; /* Ajusta el tamaño */
+  /* Espacio inferior */
+  margin-bottom: 1rem;
+}
+
+/* Texto de "Conectado como" */
+.d-flex.align-items-center.my-4 span {
+  /* Color del texto */
+  color: #495057; /* Un gris oscuro */
+  /* Tamaño de la fuente */
+  font-size: 1rem;
+}
+
+/* --- Estilos de las Tarjetas de Habitaci��������������n (Room Card) --- */
+
+/* Contenedor de la tarjeta de habitación */
+.card {
+  /* Bordes redondeados para la tarjeta */
+  border-radius: 15px;
+  /* Sombra para dar profundidad */
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  /* Transiciones suaves para efectos al pasar el ratón */
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out; /* Eliminada transición de background-color aquí */
+  /* Asegura que el contenido redondeado se vea bien */
+  overflow: hidden;
+  /* Altura de la tarjeta, h-100 de Bootstrap la hace 100% de la altura del padre */
+  height: 100%;
+  /* Color de fondo de la tarjeta (será el color base, el header tendrá su propio color) */
+  background-color: #ffffff; /* Blanco por defecto */
+}
+
+/* Efecto al pasar el ratón sobre la tarjeta */
+.card:hover {
+  /* Pequeño efecto de elevación */
+  transform: translateY(-5px);
+  /* Sombra más pronunciada al pasar el ratón */
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+}
+
+/* Encabezado de la tarjeta (número de habitación y estado) */
+.card-header {
+  /* Color de fondo del encabezado (será sobrescrito por las clases de estado específicas) */
+  background-color: transparent; /* Transparente por defecto, el color lo dará la clase de estado */
+  /* Color del texto */
+  color: white;
+  /* Grosor de la fuente */
+  font-weight: bold;
+  /* Elimina el borde inferior por defecto de Bootstrap */
+  border-bottom: none;
+  /* Padding interno */
+  padding: 1rem 1.25rem;
+  /* Redondea las esquinas superiores para que coincida con la tarjeta */
+  border-top-left-radius: 15px;
+  border-top-right-radius: 15px;
+  /* Tamaño de la fuente del texto del encabezado */
+  font-size: 1.25rem;
+  /* Transición para el color de fondo del header */
+  transition: background-color 0.3s ease-in-out;
+}
+
+/* Cuerpo de la tarjeta (contenido principal) */
+.card-body {
+  /* Padding interno */
+  padding: 1.5rem;
+  /* Color de fondo del cuerpo (siempre claro) */
+  background-color: #f8f9fa; /* Gris muy claro */
+  /* Color del texto general */
+  color: #343a40; /* Gris oscuro */
+  /* Alineación del texto */
+  text-align: left;
+}
+
+/* Pie de página de la tarjeta (botones de acción) */
+.card-footer {
+  /* Color de fondo del pie de página (siempre claro) */
+  background-color: #e9ecef; /* Gris claro */
+  /* Elimina el borde superior por defecto de Bootstrap */
+  border-top: none;
+  /* Padding interno */
+  padding: 1rem 1.5rem;
+  /* Usa flexbox para alinear los botones */
+  display: flex;
+  /* Alinea los botones a la derecha */
+  justify-content: flex-end;
+  /* Espacio entre los botones */
+  gap: 10px;
+  /* Redondea las esquinas inferiores para que coincida con la tarjeta */
+  border-bottom-left-radius: 15px;
+  border-bottom-right-radius: 15px;
+}
+
+/* --- Estilos de Fondo del Encabezado de Tarjeta por Estado --- */
+
+/* Encabezado verde si está limpia */
+.card-header-clean {
+  background-color: #28a7467a !important; /* Verde de Bootstrap */
+  color: white !important;
+}
+
+/* Encabezado rojo si está sucia */
+.card-header-dirty {
+  background-color: #dc354681 !important; /* Rojo de Bootstrap */
+  color: white !important;
+}
+
+/* Encabezado morado si tiene un problema reportado abierto */
+.card-header-problem {
+  background-color: #8000807c !important; /* Lila/Morado */
+  color: white !important;
+}
+
+/* Encabezado amarillo si necesita limpiarse otra vez */
+.card-header-reclean {
+  background-color: #ffc10783 !important; /* Amarillo de Bootstrap */
+  color: #343a40 !important; /* Texto oscuro para contraste */
+}
+
+/* Encabezado negro para habitaciones ocupadas */
+.card-header-occupied {
+  background-color: #343a407a !important; /* Negro/Gris oscuro */
+  color: white !important;
+}
+
+
+/* --- Estilos de Texto y Utilidades de Color --- */
+
+/* Texto de advertencia (ej. motivo de relimpieza) */
+.text-warning {
+  color: #ffc107 !important; /* Amarillo de Bootstrap */
+  font-weight: bold;
+}
+/* Texto para problemas resueltos */
+.text-muted {
+  color: #6c757d !important; /* Gris de Bootstrap */
+  font-style: italic;
+  text-decoration: line-through; /* Tachado para indicar resuelto */
+}
+
+/* --- Estilos de Botones --- */
+
+/* Estilos base para todos los botones */
+.btn {
+  /* Grosor de la fuente */
+  font-weight: 600;
+  /* Bordes más redondeados */
+  border-radius: 8px;
+  /* Padding interno */
+  padding: 0.6rem 1.2rem;
+  /* Transiciones suaves para efectos hover */
+  transition: all 0.3s ease;
+  /* Sombra sutil */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  /* Asegura que el texto esté centrado */
+  text-align: center;
+  /* Cursor al pasar el ratón */
+  cursor: pointer;
+}
+
+/* Botón de éxito (verde) */
+.btn-success {
+  background-color: #2ecc71; /* Verde más brillante */
+  border-color: #2ecc71;
+  color: white;
+}
+.btn-success:hover {
+  background-color: #27ae60; /* Verde más oscuro al pasar el ratón */
+  border-color: #27ae60;
+}
+
+/* Botón de advertencia (amarillo) */
+.btn-warning {
+  background-color: #f1c40f; /* Amarillo más fuerte */
+  border-color: #f1c40f;
+  color: #333; /* Texto oscuro para contraste */
+}
+.btn-warning:hover {
+  background-color: #f39c12; /* Naranja-amarillo al pasar el ratón */
+  border-color: #f39c12;
+}
+
+/* Botón de peligro (rojo) */
+.btn-danger {
+  background-color: #e74c3c; /* Rojo más intenso */
+  border-color: #e74c3c;
+  color: white;
+}
+.btn-danger:hover {
+  background-color: #c0392b; /* Rojo más oscuro al pasar el ratón */
+  border-color: #c0392b;
+}
+
+/* Botón primario (azul) */
+.btn-primary {
+  background-color: #3498db; /* Azul más vivo */
+  border-color: #3498db;
+  color: white;
+}
+.btn-primary:hover {
+  background-color: #2980b9; /* Azul más oscuro al pasar el ratón */
+  border-color: #2980b9;
+}
+
+/* Botón de esquema de peligro (logout) */
+.btn-outline-danger {
+  border-color: #e74c3c; /* Borde rojo */
+  color: #e74c3c; /* Texto rojo */
+  background-color: transparent;
+}
+.btn-outline-danger:hover {
+  background-color: #e74c3c; /* Fondo rojo al pasar el ratón */
+  color: white; /* Texto blanco al pasar el ratón */
+}
+
+/* Botones pequeños (btn-sm) */
+.btn-sm {
+  padding: 0.4rem 0.8rem; /* Padding ajustado para botones pequeños */
+  font-size: 0.875rem; /* Tamaño de fuente más pequeño */
+}
+
+/* --- Estilos para el Login Component (si usa Bootstrap) --- */
+
+/* Estilo para el contenedor del login */
+.container.d-flex.justify-content-center.align-items-center.min-vh-100 {
+  /* Asegura que el contenedor ocupe al menos el 100% de la altura de la ventana */
+  min-height: 100vh;
+  /* Centra el contenido vertical y horizontalmente */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* Color de fondo si es necesario */
+  background-color: #f0f2f5; /* Un gris claro para el fondo del login */
+}
+
+/* Estilo para la tarjeta de login */
+.card.p-4.shadow-lg.rounded {
+  /* Padding interno */
+  padding: 2rem !important;
+  /* Sombras */
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15) !important;
+  /* Bordes redondeados */
+  border-radius: 12px !important;
+  /* Ancho máximo */
+  max-width: 450px;
+  /* Color de fondo */
+  background-color: #ffffff;
+}
+
+/* Título del formulario de login */
+.card-title.text-center {
+  color: #6c5ce7; /* Morado */
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 1.5rem;
+}
+
+/* Etiquetas de los formularios (Email, Password) */
+.form-group label {
+  font-weight: 600;
+  color: #495057;
+  margin-bottom: 0.5rem;
+}
+
+/* Campos de entrada de formulario */
+.form-control {
+  border-radius: 8px; /* Bordes redondeados */
+  padding: 0.75rem 1rem; /* Padding cómodo */
+  border: 1px solid #ced4da; /* Borde estándar */
+  transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.form-control:focus {
+  border-color: #6c5ce7; /* Borde morado al enfocar */
+  box-shadow: 0 0 0 0.25rem rgba(108, 92, 231, 0.25); /* Sombra de enfoque morada */
+}
+
+/* Botón de login */
+.btn-primary.btn-block.mt-3 {
+  background-color: #6c5ce7; /* Morado */
+  border-color: #6c5ce7;
+  color: white;
+  padding: 0.75rem 1.25rem;
+  font-size: 1.1rem;
+  font-weight: bold;
+  border-radius: 8px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.btn-primary.btn-block.mt-3:hover {
+  background-color: #5d4ed1; /* Morado más oscuro */
+  transform: translateY(-2px); /* Pequeño efecto de elevación */
+}
+
+/* Mensajes de error */
+.text-danger.mt-3 {
+  color: #dc3546 !important; /* Rojo de Bootstrap */
+  font-size: 0.9rem;
+  margin-top: 1rem !important;
+}
+
+/* Texto de credenciales de demostración */
+.text-center.text-muted.mt-3 {
+  font-size: 0.85rem;
+  color: #6c757d !important;
+}
+
+.text-center.text-muted.mt-3 .fw-bold {
+  font-weight: bold !important;
+  color: #495057 !important;
+}
+
+/* --- Estilos de Botones de Estado Personalizados --- */
+
+.btn-status-clean {
+  background-color: #28a7467a !important; /* Verde de Bootstrap */
+  border-color: #28a7467a !important;
+  color: white !important;
+}
+.btn-status-clean:hover {
+  background-color: #218838 !important; /* Verde más oscuro al pasar el ratón */
+  border-color: #218838 !important;
+}
+
+.btn-status-dirty {
+  background-color: #dc354681 !important; /* Rojo de Bootstrap */
+  border-color: #dc354681 !important;
+  color: white !important;
+}
+.btn-status-dirty:hover {
+  background-color: #c82333 !important; /* Rojo más oscuro al pasar el ratón */
+  border-color: #c82333 !important;
+}
+
+.btn-status-occupied {
+  background-color: #343a407a !important; /* Negro/Gris oscuro */
+  border-color: #343a407a !important;
+  color: white !important;
+}
+.btn-status-occupied:hover {
+  background-color: #23272b !important; /* Negro más oscuro al pasar el ratón */
+  border-color: #23272b !important;
+}
+
+/* Estilos para botones de estado no activos (outline) */
+.btn-outline-status-clean {
+  background-color: transparent !important;
+  border-color: #28a7467a !important;
+  color: #28a746 !important;
+}
+.btn-outline-status-clean:hover {
+  background-color: #28a7467a !important;
+  color: white !important;
+}
+
+.btn-outline-status-dirty {
+  background-color: transparent !important;
+  border-color: #dc354681 !important;
+  color: #dc3546 !important;
+}
+.btn-outline-status-dirty:hover {
+  background-color: #dc354681 !important;
+  color: white !important;
+}
+
+.btn-outline-status-occupied {
+  background-color: transparent !important;
+  border-color: #343a407a !important;
+  color: #343a40 !important;
+}
+.btn-outline-status-occupied:hover {
+  background-color: #343a407a !important;
+  color: white !important;
+}
+
+button[disabled] {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Nuevo estilo para el botón de Report Problem */
+.btn-report-problem {
+  background-color: #6c757d; /* Un gris oscuro/secundario */
+  border-color: #6c757d;
+  color: white;
+}
+.btn-report-problem:hover {
+  background-color: #5a6268; /* Un gris más oscuro al pasar el ratón */
+  border-color: #5a6268;
+}
+
+.report-reclean-buttons {
+  gap: 10px; /* Espacio entre los botones */
+}

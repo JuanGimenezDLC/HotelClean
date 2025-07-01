@@ -7,6 +7,7 @@ import { Room, User } from '../types';
 import ReportProblemModal from './ReportProblemModal';
 import RecleanModal from './RecleanModal';
 import LanguageSelector from './LanguageSelector';
+import './RoomList.css';
 
 interface RoomListProps {
   user: User;
@@ -111,39 +112,49 @@ const RoomList: React.FC<RoomListProps> = ({ user }) => {
     }
   };
 
-  const customStyles = {
-    borderPurple: {
-      borderColor: '#800080', // Lila/Morado
-      borderWidth: '2px'
+  // FUNCIÓN AÑADIDA: Para obtener la clase de fondo del CUERPO y PIE de página de la tarjeta
+  const getCardBgClass = (room: Room) => {
+    // Prioridad: Problema > Necesita Relimpieza > Estado de Limpieza
+    if (room.reportedProblems.some(p => !p.isResolved)) {
+      return 'card-bg-problem'; // Si hay problemas pendientes
+    }
+    if (room.recleaningReason) {
+      return 'card-bg-reclean'; // Si necesita relimpieza
+    }
+    switch (room.status) {
+      case 'Sucia':
+        return 'card-bg-dirty';
+      case 'Limpia':
+        return 'card-bg-clean';
+      case 'Ocupada':
+        return 'card-bg-occupied';
+      default:
+        return ''; // Sin clase de fondo específica por defecto
     }
   };
 
-  const renderSupervisorActions = (room: Room) => {
-    if (user.role !== 'supervisor') return null;
-
-    return (
-      <div className="mt-2">
-        {room.status !== 'Limpia' && (
-          <button className="btn btn-sm btn-success mr-2" onClick={() => handleSetStatus(room.id, 'Limpia')}>
-            {t('roomCard.markCleanButton')}
-          </button>
-        )}
-        {room.status !== 'Sucia' && (
-          <button className="btn btn-sm btn-danger mr-2" onClick={() => handleSetStatus(room.id, 'Sucia')}>
-            {t('roomCard.markDirtyButton')}
-          </button>
-        )}
-        {room.status !== 'Ocupada' && (
-          <button className="btn btn-sm btn-primary mr-2" onClick={() => handleSetStatus(room.id, 'Ocupada')}>
-            {t('roomCard.markOccupiedButton')}
-          </button>
-        )}
-        <button className="btn btn-sm btn-warning" onClick={() => openRecleanModal(room)}>
-          {t('roomCard.recleanButton')}
-        </button>
-      </div>
-    );
+  // FUNCIÓN AÑADIDA: Para obtener la clase de fondo del ENCABEZADO de la tarjeta
+  const getHeaderBgClass = (room: Room) => {
+    // Prioridad: Problema > Necesita Relimpieza > Estado de Limpieza
+    if (room.reportedProblems.some(p => !p.isResolved)) {
+      return 'card-header-problem'; // Morado si tiene un report abierto
+    }
+    if (room.recleaningReason) {
+      return 'card-header-reclean'; // Amarillo si necesita limpiarse otra vez
+    }
+    switch (room.status) {
+      case 'Limpia':
+        return 'card-header-clean'; // Verde si está limpia
+      case 'Sucia':
+        return 'card-header-dirty'; // Roja si está sucia
+      case 'Ocupada':
+        return 'card-header-occupied'; // Negro si está ocupada
+      default:
+        return ''; // Clase por defecto si no coincide
+    }
   };
+
+  
 
   return (
     <div className="container">
@@ -161,14 +172,16 @@ const RoomList: React.FC<RoomListProps> = ({ user }) => {
       </div>
       <div className="row">
         {rooms.map((room) => {
-          const borderClass = getBorderClass(room);
-          const style = borderClass === 'border-purple' ? customStyles.borderPurple : {};
+          const bgClass = getCardBgClass(room); // Obtener la clase de fondo para el cuerpo/pie
+          const headerBgClass = getHeaderBgClass(room); // Obtener la clase de fondo para el encabezado
 
           return (
             <div key={room.id} className="col-md-4 mb-4">
-              <div className={`card h-100 ${borderClass}`} style={style}>
-                <div className="card-header">
-                  {t('roomCard.room')} {room.id} - <span className={`text-${getStatusColor(room.status)}`}>{t(`states.${room.status}`)}</span>
+              {/* Aplicar las clases dinámicas al div de la tarjeta */}
+              <div className={`card h-100 ${bgClass}`}>
+                {/* Aplicar la clase dinámica al card-header */}
+                <div className={`card-header ${headerBgClass}`}>
+                  {t('roomCard.room')} {room.id} - <span>{t(`states.${room.status}`)}</span>
                 </div>
                 <div className="card-body">
                   {room.status === 'Limpia' && room.lastCleanedAt && (
@@ -203,18 +216,48 @@ const RoomList: React.FC<RoomListProps> = ({ user }) => {
                     </div>
                   )}
                 </div>
-                <div className="card-footer">
-                  {(user.role === 'cleaner' || user.role === 'supervisor') && (
-                    <button className="btn btn-warning mr-2" onClick={() => openReportModal(room)}>
-                      {t('roomCard.reportProblemButton')}
-                    </button>
-                  )}
-                  {user.role === 'cleaner' && room.status === 'Sucia' && (
-                    <button className="btn btn-success" onClick={() => handleSetStatus(room.id, 'Limpia')}>
-                      {t('roomCard.markCleanButton')}
-                    </button>
-                  )}
-                  {renderSupervisorActions(room)}
+                <div className="card-footer d-flex flex-column">
+                  {/* Contenedor para botones de estado */}
+                  <div className="d-flex justify-content-around mb-2">
+                    {(user.role === 'cleaner' || user.role === 'supervisor') && (
+                      <>
+                        <button
+                          className={`btn btn-sm ${room.status === 'Limpia' ? 'btn-status-clean' : 'btn-outline-status-clean'}`}
+                          onClick={() => handleSetStatus(room.id, 'Limpia')}
+                          disabled={room.status === 'Limpia'}
+                        >
+                          {t('states.Limpia')}
+                        </button>
+                        <button
+                          className={`btn btn-sm ${room.status === 'Sucia' ? 'btn-status-dirty' : 'btn-outline-status-dirty'}`}
+                          onClick={() => handleSetStatus(room.id, 'Sucia')}
+                          disabled={room.status === 'Sucia'}
+                        >
+                          {t('states.Sucia')}
+                        </button>
+                        <button
+                          className={`btn btn-sm ${room.status === 'Ocupada' ? 'btn-status-occupied' : 'btn-outline-status-occupied'}`}
+                          onClick={() => handleSetStatus(room.id, 'Ocupada')}
+                          disabled={room.status === 'Ocupada'}
+                        >
+                          {t('states.Ocupada')}
+                        </button>
+                      </>
+                    )}
+                  </div>
+                  {/* Contenedor para botones de report y reclean */}
+                  <div className="d-flex justify-content-center report-reclean-buttons">
+                    {(user.role === 'cleaner' || user.role === 'supervisor') && (
+                      <button className="btn btn-report-problem mr-2" onClick={() => openReportModal(room)}>
+                        {t('roomCard.reportProblemButton')}
+                      </button>
+                    )}
+                    {user.role === 'supervisor' && (
+                      <button className="btn btn-warning" onClick={() => openRecleanModal(room)}>
+                        {t('roomCard.recleanButton')}
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
