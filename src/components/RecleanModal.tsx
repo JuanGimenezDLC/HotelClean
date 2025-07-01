@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { doc, updateDoc } from 'firebase/firestore';
 import { db } from '../firebase';
@@ -19,7 +18,7 @@ const RecleanModal: React.FC<RecleanModalProps> = ({ isOpen, onClose, room }) =>
 
     const roomRef = doc(db, 'rooms', room.id);
     await updateDoc(roomRef, {
-      status: 'recleaning',
+      status: 'Sucia',
       recleaningReason: reason,
     });
 

@@ -26,7 +26,7 @@ const ReportProblemModal: React.FC<ReportProblemModalProps> = ({ isOpen, onClose
         reportedAt: Timestamp.now(),
         isResolved: false,
       }),
-      status: 'dirty',
+      status: 'Sucia',
     });
 
     setDescription('');

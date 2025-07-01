@@ -10,7 +10,7 @@ export interface ReportedProblem {
 
 export interface Room {
   id: string;
-  status: 'dirty' | 'clean' | 'recleaning' | 'maintenance';
+  status: 'Sucia' | 'Limpia' | 'Ocupada';
   lastCleanedBy?: string;
   lastCleanedAt?: Timestamp;
   recleaningReason?: string;
