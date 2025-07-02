@@ -1,0 +1,247 @@
+/* --- Variables de Diseño --- */
+:root {
+  --card-bg-color: rgba(35, 35, 45, 0.6); /* Fondo de tarjeta semitransparente */
+  --card-border-color: rgba(255, 255, 255, 0.15);
+  --text-color-primary: #EAEAEA;
+  --text-color-secondary: #A0A0B0;
+  
+  /* Colores de estado */
+  --clean-color: #39D392;
+  --dirty-color: #FF6B6B;
+  --problem-color: #FFD166;
+  --occupied-color: #4D96FF;
+
+  /* Animaciones */
+  --transition-speed: 0.4s;
+}
+
+/* --- Estructura de la Tarjeta --- */
+.room-card {
+  position: relative;
+  border-radius: 20px;
+  overflow: hidden; /* Clave para que el fondo no se salga */
+  border: 1px solid var(--card-border-color);
+  background: var(--card-bg-color);
+  backdrop-filter: blur(12px) saturate(150%); /* Efecto Glassmorphism */
+  -webkit-backdrop-filter: blur(12px) saturate(150%);
+  transition: transform var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+.room-card:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
+}
+
+.room-card-content {
+  position: relative;
+  z-index: 2; /* Por encima del fondo aurora */
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* --- Efecto de Fondo Aurora --- */
+.aurora-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  opacity: 0;
+  transition: opacity var(--transition-speed) ease;
+}
+
+.room-card:hover .aurora-background {
+  opacity: 1;
+}
+
+.aurora-background::before,
+.aurora-background::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  animation: aurora-glow 8s infinite alternate;
+}
+
+.aurora-background::before {
+  width: 200px;
+  height: 200px;
+  top: -50px;
+  left: -50px;
+}
+
+.aurora-background::after {
+  width: 150px;
+  height: 150px;
+  bottom: -40px;
+  right: -40px;
+  animation-delay: -4s;
+}
+
+@keyframes aurora-glow {
+  from { transform: scale(1); }
+  to { transform: scale(1.2); }
+}
+
+
+/* --- Colores de Estado y Aurora --- */
+.status-clean .aurora-background::before { background: radial-gradient(circle, var(--clean-color), transparent 60%); }
+.status-clean .aurora-background::after { background: radial-gradient(circle, var(--occupied-color), transparent 60%); }
+
+.status-dirty .aurora-background::before { background: radial-gradient(circle, var(--dirty-color), transparent 60%); }
+.status-dirty .aurora-background::after { background: radial-gradient(circle, var(--problem-color), transparent 60%); }
+
+.status-problem .aurora-background::before { background: radial-gradient(circle, var(--problem-color), transparent 60%); }
+.status-problem .aurora-background::after { background: radial-gradient(circle, var(--dirty-color), transparent 60%); }
+
+.status-occupied .aurora-background::before { background: radial-gradient(circle, var(--occupied-color), transparent 60%); }
+.status-occupied .aurora-background::after { background: radial-gradient(circle, var(--clean-color), transparent 60%); }
+
+.status-reclean .aurora-background::before { background: radial-gradient(circle, var(--problem-color), transparent 60%); }
+.status-reclean .aurora-background::after { background: radial-gradient(circle, var(--occupied-color), transparent 60%); }
+
+
+/* --- Contenido de la Tarjeta --- */
+.room-card-header {
+  border-bottom: 1px solid var(--card-border-color);
+  padding-bottom: 16px;
+  margin-bottom: 16px;
+}
+
+.status-indicator {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+  font-size: 1.1rem;
+  margin-bottom: 8px;
+  transition: color var(--transition-speed) ease;
+}
+
+.status-indicator svg {
+  transition: transform var(--transition-speed) ease;
+}
+
+.room-card:hover .status-indicator svg {
+  transform: rotate(-10deg) scale(1.1);
+}
+
+/* Colores del indicador de estado */
+.status-clean .status-indicator { color: var(--clean-color); }
+.status-dirty .status-indicator { color: var(--dirty-color); }
+.status-problem .status-indicator { color: var(--problem-color); }
+.status-occupied .status-indicator { color: var(--occupied-color); }
+.status-reclean .status-indicator { color: var(--problem-color); }
+
+
+.room-number {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text-color-primary);
+  margin: 0;
+}
+
+.room-card-body {
+  flex-grow: 1; /* Ocupa el espacio disponible */
+}
+
+.detail-text {
+  color: var(--text-color-secondary);
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.detail-text strong {
+  color: var(--text-color-primary);
+  font-weight: 600;
+}
+
+/* --- Pie de Página y Acciones --- */
+.room-card-footer {
+  padding-top: 16px;
+  margin-top: 16px;
+  border-top: 1px solid var(--card-border-color);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.status-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.action-button {
+  flex-grow: 1;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid var(--card-border-color);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-color-primary); /* CAMBIO: Texto blanco para mejor contraste */
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease, border-color var(--transition-speed) ease;
+}
+
+.action-button:hover:not([disabled]) { /* CAMBIO: Añadido :not([disabled]) */
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-color-primary);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.action-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+
+.action-button.active {
+  color: #000;
+  border-width: 2px;
+}
+
+/* Colores de botones activos */
+.status-actions .action-button.active:nth-child(1) { background-color: var(--clean-color); border-color: var(--clean-color); }
+.status-actions .action-button.active:nth-child(2) { background-color: var(--dirty-color); border-color: var(--dirty-color); }
+.status-actions .action-button.active:nth-child(3) { background-color: var(--occupied-color); border-color: var(--occupied-color); }
+
+
+/* --- Contenedor para botones de acciones secundarias --- */
+.secondary-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.problem-button, .reclean-button {
+  flex-grow: 1; /* Para que ambos botones ocupen el mismo espacio */
+  background: transparent;
+  border-style: dashed;
+  border-width: 1px;
+}
+
+.problem-button {
+  border-color: var(--problem-color);
+  color: var(--problem-color);
+}
+
+.problem-button:hover:not([disabled]) {
+  background: var(--problem-color);
+  color: #000;
+  border-style: solid;
+}
+
+.reclean-button {
+  border-color: var(--occupied-color); /* Usamos un color azul para diferenciar */
+  color: var(--occupied-color);
+}
+
+.reclean-button:hover:not([disabled]) {
+  background: var(--occupied-color);
+  color: #fff;
+  border-style: solid;
+}

@@ -1,0 +1,269 @@
+/* src/styles/custom.css */
+
+/*
+  Este archivo CSS contiene estilos personalizados para sobrescribir
+  o extender las clases de Bootstrap utilizadas en RoomList.tsx.
+  Importa este archivo DESPUÉS de 'bootstrap.min.css' en tu App.tsx.
+*/
+
+/* --- Estilos Generales de la Aplicación --- */
+
+/* Contenedor principal de la aplicación */
+.container {
+  max-width: 1200px; /* Ancho máximo del contenedor */
+  margin-left: auto; /* Centra el contenedor horizontalmente */
+  margin-right: auto; /* Centra el contenedor horizontalmente */
+  padding-left: 15px; /* Espaciado interior a la izquierda */
+  padding-right: 15px; /* Espaciado interior a la derecha */
+}
+
+/* Encabezado principal de la aplicación (H1) */
+h1 {
+  color: #81D4FA; /* Color del texto (azul claro) */
+  font-weight: 700; /* Grosor de la fuente (negrita) */
+  font-size: 2.5rem; /* Tamaño de la fuente */
+  margin-bottom: 1rem; /* Margen inferior */
+}
+
+/* Texto de "Conectado como" */
+.d-flex.align-items-center.my-4 span {
+  color: #CE93D8; /* Color del texto (morado claro) */
+  font-size: 1rem; /* Tamaño de la fuente */
+}
+
+/* --- Estilos de las Tarjetas de Habitación (Room Card) --- */
+
+/* Contenedor de la tarjeta de habitación */
+.card {
+  border-radius: 16px; /* Bordes redondeados */
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3); /* Sombra de la tarjeta */
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out; /* Animación suave para la transición */
+  overflow: hidden; /* Oculta el contenido que se desborda */
+  height: 100%; /* Altura al 100% del contenedor padre */
+  background-color: #2C2C34; /* Color de fondo (gris oscuro) */
+  border: 1px solid rgba(255, 255, 255, 0.08); /* Borde sutil y claro */
+}
+
+/* Efecto al pasar el ratón sobre la tarjeta */
+.card:hover {
+  transform: translateY(-6px); /* Eleva la tarjeta ligeramente */
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.5); /* Sombra más pronunciada al pasar el ratón */
+}
+
+/* Encabezado de la tarjeta (número de habitación y estado) */
+.card-header {
+  background-color: transparent; /* Color de fondo (se establecerá por clases de estado) */
+  color: white; /* Color del texto */
+  font-weight: bold; /* Grosor de la fuente (negrita) */
+  border-bottom: none; /* Sin borde inferior */
+  padding: 1.2rem 1.5rem; /* Espaciado interior */
+  border-top-left-radius: 16px; /* Borde superior izquierdo redondeado */
+  border-top-right-radius: 16px; /* Borde superior derecho redondeado */
+  font-size: 1.3rem; /* Tamaño de la fuente */
+  transition: background-color 0.3s ease-in-out; /* Animación suave para el color de fondo */
+}
+
+/* Cuerpo de la tarjeta (contenido principal) */
+.card-body {
+  padding: 1.8rem 1.5rem; /* Espaciado interior */
+  background-color: #3A3A42; /* Color de fondo (gris un poco más claro) */
+  color: #E0E0E0; /* Color del texto (gris claro) */
+  text-align: left; /* Alineación del texto a la izquierda */
+}
+
+/* Pie de página de la tarjeta (botones de acción) */
+.card-footer {
+  background-color: #2C2C34; /* Mismo color de fondo que la tarjeta */
+  border-top: none; /* Sin borde superior */
+  padding: 1.2rem 1.5rem; /* Espaciado interior */
+  display: flex; /* Usa Flexbox para alinear los elementos */
+  flex-direction: column; /* Apila los botones verticalmente en móviles */
+  gap: 15px; /* Espacio entre los grupos de botones */
+  border-bottom-left-radius: 16px; /* Borde inferior izquierdo redondeado */
+  border-bottom-right-radius: 16px; /* Borde inferior derecho redondeado */
+}
+
+/* --- Estilos de Fondo del Encabezado de Tarjeta por Estado --- */
+
+/* Encabezado verde si está limpia */
+.card-header-clean {
+  background-color: #4CAF50 !important; /* Color de fondo (verde) */
+  color: white !important; /* Color del texto */
+}
+
+/* Encabezado rojo si está sucia */
+.card-header-dirty {
+  background-color: #F44336 !important; /* Color de fondo (rojo) */
+  color: white !important; /* Color del texto */
+}
+
+/* Encabezado morado si tiene un problema reportado abierto */
+.card-header-problem {
+  background-color: #9C27B0 !important; /* Color de fondo (morado) */
+  color: white !important; /* Color del texto */
+}
+
+/* Encabezado amarillo si necesita limpiarse otra vez */
+.card-header-reclean {
+  background-color: #FFC107 !important; /* Color de fondo (ámbar) */
+  color: #212121 !important; /* Color del texto (oscuro para contraste) */
+}
+
+/* Encabezado azul para habitaciones ocupadas */
+.card-header-occupied {
+  background-color: #2196F3 !important; /* Color de fondo (azul) */
+  color: white !important; /* Color del texto */
+}
+
+
+/* --- Estilos de Texto y Utilidades de Color --- */
+
+/* Texto de advertencia (ej. motivo de relimpieza) */
+.text-warning {
+  color: #FFC107 !important; /* Color del texto (ámbar) */
+  font-weight: bold; /* Grosor de la fuente (negrita) */
+}
+/* Texto para problemas resueltos */
+.text-muted {
+  color: #9E9E9E !important; /* Color del texto (gris) */
+  font-style: italic; /* Estilo de fuente (cursiva) */
+  text-decoration: line-through; /* Decoración del texto (tachado) */
+}
+
+/* --- Estilos de Botones --- */
+
+/* Estilos base para todos los botones */
+.btn {
+  font-weight: 600; /* Grosor de la fuente */
+  border-radius: 10px; /* Bordes redondeados */
+  padding: 0.9rem 1.8rem; /* Espaciado interior más grande para facilitar el clic en móviles */
+  transition: all 0.2s ease-in-out; /* Animación suave para todas las propiedades */
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2); /* Sombra sutil del botón */
+  text-align: center; /* Alineación del texto */
+  cursor: pointer; /* Cambia el cursor a una mano */
+  font-size: 1rem; /* Tamaño de la fuente */
+  border: none; /* Elimina el borde por defecto */
+}
+
+/* Efecto general al pasar el ratón sobre todos los botones */
+.btn:hover:not([disabled]) {
+  transform: translateY(-2px); /* Eleva el botón ligeramente */
+  box-shadow: 0 5px 12px rgba(0, 0, 0, 0.3); /* Sombra más pronunciada */
+}
+
+/* Botón de esquema de peligro (logout) */
+.btn-outline-danger {
+  border: 1px solid #F44336; /* Borde de color rojo */
+  color: #F44336; /* Color del texto (rojo) */
+  background-color: transparent; /* Fondo transparente */
+}
+.btn-outline-danger:hover {
+  background-color: #F44336; /* Color de fondo (rojo) al pasar el ratón */
+  color: white; /* Color del texto (blanco) al pasar el ratón */
+}
+
+/* Botones pequeños (btn-sm) - Ajustado para el tacto en móviles */
+.btn-sm {
+  padding: 0.7rem 1.4rem; /* Espaciado interior ligeramente más grande para botones pequeños */
+  font-size: 0.9rem; /* Tamaño de la fuente */
+}
+
+/* --- Estilos de Botones de Estado Personalizados --- */
+
+.btn-status-clean {
+  background-color: #4CAF50 !important; /* Color de fondo (verde) */
+  border: 1px solid #4CAF50 !important; /* Borde del mismo color */
+  color: white !important; /* Color del texto */
+}
+.btn-status-clean:hover {
+  background-color: #43A047 !important; /* Color de fondo más oscuro al pasar el ratón */
+  border-color: #43A047 !important; /* Borde del mismo color */
+}
+
+.btn-status-dirty {
+  background-color: #F44336 !important; /* Color de fondo (rojo) */
+  border: 1px solid #F44336 !important; /* Borde del mismo color */
+  color: white !important; /* Color del texto */
+}
+.btn-status-dirty:hover {
+  background-color: #E53935 !important; /* Color de fondo más oscuro al pasar el ratón */
+  border-color: #E53935 !important; /* Borde del mismo color */
+}
+
+.btn-status-occupied {
+  background-color: #2196F3 !important; /* Color de fondo (azul) */
+  border: 1px solid #2196F3 !important; /* Borde del mismo color */
+  color: white !important; /* Color del texto */
+}
+.btn-status-occupied:hover {
+  background-color: #1976D2 !important; /* Color de fondo más oscuro al pasar el ratón */
+  border-color: #1976D2 !important; /* Borde del mismo color */
+}
+
+/* Estilos para botones de estado no activos (outline) */
+.btn-outline-status-clean {
+  background-color: transparent !important; /* Fondo transparente */
+  border: 1px solid #4CAF50 !important; /* Borde de color verde */
+  color: #4CAF50 !important; /* Color del texto (verde) */
+}
+.btn-outline-status-clean:hover {
+  background-color: #4CAF50 !important; /* Color de fondo (verde) al pasar el ratón */
+  color: white !important; /* Color del texto (blanco) al pasar el ratón */
+}
+
+.btn-outline-status-dirty {
+  background-color: transparent !important; /* Fondo transparente */
+  border: 1px solid #F44336 !important; /* Borde de color rojo */
+  color: #F44336 !important; /* Color del texto (rojo) */
+}
+.btn-outline-status-dirty:hover {
+  background-color: #F44336 !important; /* Color de fondo (rojo) al pasar el ratón */
+  color: white !important; /* Color del texto (blanco) al pasar el ratón */
+}
+
+.btn-outline-status-occupied {
+  background-color: transparent !important; /* Fondo transparente */
+  border: 1px solid #2196F3 !important; /* Borde de color azul */
+  color: #2196F3 !important; /* Color del texto (azul) */
+}
+.btn-outline-status-occupied:hover {
+  background-color: #2196F3 !important; /* Color de fondo (azul) al pasar el ratón */
+  color: white !important; /* Color del texto (blanco) al pasar el ratón */
+}
+
+button[disabled] {
+  opacity: 0.5; /* Opacidad para indicar que está deshabilitado */
+  cursor: not-allowed; /* Cambia el cursor para indicar que no se puede hacer clic */
+  box-shadow: none; /* Elimina la sombra */
+  filter: grayscale(70%); /* Lo pone en escala de grises para que parezca deshabilitado */
+  transform: none !important; /* Sin efecto de elevación al pasar el ratón */
+}
+
+/* Nuevo estilo para el botón de Reportar Problema */
+.btn-report-problem {
+  background-color: #FF9800; /* Color de fondo (naranja) */
+  border: 1px solid #FF9800; /* Borde del mismo color */
+  color: white; /* Color del texto */
+}
+.btn-report-problem:hover {
+  background-color: #FB8C00; /* Color de fondo más oscuro al pasar el ratón */
+  border-color: #FB8C00; /* Borde del mismo color */
+}
+
+/* Nuevo estilo para el botón de Relimpieza */
+.btn-reclean {
+  background-color: #FFEB3B; /* Color de fondo (amarillo) */
+  border: 1px solid #FFEB3B; /* Borde del mismo color */
+  color: #212121; /* Color del texto (oscuro para contraste) */
+}
+.btn-reclean:hover {
+  background-color: #FDD835; /* Color de fondo más oscuro al pasar el ratón */
+  border-color: #FDD835; /* Borde del mismo color */
+}
+
+.report-reclean-buttons {
+  display: flex; /* Usa Flexbox para alinear los elementos */
+  justify-content: center; /* Centra los botones horizontalmente */
+  gap: 15px; /* Espacio entre los botones */
+  margin-top: 10px; /* Margen superior */
+}

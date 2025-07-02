@@ -7,6 +7,7 @@ import { User } from './types';
 import Login from './components/Login';
 import RoomList from './components/RoomList';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import './components/RoomList.css';
 
 const App: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
