@@ -49,6 +49,7 @@ const RecleanModal: React.FC<RecleanModalProps> = ({ isOpen, onClose, room }) =>
                 value={reason}
                 onChange={(e) => setReason(e.target.value)}
                 required
+                autoFocus
               ></textarea>
             </div>
             <button type="submit" className="submit-button" disabled={!reason}>
