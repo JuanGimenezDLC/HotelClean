@@ -20,11 +20,13 @@
   align-items: center;
   padding: 16px 24px;
   background: var(--header-bg-color);
-  border-radius: 18px;
+  border-radius: 0; /* Sin bordes redondeados */
   border: 1px solid var(--header-border-color);
+  border-left: none;
+  border-right: none;
   backdrop-filter: blur(12px);
-  margin-bottom: 2rem;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  margin-bottom: 2rem; /* Margen inferior para separación */
 }
 
 /* --- Título Principal --- */
@@ -138,4 +140,54 @@
 .language-option:hover {
   background-color: var(--accent-color);
   color: #fff;
+}
+
+/* --- Estilos para el Select de Filtro --- */
+.filter-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+.filter-select {
+  /* Apariencia y layout */
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  
+  padding: 12px 40px 12px 20px; /* Espacio para la flecha */
+  width: 50%;
+  
+  /* Estilo visual */
+  background-color: rgba(35, 35, 45, 0.7);
+  border: 1px solid var(--header-border-color);
+  border-radius: 12px;
+  color: var(--text-color-primary);
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  
+  /* Fondo para la flecha */
+  background-image: url('data:image/svg+xml;utf8,<svg fill="white" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>');
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  
+  transition: all var(--transition-speed) ease;
+}
+
+.filter-select:hover {
+  border-color: var(--accent-color);
+}
+
+.filter-select:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 3px rgba(77, 150, 255, 0.3);
+}
+
+/* Estilo para las opciones del desplegable */
+.filter-select option {
+  background-color: #2a2a30;
+  color: var(--text-color-primary);
+  padding: 10px;
 }

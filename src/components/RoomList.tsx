@@ -172,89 +172,90 @@ const RoomList: React.FC<RoomListProps> = ({ user }) => {
   };
 
   return (
-    <div className="container">
+    <>
       <header className="header-container">
         <h1 className="main-title">{t('roomStatus.title')}</h1>
         <div className="user-controls">
-          <LanguageSelector currentLanguage={i18n.language} />
           <div className="user-info">
             {t('roomStatus.connectedAs')} <strong>{user.email}</strong>
           </div>
+          <LanguageSelector currentLanguage={i18n.language} />
           <button className="logout-button" onClick={handleLogout}>
             {t('roomStatus.logoutButton')}
           </button>
         </div>
       </header>
+      <div className="container">
+        <div className="filter-container">
+          <select 
+            className="filter-select"
+            value={filter}
+            onChange={(e) => setFilter(e.target.value)}
+          >
+            <option value="status">{t('filters.all_status')}</option>
+            <option value="number">{t('filters.all_number')}</option>
+            <option value="Sucia">{t('filters.dirty_only')}</option>
+            <option value="Limpia">{t('filters.clean_only')}</option>
+            <option value="Ocupada">{t('filters.occupied_only')}</option>
+            <option value="Bloqueada">{t('filters.blocked_only')}</option>
+            <option value="problem">{t('filters.problem_only')}</option>
+          </select>
+        </div>
 
-      <div className="d-flex justify-content-center mb-4">
-        <select 
-          className="form-control w-50"
-          value={filter}
-          onChange={(e) => setFilter(e.target.value)}
-        >
-          <option value="status">{t('filters.all_status')}</option>
-          <option value="number">{t('filters.all_number')}</option>
-          <option value="Sucia">{t('filters.dirty_only')}</option>
-          <option value="Limpia">{t('filters.clean_only')}</option>
-          <option value="Ocupada">{t('filters.occupied_only')}</option>
-          <option value="Bloqueada">{t('filters.blocked_only')}</option>
-          <option value="problem">{t('filters.problem_only')}</option>
-        </select>
+        <div className="row">
+          {rooms.map((room) => {
+            const modernStatus = getModernStatus(room);
+            const baseStatus = getBaseStatus(room);
+            const unresolvedProblems = room.reportedProblems?.filter(p => !p.isResolved) || [];
+            const userRole = user.role;
+
+            return (
+              <div key={room.id} className="col-md-4 mb-4">
+                <ModernRoomCard
+                  t={t}
+                  room={{
+                    number: room.id,
+                    status: modernStatus,
+                    baseStatus: baseStatus,
+                    lastCleanedBy: room.lastCleanedBy ? getUserEmail(room.lastCleanedBy) : undefined,
+                    lastCleanedAt: room.lastCleanedAt ? room.lastCleanedAt.toDate().toLocaleString() : undefined,
+                    problems: unresolvedProblems,
+                    recleaningReason: room.recleaningReason,
+                  }}
+                  userRole={userRole}
+                  onStatusChange={(newStatus) => {
+                    let firestoreStatus: 'Limpia' | 'Sucia' | 'Ocupada' = 'Sucia';
+                    if (newStatus === 'clean') firestoreStatus = 'Limpia';
+                    if (newStatus === 'dirty') firestoreStatus = 'Sucia';
+                    if (newStatus === 'occupied') firestoreStatus = 'Ocupada';
+                    handleSetStatus(room.id, firestoreStatus);
+                  }}
+                  onReportProblem={() => openReportModal(room)}
+                  onReclean={() => openRecleanModal(room)}
+                  onResolveProblem={(problemId) => handleResolveProblem(room.id, problemId)}
+                  onToggleBlock={() => handleToggleBlock(room)}
+                />
+              </div>
+            );
+          })}
+        </div>
+        {selectedRoom && (
+          <>
+            <ReportProblemModal
+              isOpen={isReportModalOpen}
+              onClose={() => setReportModalOpen(false)}
+              room={selectedRoom}
+              user={user}
+            />
+            <RecleanModal
+              isOpen={isRecleanModalOpen}
+              onClose={() => setRecleanModalOpen(false)}
+              room={selectedRoom}
+            />
+          </>
+        )}
       </div>
-
-      <div className="row">
-        {rooms.map((room) => {
-          const modernStatus = getModernStatus(room);
-          const baseStatus = getBaseStatus(room);
-          const unresolvedProblems = room.reportedProblems?.filter(p => !p.isResolved) || [];
-          const userRole = user.role;
-
-          return (
-            <div key={room.id} className="col-md-4 mb-4">
-              <ModernRoomCard
-                t={t}
-                room={{
-                  number: room.id,
-                  status: modernStatus,
-                  baseStatus: baseStatus,
-                  lastCleanedBy: room.lastCleanedBy ? getUserEmail(room.lastCleanedBy) : undefined,
-                  lastCleanedAt: room.lastCleanedAt ? room.lastCleanedAt.toDate().toLocaleString() : undefined,
-                  problems: unresolvedProblems,
-                  recleaningReason: room.recleaningReason,
-                }}
-                userRole={userRole}
-                onStatusChange={(newStatus) => {
-                  let firestoreStatus: 'Limpia' | 'Sucia' | 'Ocupada' = 'Sucia';
-                  if (newStatus === 'clean') firestoreStatus = 'Limpia';
-                  if (newStatus === 'dirty') firestoreStatus = 'Sucia';
-                  if (newStatus === 'occupied') firestoreStatus = 'Ocupada';
-                  handleSetStatus(room.id, firestoreStatus);
-                }}
-                onReportProblem={() => openReportModal(room)}
-                onReclean={() => openRecleanModal(room)}
-                onResolveProblem={(problemId) => handleResolveProblem(room.id, problemId)}
-                onToggleBlock={() => handleToggleBlock(room)}
-              />
-            </div>
-          );
-        })}
-      </div>
-      {selectedRoom && (
-        <>
-          <ReportProblemModal
-            isOpen={isReportModalOpen}
-            onClose={() => setReportModalOpen(false)}
-            room={selectedRoom}
-            user={user}
-          />
-          <RecleanModal
-            isOpen={isRecleanModalOpen}
-            onClose={() => setRecleanModalOpen(false)}
-            room={selectedRoom}
-          />
-        </>
-      )}
-    </div>
+    </>
   );
 };
 

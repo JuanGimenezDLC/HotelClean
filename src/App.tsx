@@ -8,6 +8,7 @@ import Login from './components/Login';
 import RoomList from './components/RoomList';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './components/RoomList.css';
+import './Responsive.css'; // Importar los estilos responsivos
 
 const App: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);

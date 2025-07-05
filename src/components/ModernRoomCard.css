@@ -114,38 +114,46 @@
   box-shadow: 0 0 20px rgba(255, 209, 102, 0.5);
 }
 
-.status-blocked .status-indicator { color: var(--problem-color); }
-.is-blocked .room-card-content .room-card-header .block-button {
-  background-color: rgba(255, 0, 0, 0.633);
-}
-
-/* --- Contenido de la Tarjeta --- */
-.room-card-header {
-  position: relative;
-  border-bottom: 1px solid var(--card-border-color);
-  padding-bottom: 16px;
-  margin-bottom: 16px;
-}
-
+/* --- Estilos para el Botón de Bloqueo --- */
 .block-button {
+  position: absolute;
+  top: 16px; /* Alineado con el padding */
+  right: 16px;
   width: 40px;
   height: 40px;
-  position: absolute;
-  top: 6px;
-  right: 16px;
-  background-color: #fff;
-  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  background-color: rgba(255, 255, 255, 0.05); /* Fondo sutil */
+  border: 1px solid var(--card-border-color);
   color: var(--text-color-secondary);
-  cursor: pointer;
-  padding: 0px;
+  
   border-radius: 50%;
-  transition: color 0.3s, background-color 0.3s;
+  cursor: pointer;
+  padding: 0;
+  
+  transition: all 0.3s ease;
 }
 
 .block-button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
   color: var(--text-color-primary);
-  background-color: rgba(182, 9, 9, 0.619);
+  transform: scale(1.1);
 }
+
+/* --- Estilos cuando la habitación ESTÁ BLOQUEADA --- */
+.is-blocked .block-button {
+  background-color: var(--problem-color);
+  border-color: var(--problem-color);
+  color: #1f1f23; /* Color oscuro para el icono */
+}
+
+.is-blocked .block-button:hover {
+  background-color: var(--problem-color);
+  box-shadow: 0 0 15px rgba(255, 209, 102, 0.6);
+}
+
 
 
 .status-indicator {

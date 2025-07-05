@@ -1,0 +1,99 @@
+/* --- Estilos Responsivos Globales --- */
+
+/* Media Query para dispositivos móviles (tablets y teléfonos) */
+@media (max-width: 768px) {
+
+  /* --- Ajustes del Encabezado --- */
+  .header-container {
+    flex-direction: column;
+    align-items: flex-start; /* Alinea los elementos a la izquierda */
+    gap: 20px; /* Espacio entre el título y los controles */
+    padding: 20px;
+  }
+
+  .main-title {
+    font-size: 1.8rem; /* Título más pequeño en móviles */
+  }
+
+  .user-controls {
+    flex-direction: row; /* Cambiamos a fila */
+    flex-wrap: wrap; /* Permitimos que los elementos se envuelvan */
+    align-items: center; 
+    width: 100%; 
+    gap: 10px; /* Reducimos el espacio */
+  }
+
+  .user-info {
+    width: 100%; /* La información del usuario ocupa toda la primera fila */
+    text-align: center;
+    padding: 8px;
+    background: rgba(0,0,0,0.2);
+    border-radius: 8px;
+    order: 1; /* Lo ponemos primero */
+  }
+
+  .language-selector-container,
+  .logout-button {
+    flex-grow: 1; /* Hacemos que ambos botones crezcan para ocupar el espacio */
+    min-width: calc(50% - 10px); /* Aseguramos que cada uno ocupe casi la mitad */
+    text-align: center;
+  }
+  
+  .language-button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .logout-button {
+    order: 3;
+  }
+  
+  .language-selector-container {
+    order: 2;
+  }
+
+  /* --- Ajustes del Filtro --- */
+  .filter-select {
+    width: 90% !important; /* Hacemos el filtro más ancho en móviles */
+    margin: 0 auto; /* Centramos el filtro */
+  }
+
+  /* --- Optimización de Tarjetas para Rendimiento en Móviles --- */
+  .room-card {
+    /* 1. Desactivamos el costoso backdrop-filter y lo reemplazamos */
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background: rgba(35, 35, 45, 0.85); /* Fondo más opaco para compensar la falta de blur */
+
+    /* 2. Simplificamos la sombra */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
+
+    /* 3. Desactivamos la animación de hover que no aplica en táctil */
+    transition: none;
+  }
+  
+  .room-card:hover {
+    transform: none;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25); /* Mantenemos la sombra simple */
+  }
+
+  /* 4. Desactivamos completamente el efecto aurora DENTRO de la tarjeta */
+  .room-card .aurora-background {
+    display: none;
+  }
+}
+
+/* Media Query para teléfonos muy pequeños */
+@media (max-width: 480px) {
+  .main-title {
+    font-size: 1.6rem;
+  }
+
+  .room-card-content {
+    padding: 20px; /* Un poco menos de padding en pantallas muy pequeñas */
+  }
+
+  .room-number {
+    font-size: 1.8rem;
+  }
+}

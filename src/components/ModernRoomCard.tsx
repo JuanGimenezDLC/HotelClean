@@ -113,7 +113,7 @@ export const ModernRoomCard: React.FC<ModernRoomCardProps> = ({ t, room, userRol
           <h2 className="room-number">{t('roomCard.room')} {room.number}</h2>
           {canBlock && (
             <button onClick={onToggleBlock} className="block-button" aria-label={isBlocked ? t('roomCard.unlockAction') : t('roomCard.lockAction')}>
-              {isBlocked ? <UnlockIcon /> : <LockIcon />}
+              {isBlocked ? <LockIcon /> : <UnlockIcon />}
             </button>
           )}
         </header>

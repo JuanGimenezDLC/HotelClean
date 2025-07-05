@@ -56,6 +56,7 @@ const ReportProblemModal: React.FC<ReportProblemModalProps> = ({ isOpen, onClose
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 required
+                autoFocus
               ></textarea>
             </div>
             <button type="submit" className="submit-button" disabled={!description}>
