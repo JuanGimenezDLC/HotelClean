@@ -1,21 +1,21 @@
 {
   "login": {
-    "title": "Iniciar Sesión",
+    "title": "Inicio de Sesión",
     "emailLabel": "Correo Electrónico",
     "passwordLabel": "Contraseña",
     "loginButton": "Iniciar Sesión",
-    "error": "Error al iniciar sesión. Por favor, verifique sus credenciales."
+    "error": "Inicio de sesión fallido. Por favor, revisa tus credenciales."
   },
   "roomStatus": {
-    "title": "Estado de las Habitaciones",
+    "title": "Estado de Habitaciones",
     "connectedAs": "Conectado como:",
     "logoutButton": "Cerrar Sesión"
   },
   "roomCard": {
     "room": "Habitación",
-    "cleanedBy": "Limpiado por:",
+    "cleanedBy": "Limpiada por:",
     "cleanedAt": "Hora:",
-    "recleaningReason": "Motivo relimpieza:",
+    "recleaningReason": "Motivo de la relimpieza:",
     "reportedProblems": "Problemas Reportados:",
     "resolved": "(Resuelto)",
     "resolveButton": "Resolver",
@@ -23,7 +23,10 @@
     "markCleanButton": "Marcar como Limpia",
     "markDirtyButton": "Marcar como Sucia",
     "markOccupiedButton": "Marcar como Ocupada",
-    "recleanButton": "Relimpieza"
+    "recleanButton": "Relimpieza",
+    "pendingProblems": "Problemas Pendientes",
+    "unlockAction": "Desbloquear Habitación",
+    "lockAction": "Bloquear Habitación"
   },
   "reportProblemModal": {
     "title": "Reportar Problema en Habitación {{roomNumber}}",
@@ -36,8 +39,20 @@
     "markButton": "Marcar"
   },
   "states": {
-    "Sucia": "Sucia",
-    "Limpia": "Limpia",
-    "Ocupada": "Ocupada"
+    "dirty": "Sucia",
+    "clean": "Limpia",
+    "occupied": "Ocupada",
+    "problem": "Problema",
+    "reclean": "Relimpieza",
+    "blocked": "Bloqueada"
+  },
+  "filters": {
+    "all_number": "Todos los Números",
+    "all_status": "Todos los Estados",
+    "dirty_only": "Solo Sucias",
+    "clean_only": "Solo Limpias",
+    "occupied_only": "Solo Ocupadas",
+    "blocked_only": "Solo Bloqueadas",
+    "problem_only": "Solo con Problemas"
   }
 }

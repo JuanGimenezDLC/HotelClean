@@ -11,7 +11,7 @@ const initialRooms: Omit<Room, 'id'>[] = [
   { status: 'Limpia', reportedProblems: [] },
   { status: 'Ocupada', reportedProblems: [] },
   { status: 'Ocupada', reportedProblems: [] },
-  { status: 'Sucia', reportedProblems: [{ description: 'Grifo gotea', reportedBy: 'supervisor_id', reportedAt: Timestamp.now(), isResolved: false }] },
+  { status: 'Sucia', reportedProblems: [{ id: 'problem_1', description: 'Grifo gotea', reportedBy: 'supervisor_id', reportedAt: Timestamp.now(), isResolved: false }] },
 ];
 
 export const initializeRooms = async () => {

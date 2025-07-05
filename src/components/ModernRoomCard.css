@@ -10,6 +10,8 @@
   --dirty-color: #FF6B6B;
   --problem-color: #FFD166;
   --occupied-color: #4D96FF;
+  --reclean-color: #FF9F4D; /* Naranja para relimpieza */
+  --color-resolve: #00bcd4; /* Un color cian para resolver */
 
   /* Animaciones */
   --transition-speed: 0.4s;
@@ -105,13 +107,46 @@
 .status-reclean .aurora-background::before { background: radial-gradient(circle, var(--problem-color), transparent 60%); }
 .status-reclean .aurora-background::after { background: radial-gradient(circle, var(--occupied-color), transparent 60%); }
 
+/* Estilos para el estado de bloqueo */
+.status-blocked .status-indicator { color: var(--problem-color); }
+.is-blocked {
+  border-color: var(--problem-color);
+  box-shadow: 0 0 20px rgba(255, 209, 102, 0.5);
+}
+
+.status-blocked .status-indicator { color: var(--problem-color); }
+.is-blocked .room-card-content .room-card-header .block-button {
+  background-color: rgba(255, 0, 0, 0.633);
+}
 
 /* --- Contenido de la Tarjeta --- */
 .room-card-header {
+  position: relative;
   border-bottom: 1px solid var(--card-border-color);
   padding-bottom: 16px;
   margin-bottom: 16px;
 }
+
+.block-button {
+  width: 40px;
+  height: 40px;
+  position: absolute;
+  top: 6px;
+  right: 16px;
+  background-color: #fff;
+  border: none;
+  color: var(--text-color-secondary);
+  cursor: pointer;
+  padding: 0px;
+  border-radius: 50%;
+  transition: color 0.3s, background-color 0.3s;
+}
+
+.block-button:hover {
+  color: var(--text-color-primary);
+  background-color: rgba(182, 9, 9, 0.619);
+}
+
 
 .status-indicator {
   display: flex;
@@ -151,7 +186,7 @@
 }
 
 .detail-text {
-  color: var(--text-color-secondary);
+  color: var(--text-color-primary); /* CAMBIO: Texto principal blanco */
   font-size: 0.95rem;
   line-height: 1.5;
 }
@@ -182,22 +217,30 @@
   border-radius: 12px;
   border: 1px solid var(--card-border-color);
   background: rgba(255, 255, 255, 0.05);
-  color: var(--text-color-primary); /* CAMBIO: Texto blanco para mejor contraste */
+  color: var(--text-color-primary); /* Texto blanco para buena legibilidad */
   font-weight: 600;
   cursor: pointer;
   transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease, border-color var(--transition-speed) ease;
 }
 
-.action-button:hover:not([disabled]) { /* CAMBIO: Añadido :not([disabled]) */
+.action-button:hover:not([disabled]) {
   background: rgba(255, 255, 255, 0.1);
   color: var(--text-color-primary);
   border-color: rgba(255, 255, 255, 0.3);
 }
 
-.action-button:disabled {
+/* El estado deshabilitado solo se aplica a botones que NO están activos */
+.action-button:disabled:not(.active) {
   cursor: not-allowed;
   opacity: 0.6;
 }
+
+/* El botón activo, aunque esté deshabilitado, mantiene su apariencia */
+.action-button.active:disabled {
+  cursor: not-allowed;
+  opacity: 1; /* Mantiene la opacidad completa */
+}
+
 
 
 .action-button.active {
@@ -213,35 +256,107 @@
 
 /* --- Contenedor para botones de acciones secundarias --- */
 .secondary-actions {
-  display: flex;
-  gap: 10px;
+  display: grid; /* Usamos grid para un control más fino */
+  grid-template-columns: 1fr 1fr; /* Dos columnas de igual tamaño */
+  gap: 12px;
+  margin-top: 12px;
 }
 
-.problem-button, .reclean-button {
-  flex-grow: 1; /* Para que ambos botones ocupen el mismo espacio */
-  background: transparent;
-  border-style: dashed;
-  border-width: 1px;
+/* El botón de reportar problema ocupa toda la fila si es el único */
+.secondary-actions > .problem-button:only-child {
+  grid-column: 1 / -1; /* Ocupa todo el ancho */
 }
 
-.problem-button {
-  border-color: var(--problem-color);
+.action-button.problem-button {
+  background-color: var(--problem-color);
+  border: 2px solid var(--problem-color);
+  color: #000;
+}
+
+.action-button.problem-button:hover {
+  background-color: transparent;
   color: var(--problem-color);
 }
 
-.problem-button:hover:not([disabled]) {
-  background: var(--problem-color);
+.action-button.reclean-button {
+  background-color: var(--reclean-color, var(--problem-color)); /* Fallback por si no está definida */
+  border: 2px solid var(--reclean-color, var(--problem-color));
   color: #000;
-  border-style: solid;
 }
 
-.reclean-button {
-  border-color: var(--occupied-color); /* Usamos un color azul para diferenciar */
-  color: var(--occupied-color);
+.action-button.reclean-button:hover {
+  background-color: transparent;
+  color: var(--reclean-color, var(--problem-color));
 }
 
-.reclean-button:hover:not([disabled]) {
-  background: var(--occupied-color);
+.action-button.resolve-button {
+  background-color: transparent;
+  border: 1px solid var(--color-resolve); /* Un color verde para la resolución */
+  color: var(--color-resolve);
+  flex-grow: 1;
+}
+
+.action-button.resolve-button:hover {
+  background-color: var(--color-resolve);
   color: #fff;
-  border-style: solid;
 }
+
+/* Estilos para la lista de problemas */
+.problems-list {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--card-border-color);
+}
+
+.problems-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-color-secondary);
+  margin-bottom: 8px;
+}
+
+.problems-list ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.problem-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px; /* Añadimos un poco de espacio */
+  padding: 8px;
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  color: var(--text-color-primary);
+}
+
+/* El span que contiene la descripción del problema */
+.problem-item span {
+  flex-grow: 1; /* Permite que el texto ocupe el espacio disponible */
+  word-break: break-word; /* Fuerza el salto de línea para palabras largas */
+  margin-right: 8px; /* Espacio para que no se pegue al botón */
+}
+
+.resolve-button-small {
+  padding: 4px 8px;
+  font-size: 0.8rem;
+  background-color: var(--color-resolve);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  flex-shrink: 0; /* Previene que el botón se encoja */
+  white-space: nowrap; /* Evita que el texto del botón se rompa */
+}
+
+.resolve-button-small:hover {
+  background-color: #0097a7;
+}
+
+

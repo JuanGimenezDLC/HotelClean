@@ -23,7 +23,10 @@
     "markCleanButton": "Als Sauber Markieren",
     "markDirtyButton": "Als Schmutzig Markieren",
     "markOccupiedButton": "Als Besetzt Markieren",
-    "recleanButton": "Nachreinigung"
+    "recleanButton": "Nachreinigung",
+    "pendingProblems": "Ausstehende Probleme",
+    "unlockAction": "Zimmer Entsperren",
+    "lockAction": "Zimmer Sperren"
   },
   "reportProblemModal": {
     "title": "Problem in Zimmer {{roomNumber}} Melden",
@@ -36,8 +39,20 @@
     "markButton": "Markieren"
   },
   "states": {
-    "Sucia": "Schmutzig",
-    "Limpia": "Sauber",
-    "Ocupada": "Besetzt"
+    "dirty": "Schmutzig",
+    "clean": "Sauber",
+    "occupied": "Besetzt",
+    "problem": "Problem",
+    "reclean": "Nachreinigung",
+    "blocked": "Blockiert"
+  },
+  "filters": {
+    "all_number": "Alle Nummern",
+    "all_status": "Alle Status",
+    "dirty_only": "Nur Schmutzig",
+    "clean_only": "Nur Sauber",
+    "occupied_only": "Nur Besetzt",
+    "blocked_only": "Nur Blockiert",
+    "problem_only": "Nur Probleme"
   }
 }

@@ -1,43 +1,58 @@
 {
   "login": {
     "title": "Logowanie",
-    "emailLabel": "Email",
+    "emailLabel": "E-mail",
     "passwordLabel": "Hasło",
-    "loginButton": "Zaloguj się",
-    "error": "Logowanie nie powiodło się. Sprawdź swoje dane uwierzytelniające."
+    "loginButton": "Zaloguj",
+    "error": "Logowanie nie powiodło się. Sprawdź swoje dane."
   },
   "roomStatus": {
-    "title": "Status Pokoi",
+    "title": "Status Pokoju",
     "connectedAs": "Zalogowany jako:",
-    "logoutButton": "Wyloguj się"
+    "logoutButton": "Wyloguj"
   },
   "roomCard": {
     "room": "Pokój",
-    "cleanedBy": "Wyczyszczone przez:",
+    "cleanedBy": "Posprzątane przez:",
     "cleanedAt": "Godzina:",
     "recleaningReason": "Powód ponownego sprzątania:",
-    "reportedProblems": "Zgłoszone Problemy:",
+    "reportedProblems": "Zgłoszone problemy:",
     "resolved": "(Rozwiązany)",
     "resolveButton": "Rozwiąż",
-    "reportProblemButton": "Zgłoś Problem",
+    "reportProblemButton": "Zgłoś problem",
     "markCleanButton": "Oznacz jako Czysty",
     "markDirtyButton": "Oznacz jako Brudny",
     "markOccupiedButton": "Oznacz jako Zajęty",
-    "recleanButton": "Ponowne Sprzątanie"
+    "recleanButton": "Posprzątaj ponownie",
+    "pendingProblems": "Oczekujące problemy",
+    "unlockAction": "Odblokuj Pokój",
+    "lockAction": "Zablokuj Pokój"
   },
   "reportProblemModal": {
-    "title": "Zgłoś Problem w Pokoju {{roomNumber}}",
-    "descriptionLabel": "Opis Problemu",
+    "title": "Zgłoś problem w pokoju {{roomNumber}}",
+    "descriptionLabel": "Opis problemu",
     "reportButton": "Zgłoś"
   },
   "recleanModal": {
-    "title": "Oznacz do Ponownego Sprzątania - Pokój {{roomNumber}}",
-    "reasonLabel": "Powód Ponownego Sprzątania",
+    "title": "Oznacz do ponownego sprzątania - Pokój {{roomNumber}}",
+    "reasonLabel": "Powód ponownego sprzątania",
     "markButton": "Oznacz"
   },
   "states": {
-    "Sucia": "Brudny",
-    "Limpia": "Czysty",
-    "Ocupada": "Zajęty"
+    "dirty": "Brudny",
+    "clean": "Czysty",
+    "occupied": "Zajęty",
+    "problem": "Problem",
+    "reclean": "Do ponownego sprzątania",
+    "blocked": "Zablokowany"
+  },
+  "filters": {
+    "all_number": "Wszystkie Numery",
+    "all_status": "Wszystkie Statusy",
+    "dirty_only": "Tylko Brudne",
+    "clean_only": "Tylko Czyste",
+    "occupied_only": "Tylko Zajęte",
+    "blocked_only": "Tylko Zablokowane",
+    "problem_only": "Tylko Problemy"
   }
 }

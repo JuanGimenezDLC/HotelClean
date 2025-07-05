@@ -23,6 +23,7 @@ const ReportProblemModal: React.FC<ReportProblemModalProps> = ({ isOpen, onClose
     const roomRef = doc(db, 'rooms', room.id);
     await updateDoc(roomRef, {
       reportedProblems: arrayUnion({
+        id: new Date().getTime().toString() + Math.random().toString(36).substr(2, 9), // Generamos un ID único
         description,
         reportedBy: user.uid,
         reportedAt: Timestamp.now(),

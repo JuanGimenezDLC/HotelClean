@@ -4,18 +4,18 @@
     "emailLabel": "Email",
     "passwordLabel": "Password",
     "loginButton": "Login",
-    "error": "Failed to login. Please check your credentials."
+    "error": "Login failed. Please check your credentials."
   },
   "roomStatus": {
     "title": "Room Status",
-    "connectedAs": "Connected as:",
+    "connectedAs": "Logged in as:",
     "logoutButton": "Logout"
   },
   "roomCard": {
     "room": "Room",
     "cleanedBy": "Cleaned by:",
     "cleanedAt": "Time:",
-    "recleaningReason": "Reason for recleaning:",
+    "recleaningReason": "Reason for re-cleaning:",
     "reportedProblems": "Reported Problems:",
     "resolved": "(Resolved)",
     "resolveButton": "Resolve",
@@ -24,7 +24,9 @@
     "markDirtyButton": "Mark as Dirty",
     "markOccupiedButton": "Mark as Occupied",
     "recleanButton": "Reclean",
-    "blockForMaintenanceButton": "Block for Maintenance"
+    "pendingProblems": "Pending Problems",
+    "unlockAction": "Unlock Room",
+    "lockAction": "Lock Room"
   },
   "reportProblemModal": {
     "title": "Report Problem in Room {{roomNumber}}",
@@ -37,9 +39,20 @@
     "markButton": "Mark"
   },
   "states": {
-    "Sucia": "Dirty",
-    "Limpia": "Clean",
-    "Ocupada": "Occupied",
-    "Bloqueada": "Blocked"
+    "dirty": "Dirty",
+    "clean": "Clean",
+    "occupied": "Occupied",
+    "problem": "Problem",
+    "reclean": "Reclean",
+    "blocked": "Blocked"
+  },
+  "filters": {
+    "all_number": "All Numbers",
+    "all_status": "All Statuses",
+    "dirty_only": "Dirty Only",
+    "clean_only": "Clean Only",
+    "occupied_only": "Occupied Only",
+    "blocked_only": "Blocked Only",
+    "problem_only": "Problem Only"
   }
 }

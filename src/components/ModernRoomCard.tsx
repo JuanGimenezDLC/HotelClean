@@ -1,5 +1,6 @@
 import React from 'react';
 import './ModernRoomCard.css';
+import { TFunction } from 'i18next';
 
 // --- Iconos SVG para claridad visual ---
 // Estos iconos ayudan a identificar el estado de un vistazo.
@@ -28,44 +29,73 @@ const OccupiedIcon = () => (
     </svg>
 );
 
+const LockIcon = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+  </svg>
+);
+
+const UnlockIcon = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 9.9-1" />
+  </svg>
+);
+
+
+
 
 // --- Tipos para el componente ---
 // Definimos la estructura de datos que espera la tarjeta.
-type RoomStatus = 'clean' | 'dirty' | 'problem' | 'occupied' | 'reclean';
+type RoomStatus = 'clean' | 'dirty' | 'problem' | 'occupied' | 'reclean' | 'blocked';
+
+interface Problem {
+  id: string;
+  description: string;
+  isResolved: boolean;
+}
 
 interface Room {
   number: string;
   status: RoomStatus;
+  baseStatus: 'clean' | 'dirty' | 'occupied';
   lastCleanedBy?: string;
-  lastCleanedAt?: string; // Añadimos la fecha/hora de limpieza
-  problemDescription?: string;
+  lastCleanedAt?: string;
+  problems: Problem[];
+  recleaningReason?: string;
 }
 
 interface ModernRoomCardProps {
+  t: TFunction; // Añadimos la función de traducción
   room: Room;
-  userRole: 'cleaner' | 'supervisor' | 'maintenance'; // Pasamos el rol del usuario
+  userRole: 'cleaner' | 'supervisor' | 'maintenance';
   onStatusChange: (newStatus: 'clean' | 'dirty' | 'occupied') => void;
   onReportProblem: () => void;
-  onReclean: () => void; // Nueva función para relimpieza
+  onReclean: () => void;
+  onResolveProblem: (problemId: string) => void;
+  onToggleBlock: () => void;
 }
 
-// --- Mapeo de configuración ---
-// Centralizamos la configuración de cada estado para mantener el código limpio.
-const statusConfig = {
-  clean: { text: 'Limpia', icon: <CleanIcon />, className: 'status-clean' },
-  dirty: { text: 'Sucia', icon: <DirtyIcon />, className: 'status-dirty' },
-  problem: { text: 'Con Problema', icon: <ProblemIcon />, className: 'status-problem' },
-  occupied: { text: 'Ocupada', icon: <OccupiedIcon />, className: 'status-occupied' },
-  reclean: { text: 'Necesita Relimpieza', icon: <ProblemIcon />, className: 'status-reclean' },
-};
-
-
 // --- El Componente de la Tarjeta ---
-export const ModernRoomCard: React.FC<ModernRoomCardProps> = ({ room, userRole, onStatusChange, onReportProblem, onReclean }) => {
-  const config = statusConfig[room.status];
+export const ModernRoomCard: React.FC<ModernRoomCardProps> = ({ t, room, userRole, onStatusChange, onReportProblem, onReclean, onResolveProblem, onToggleBlock }) => {
+  
+  // El mapeo de configuración ahora está DENTRO del componente para acceder a `t`
+  const statusConfig = {
+    clean: { text: t('states.clean'), icon: <CleanIcon />, className: 'status-clean' },
+    dirty: { text: t('states.dirty'), icon: <DirtyIcon />, className: 'status-dirty' },
+    problem: { text: t('states.problem'), icon: <ProblemIcon />, className: 'status-problem' },
+    occupied: { text: t('states.occupied'), icon: <OccupiedIcon />, className: 'status-occupied' },
+    reclean: { text: t('states.reclean'), icon: <ProblemIcon />, className: 'status-reclean' },
+    blocked: { text: t('states.blocked'), icon: <LockIcon />, className: 'status-blocked' },
+  };
+
+  const config = statusConfig[room.status] || statusConfig.blocked;
+  const baseConfig = statusConfig[room.baseStatus];
+  const isBlocked = room.status === 'blocked';
+  const canBlock = userRole === 'supervisor';
+  const canResolve = userRole === 'supervisor' || userRole === 'maintenance';
 
   return (
-    <div className={`room-card ${config.className}`}>
+    <div className={`room-card ${config.className} ${isBlocked ? 'is-blocked' : ''}`}>
       {/* Efecto de fondo Aurora */}
       <div className="aurora-background"></div>
       
@@ -74,23 +104,54 @@ export const ModernRoomCard: React.FC<ModernRoomCardProps> = ({ room, userRole, 
         <header className="room-card-header">
           <div className="status-indicator">
             {config.icon}
-            <span>{config.text}</span>
+            <span>
+              {config.text}
+              {isBlocked && ` (${baseConfig.text})`}
+              {room.status === 'problem' && ` (${baseConfig.text})`}
+            </span>
           </div>
-          <h2 className="room-number">Habitación {room.number}</h2>
+          <h2 className="room-number">{t('roomCard.room')} {room.number}</h2>
+          {canBlock && (
+            <button onClick={onToggleBlock} className="block-button" aria-label={isBlocked ? t('roomCard.unlockAction') : t('roomCard.lockAction')}>
+              {isBlocked ? <UnlockIcon /> : <LockIcon />}
+            </button>
+          )}
         </header>
 
         <main className="room-card-body">
-          {/* Muestra el problema si existe */}
-          {(room.status === 'problem' || room.status === 'reclean') && room.problemDescription && (
-            <p className="detail-text"><strong>Motivo:</strong> {room.problemDescription}</p>
+          {/* Muestra la lista de problemas no resueltos */}
+          {room.problems && room.problems.length > 0 && (
+            <div className="problems-list">
+              <h4 className="problems-title">{t('roomCard.pendingProblems')}</h4>
+              <ul>
+                {room.problems.map((problem) => (
+                  <li key={problem.id} className="problem-item">
+                    <span>{problem.description}</span>
+                    {canResolve && (
+                      <button
+                        onClick={() => onResolveProblem(problem.id)}
+                        className="resolve-button-small"
+                      >
+                        {t('roomCard.resolveButton')}
+                      </button>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {/* Muestra el motivo de relimpieza */}
+          {room.status === 'reclean' && room.recleaningReason && (
+            <p className="detail-text"><strong>{t('roomCard.recleaningReason')}</strong> {room.recleaningReason}</p>
           )}
           
-          {/* Muestra la información de limpieza SÓLO si el estado es 'clean' */}
+          {/* Muestra la información de limpieza */}
           {room.status === 'clean' && room.lastCleanedBy && (
             <>
-              <p className="detail-text"><strong>Limpiado por:</strong> {room.lastCleanedBy}</p>
+              <p className="detail-text"><strong>{t('roomCard.cleanedBy')}</strong> {room.lastCleanedBy}</p>
               {room.lastCleanedAt && (
-                <p className="detail-text"><strong>Hora:</strong> {room.lastCleanedAt}</p>
+                <p className="detail-text"><strong>{t('roomCard.cleanedAt')}</strong> {room.lastCleanedAt}</p>
               )}
             </>
           )}
@@ -100,33 +161,33 @@ export const ModernRoomCard: React.FC<ModernRoomCardProps> = ({ room, userRole, 
           <div className="status-actions">
             <button 
               onClick={() => onStatusChange('clean')} 
-              className={`action-button ${room.status === 'clean' ? 'active' : ''}`}
-              disabled={room.status === 'clean'}
+              className={`action-button ${room.baseStatus === 'clean' ? 'active' : ''}`}
+              disabled={room.baseStatus === 'clean'}
             >
-              Limpia
+              {t('states.clean')}
             </button>
             <button 
               onClick={() => onStatusChange('dirty')} 
-              className={`action-button ${room.status === 'dirty' ? 'active' : ''}`}
-              disabled={room.status === 'dirty'}
+              className={`action-button ${room.baseStatus === 'dirty' ? 'active' : ''}`}
+              disabled={room.baseStatus === 'dirty'}
             >
-              Sucia
+              {t('states.dirty')}
             </button>
              <button 
               onClick={() => onStatusChange('occupied')} 
-              className={`action-button ${room.status === 'occupied' ? 'active' : ''}`}
-              disabled={room.status === 'occupied'}
+              className={`action-button ${room.baseStatus === 'occupied' ? 'active' : ''}`}
+              disabled={room.baseStatus === 'occupied'}
             >
-              Ocupada
+              {t('states.occupied')}
             </button>
           </div>
           <div className="secondary-actions">
-            <button onClick={onReportProblem} className="action-button problem-button">
-              Reportar Problema
+            <button onClick={onReportProblem} className="action-button problem-button" >
+              {t('roomCard.reportProblemButton')}
             </button>
             {userRole === 'supervisor' && (
-              <button onClick={onReclean} className="action-button reclean-button">
-                Relimpieza
+              <button onClick={onReclean} className="action-button reclean-button" >
+                {t('roomCard.recleanButton')}
               </button>
             )}
           </div>

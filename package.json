@@ -50,6 +50,7 @@
     ]
   },
   "devDependencies": {
+    "ts-node": "^10.9.2",
     "workbox-webpack-plugin": "^7.3.0"
   }
 }
