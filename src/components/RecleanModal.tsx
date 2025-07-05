@@ -3,6 +3,7 @@ import { doc, updateDoc } from 'firebase/firestore';
 import { useTranslation } from 'react-i18next';
 import { db } from '../firebase';
 import { Room } from '../types';
+import './RecleanModal.css'; // Importar el nuevo CSS
 
 interface RecleanModalProps {
   isOpen: boolean;
@@ -31,31 +32,29 @@ const RecleanModal: React.FC<RecleanModalProps> = ({ isOpen, onClose, room }) =>
   if (!isOpen) return null;
 
   return (
-    <div className="modal" style={{ display: 'block', backgroundColor: 'rgba(0,0,0,0.5)' }}>
-      <div className="modal-dialog">
-        <div className="modal-content">
-          <div className="modal-header">
-            <h5 className="modal-title">{t('recleanModal.title', { roomNumber: room.id })}</h5>
-            <button type="button" className="close" onClick={onClose}>
-              <span>&times;</span>
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+        <div className="modal-header">
+          <h5 className="modal-title">{t('recleanModal.title', { roomNumber: room.id })}</h5>
+          <button type="button" className="close-button" onClick={onClose}>
+            &times;
+          </button>
+        </div>
+        <div className="modal-body">
+          <form onSubmit={handleSubmit}>
+            <div className="form-group">
+              <label className="form-label">{t('recleanModal.reasonLabel')}</label>
+              <textarea
+                className="form-textarea"
+                value={reason}
+                onChange={(e) => setReason(e.target.value)}
+                required
+              ></textarea>
+            </div>
+            <button type="submit" className="submit-button" disabled={!reason}>
+              {t('recleanModal.markButton')}
             </button>
-          </div>
-          <div className="modal-body">
-            <form onSubmit={handleSubmit}>
-              <div className="form-group">
-                <label>{t('recleanModal.reasonLabel')}</label>
-                <textarea
-                  className="form-control"
-                  value={reason}
-                  onChange={(e) => setReason(e.target.value)}
-                  required
-                ></textarea>
-              </div>
-              <button type="submit" className="btn btn-primary mt-3">
-                {t('recleanModal.markButton')}
-              </button>
-            </form>
-          </div>
+          </form>
         </div>
       </div>
     </div>

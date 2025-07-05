@@ -7,26 +7,24 @@ import { Room, User } from '../types';
 import ReportProblemModal from './ReportProblemModal';
 import RecleanModal from './RecleanModal';
 import LanguageSelector from './LanguageSelector';
-import { ModernRoomCard } from './ModernRoomCard'; // Importamos la nueva tarjeta
-import './ModernRoomCard.css'; // Y sus estilos
+import { ModernRoomCard } from './ModernRoomCard';
+import './ModernRoomCard.css';
+import './Header.css'; // Importar los nuevos estilos del encabezado
 
 interface RoomListProps {
   user: User;
 }
 
-// Adaptamos el tipo de estado para que coincida con el de la nueva tarjeta
 type ModernRoomStatus = 'clean' | 'dirty' | 'problem' | 'occupied' | 'reclean' | 'blocked';
 
-// Forzando recarga del servidor
 const RoomList: React.FC<RoomListProps> = ({ user }) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [rooms, setRooms] = useState<Room[]>([]);
   const [users, setUsers] = useState<User[]>([]);
   const [selectedRoom, setSelectedRoom] = useState<Room | null>(null);
   const [isReportModalOpen, setReportModalOpen] = useState(false);
   const [isRecleanModalOpen, setRecleanModalOpen] = useState(false);
 
-  // Determinar el filtro inicial basado en el rol del usuario
   const getInitialFilter = () => {
     switch (user.role) {
       case 'maintenance':
@@ -40,15 +38,14 @@ const RoomList: React.FC<RoomListProps> = ({ user }) => {
     }
   };
 
-  const [filter, setFilter] = useState(getInitialFilter()); // Estado para el criterio de filtrado
+  const [filter, setFilter] = useState(getInitialFilter());
 
   useEffect(() => {
     const unsubscribeRooms = onSnapshot(collection(db, 'rooms'), (snapshot) => {
       const roomsData = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() } as Room));
       
-      // 1. Filtrar las habitaciones
       const filteredRooms = roomsData.filter(room => {
-        const modernStatus = getModernStatus(room); // Obtenemos el estado moderno para la lógica
+        const modernStatus = getModernStatus(room);
         switch (filter) {
           case 'Sucia':
             return modernStatus === 'dirty';
@@ -61,11 +58,10 @@ const RoomList: React.FC<RoomListProps> = ({ user }) => {
           case 'problem':
             return modernStatus === 'problem';
           default:
-            return true; // Para 'status' y 'number', mostramos todas
+            return true;
         }
       });
 
-      // 2. Ordenar las habitaciones filtradas
       const sortedRooms = filteredRooms.sort((a, b) => {
         if (filter === 'status') {
           const isADirty = a.status === 'Sucia';
@@ -73,7 +69,6 @@ const RoomList: React.FC<RoomListProps> = ({ user }) => {
           if (isADirty && !isBDirty) return -1;
           if (!isADirty && isBDirty) return 1;
         }
-        // Ordenación por número para todos los casos (primaria o secundaria)
         return a.id.localeCompare(b.id, undefined, { numeric: true });
       });
 
@@ -89,7 +84,7 @@ const RoomList: React.FC<RoomListProps> = ({ user }) => {
       unsubscribeRooms();
       unsubscribeUsers();
     };
-  }, [filter]); // Se vuelve a ejecutar si 'filter' cambia
+  }, [filter]);
 
   const handleLogout = () => {
     signOut(auth);
@@ -107,16 +102,14 @@ const RoomList: React.FC<RoomListProps> = ({ user }) => {
     if (room) {
       const isBlocked = room.status === 'Bloqueada';
       const updateData: any = {
-        // Si no está bloqueada, el estado principal es el base. Si está bloqueada, se mantiene.
         status: isBlocked ? 'Bloqueada' : newBaseStatus,
-        // El estado base siempre se actualiza para reflejar la realidad.
         baseStatus: newBaseStatus,
       };
 
       if (newBaseStatus === 'Limpia') {
         updateData.lastCleanedBy = user.uid;
         updateData.lastCleanedAt = Timestamp.now();
-        updateData.recleaningReason = ''; // Borra el motivo al limpiar
+        updateData.recleaningReason = '';
       }
 
       await updateDoc(roomRef, updateData);
@@ -150,42 +143,29 @@ const RoomList: React.FC<RoomListProps> = ({ user }) => {
     let newStatus: 'Limpia' | 'Sucia' | 'Ocupada' | 'Bloqueada';
 
     if (room.status === 'Bloqueada') {
-      // Al desbloquear, restaurar al estado base o a 'Sucia' si no hay estado base.
       newStatus = room.baseStatus || 'Sucia';
     } else {
-      // Al bloquear, simplemente se bloquea. El estado base se conserva.
       newStatus = 'Bloqueada';
     }
     
     await updateDoc(roomRef, { status: newStatus });
   };
 
-  // Esta función determina el estado base de la habitación (limpia, sucia, etc.)
   const getBaseStatus = (room: Room): 'clean' | 'dirty' | 'occupied' => {
-    // Prioriza el campo 'baseStatus' si existe, si no, infiere del 'status'
     if (room.baseStatus) {
       if (room.baseStatus === 'Limpia') return 'clean';
       if (room.baseStatus === 'Ocupada') return 'occupied';
       return 'dirty';
     }
-    // Lógica anterior como fallback
     if (room.status === 'Limpia') return 'clean';
     if (room.status === 'Ocupada') return 'occupied';
     return 'dirty';
   };
 
-  // Esta función determina el estado visual principal de la tarjeta
   const getModernStatus = (room: Room): ModernRoomStatus => {
-    if (room.status === 'Bloqueada') {
-      return 'blocked';
-    }
-    if (room.reportedProblems && room.reportedProblems.some(p => !p.isResolved)) {
-      return 'problem';
-    }
-    if (room.recleaningReason) {
-      return 'reclean';
-    }
-    // El estado visual se basa en el estado real, no en el base
+    if (room.status === 'Bloqueada') return 'blocked';
+    if (room.reportedProblems && room.reportedProblems.some(p => !p.isResolved)) return 'problem';
+    if (room.recleaningReason) return 'reclean';
     if (room.status === 'Limpia') return 'clean';
     if (room.status === 'Ocupada') return 'occupied';
     return 'dirty';
@@ -193,22 +173,19 @@ const RoomList: React.FC<RoomListProps> = ({ user }) => {
 
   return (
     <div className="container">
-      <div className="d-flex justify-content-between align-items-center my-4">
-        <h1>{t('roomStatus.title')}</h1>
-        <div className="d-flex align-items-center">
-          <LanguageSelector />
-          <div className="ml-3">
-            <span className="mr-3" style={{ color: 'var(--text-color-primary)' }}>
-              {t('roomStatus.connectedAs')} <strong>{user.email}</strong>
-            </span>
-            <button className="btn btn-outline-danger" onClick={handleLogout}>
-              {t('roomStatus.logoutButton')}
-            </button>
+      <header className="header-container">
+        <h1 className="main-title">{t('roomStatus.title')}</h1>
+        <div className="user-controls">
+          <LanguageSelector currentLanguage={i18n.language} />
+          <div className="user-info">
+            {t('roomStatus.connectedAs')} <strong>{user.email}</strong>
           </div>
+          <button className="logout-button" onClick={handleLogout}>
+            {t('roomStatus.logoutButton')}
+          </button>
         </div>
-      </div>
+      </header>
 
-      {/* Menú desplegable para filtrar */}
       <div className="d-flex justify-content-center mb-4">
         <select 
           className="form-control w-50"
@@ -235,14 +212,14 @@ const RoomList: React.FC<RoomListProps> = ({ user }) => {
           return (
             <div key={room.id} className="col-md-4 mb-4">
               <ModernRoomCard
-                t={t} // Pasamos la función de traducción
+                t={t}
                 room={{
                   number: room.id,
                   status: modernStatus,
-                  baseStatus: baseStatus, // Pasamos el estado base
+                  baseStatus: baseStatus,
                   lastCleanedBy: room.lastCleanedBy ? getUserEmail(room.lastCleanedBy) : undefined,
                   lastCleanedAt: room.lastCleanedAt ? room.lastCleanedAt.toDate().toLocaleString() : undefined,
-                  problems: unresolvedProblems, // Pasamos la lista de problemas
+                  problems: unresolvedProblems,
                   recleaningReason: room.recleaningReason,
                 }}
                 userRole={userRole}

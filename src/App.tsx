@@ -39,6 +39,7 @@ const App: React.FC = () => {
 
   return (
     <div className="App">
+      <div className="background-glow"></div>
       {user ? <RoomList user={user} /> : <Login />}
     </div>
   );

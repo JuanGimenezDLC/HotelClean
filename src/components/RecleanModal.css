@@ -1,0 +1,145 @@
+/* --- Estilos para el Modal de Solicitar Relimpieza --- */
+
+/* --- Variables de Diseño (heredadas o similares a ReportProblem) --- */
+:root {
+  --modal-bg-color: rgba(25, 25, 30, 0.8);
+  --modal-content-bg: #1f1f23;
+  --card-border-color: rgba(255, 255, 255, 0.15);
+  --text-color-primary: #EAEAEA;
+  --text-color-secondary: #A0A0B0;
+  --reclean-accent-color: #FF9F4D; /* Naranja para relimpieza */
+  --transition-speed: 0.3s;
+}
+
+/* --- Contenedor Principal del Modal --- */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--modal-bg-color);
+  backdrop-filter: blur(10px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  opacity: 0;
+  animation: fadeIn var(--transition-speed) forwards;
+}
+
+@keyframes fadeIn {
+  to { opacity: 1; }
+}
+
+/* --- Contenido del Modal --- */
+.modal-content {
+  background: var(--modal-content-bg);
+  border-radius: 16px;
+  border: 1px solid var(--card-border-color);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  width: 90%;
+  max-width: 500px;
+  padding: 28px;
+  transform: scale(0.95);
+  animation: slideIn var(--transition-speed) ease-out forwards;
+}
+
+@keyframes slideIn {
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* --- Cabecera del Modal --- */
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--card-border-color);
+  padding-bottom: 16px;
+  margin-bottom: 20px;
+}
+
+.modal-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-color-primary);
+  margin: 0;
+}
+
+.close-button {
+  background: transparent;
+  border: none;
+  color: var(--text-color-secondary);
+  font-size: 2rem;
+  cursor: pointer;
+  transition: color var(--transition-speed), transform var(--transition-speed);
+}
+
+.close-button:hover {
+  color: var(--text-color-primary);
+  transform: rotate(90deg);
+}
+
+/* --- Cuerpo y Formulario --- */
+.modal-body {
+  color: var(--text-color-secondary);
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-label {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-color-secondary);
+  margin-bottom: 8px;
+}
+
+.form-textarea {
+  width: 100%;
+  padding: 14px;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--card-border-color);
+  border-radius: 10px;
+  color: var(--text-color-primary);
+  font-size: 1rem;
+  min-height: 120px;
+  resize: vertical;
+  transition: border-color var(--transition-speed), box-shadow var(--transition-speed);
+}
+
+.form-textarea:focus {
+  outline: none;
+  border-color: var(--reclean-accent-color);
+  box-shadow: 0 0 0 3px rgba(255, 159, 77, 0.3);
+}
+
+/* --- Botón de Envío --- */
+.submit-button {
+  width: 100%;
+  padding: 14px;
+  border-radius: 10px;
+  border: none;
+  background: var(--reclean-accent-color);
+  color: #000; /* Texto oscuro para mejor contraste con el naranja */
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color var(--transition-speed), transform var(--transition-speed);
+}
+
+.submit-button:hover {
+  background: #ff8a2b;
+  transform: translateY(-2px);
+}
+
+.submit-button:disabled {
+  background-color: #555;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
