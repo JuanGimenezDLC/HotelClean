@@ -6,6 +6,7 @@ import { initializeRooms } from './initFirestore';
 import { User } from './types';
 import Login from './components/Login';
 import RoomList from './components/RoomList';
+import Footer from './components/Footer'; // Importar el Footer
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './components/RoomList.css';
 import './Responsive.css'; // Importar los estilos responsivos
@@ -41,7 +42,14 @@ const App: React.FC = () => {
   return (
     <div className="App">
       <div className="background-glow"></div>
-      {user ? <RoomList user={user} /> : <Login />}
+      {user ? (
+        <>
+          <RoomList user={user} />
+          <Footer />
+        </>
+      ) : (
+        <Login />
+      )}
     </div>
   );
 };

@@ -1,0 +1,17 @@
+/* --- Estilos para el Footer --- */
+
+.app-footer {
+  padding: 16px 24px; /* Padding interno para el contenido */
+  background: var(--header-bg-color, rgba(25, 25, 30, 0.7)); /* Reutilizamos el color del header */
+  backdrop-filter: blur(12px);
+  border-top: 1px solid var(--header-border-color, rgba(255, 255, 255, 0.1));
+  text-align: center;
+  width: 100%;
+  margin-top: 4rem; /* Mantenemos el margen superior para separarlo del contenido */
+}
+
+.footer-content {
+  color: var(--text-color-secondary, #A0A0B0);
+  font-size: 0.9rem;
+  font-weight: 500;
+}
