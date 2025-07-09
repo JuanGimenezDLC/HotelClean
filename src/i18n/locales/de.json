@@ -38,12 +38,24 @@
     "reasonLabel": "Grund für die Nachreinigung",
     "markButton": "Markieren"
   },
+  "cleanModal": {
+    "title": "Als Sauber markieren",
+    "message": "Wie wurde das Zimmer vorbereitet?",
+    "singleBed": "Einzelbett",
+    "doubleBed": "Doppelbett",
+    "closeButton": "Schließen"
+  },
+  "roomType": {
+    "single": "Einzelzimmer",
+    "double": "Doppelzimmer"
+  },
   "states": {
     "dirty": "Schmutzig",
     "clean": "Sauber",
     "occupied": "Besetzt",
     "problem": "Problem",
     "reclean": "Nachreinigung",
+    "reclean_occupied": "Nachreinigung (Besetzt)",
     "blocked": "Blockiert"
   },
   "filters": {

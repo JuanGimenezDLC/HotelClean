@@ -166,6 +166,22 @@
   transition: color var(--transition-speed) ease;
 }
 
+.status-indicator .bed-type-icon {
+  display: flex;
+  align-items: center;
+}
+
+.status-indicator .bed-type-icon svg {
+  width: 28px;
+  height: 28px;
+  color: var(--text-color-secondary);
+  transition: color 0.3s ease;
+}
+
+.room-card:hover .status-indicator .bed-type-icon svg {
+  color: var(--text-color-primary);
+}
+
 .status-indicator svg {
   transition: transform var(--transition-speed) ease;
 }
@@ -368,3 +384,12 @@
 }
 
 
+.bed-type-icon {
+  margin-left: 10px;
+}
+
+.bed-type-icon svg {
+  width: 24px;
+  height: 24px;
+  color: #333;
+}

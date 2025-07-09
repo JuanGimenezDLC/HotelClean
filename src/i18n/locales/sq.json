@@ -1,0 +1,70 @@
+{
+  "login": {
+    "title": "Hyrje",
+    "emailLabel": "Email",
+    "passwordLabel": "Fjalëkalimi",
+    "loginButton": "Hyrje",
+    "error": "Hyrja dështoi. Ju lutemi kontrolloni kredencialet tuaja."
+  },
+  "roomStatus": {
+    "title": "Statusi i Dhomës",
+    "connectedAs": "I kyçur si:",
+    "logoutButton": "Dil"
+  },
+  "roomCard": {
+    "room": "Dhoma",
+    "cleanedBy": "Pastruar nga:",
+    "cleanedAt": "Koha:",
+    "recleaningReason": "Arsyeja për ri-pastrim:",
+    "reportedProblems": "Problemet e Raportuara:",
+    "resolved": "(Zgjidhur)",
+    "resolveButton": "Zgjidh",
+    "reportProblemButton": "Raporto Problem",
+    "markCleanButton": "Shëno si të Pastër",
+    "markDirtyButton": "Shëno si të Papastër",
+    "markOccupiedButton": "Shëno si të Zënë",
+    "recleanButton": "Ri-pastro",
+    "pendingProblems": "Problemet në Pritje",
+    "unlockAction": "Zhbloko Dhomën",
+    "lockAction": "Blloko Dhomën"
+  },
+  "reportProblemModal": {
+    "title": "Raporto Problem në Dhomën {{roomNumber}}",
+    "descriptionLabel": "Përshkrimi i Problemit",
+    "reportButton": "Raporto"
+  },
+  "recleanModal": {
+    "title": "Shëno për Ri-pastrim - Dhoma {{roomNumber}}",
+    "reasonLabel": "Arsyeja për Ri-pastrim",
+    "markButton": "Shëno"
+  },
+  "cleanModal": {
+    "title": "Shëno si të Pastër",
+    "message": "Si është përgatitur dhoma?",
+    "singleBed": "Tek",
+    "doubleBed": "Çift",
+    "closeButton": "Mbyll"
+  },
+  "roomType": {
+    "single": "Dhomë Tek",
+    "double": "Dhomë Çift"
+  },
+  "states": {
+    "dirty": "E papastër",
+    "clean": "E pastër",
+    "occupied": "E zënë",
+    "problem": "Problem",
+    "reclean": "Ri-pastro",
+    "reclean_occupied": "Ri-pastro (E zënë)",
+    "blocked": "E bllokuar"
+  },
+  "filters": {
+    "all_number": "Të gjithë numrat",
+    "all_status": "Të gjitha statuset",
+    "dirty_only": "Vetëm të papastra",
+    "clean_only": "Vetëm të pastra",
+    "occupied_only": "Vetëm të zëna",
+    "blocked_only": "Vetëm të bllokuara",
+    "problem_only": "Vetëm me probleme"
+  }
+}

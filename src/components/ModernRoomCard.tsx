@@ -41,6 +41,28 @@ const UnlockIcon = () => (
   </svg>
 );
 
+const SingleBedIcon = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M3 8V6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v2" />
+    <path d="M3 16v-2a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v2" />
+    <path d="M7 12h10" />
+    <path d="M7 18h10" />
+  </svg>
+);
+
+const DoubleBedIcon = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M3 8V6a2 2 0 0 1 2-2h5a2 2 0 0 1 2 2v2" />
+    <path d="M12 8V6a2 2 0 0 1 2-2h5a2 2 0 0 1 2 2v2" />
+    <path d="M3 16v-2a2 2 0 0 1 2-2h5a2 2 0 0 1 2 2v2" />
+    <path d="M12 16v-2a2 2 0 0 1 2-2h5a2 2 0 0 1 2 2v2" />
+    <path d="M7 12h2" />
+    <path d="M15 12h2" />
+    <path d="M7 18h2" />
+    <path d="M15 18h2" />
+  </svg>
+);
+
 
 
 
@@ -62,6 +84,7 @@ interface Room {
   lastCleanedAt?: string;
   problems: Problem[];
   recleaningReason?: string;
+  bedType?: 'single' | 'double';
 }
 
 interface ModernRoomCardProps {
@@ -105,10 +128,20 @@ export const ModernRoomCard: React.FC<ModernRoomCardProps> = ({ t, room, userRol
           <div className="status-indicator">
             {config.icon}
             <span>
-              {config.text}
+              {room.status === 'reclean' && room.baseStatus === 'occupied'
+                ? t('states.reclean_occupied')
+                : config.text}
               {isBlocked && ` (${baseConfig.text})`}
               {room.status === 'problem' && ` (${baseConfig.text})`}
             </span>
+            {room.bedType && (
+              <div 
+                className="bed-type-icon"
+                title={t(room.bedType === 'single' ? 'roomType.single' : 'roomType.double')}
+              >
+                {room.bedType === 'single' ? <SingleBedIcon /> : <DoubleBedIcon />}
+              </div>
+            )}
           </div>
           <h2 className="room-number">{t('roomCard.room')} {room.number}</h2>
           {canBlock && (
@@ -162,21 +195,21 @@ export const ModernRoomCard: React.FC<ModernRoomCardProps> = ({ t, room, userRol
             <button 
               onClick={() => onStatusChange('clean')} 
               className={`action-button ${room.baseStatus === 'clean' ? 'active' : ''}`}
-              disabled={room.baseStatus === 'clean'}
+              disabled={room.baseStatus === 'clean' || userRole === 'maintenance'}
             >
               {t('states.clean')}
             </button>
             <button 
               onClick={() => onStatusChange('dirty')} 
               className={`action-button ${room.baseStatus === 'dirty' ? 'active' : ''}`}
-              disabled={room.baseStatus === 'dirty'}
+              disabled={room.baseStatus === 'dirty' || userRole === 'cleaner' || userRole === 'maintenance'}
             >
               {t('states.dirty')}
             </button>
              <button 
               onClick={() => onStatusChange('occupied')} 
               className={`action-button ${room.baseStatus === 'occupied' ? 'active' : ''}`}
-              disabled={room.baseStatus === 'occupied'}
+              disabled={room.baseStatus === 'occupied' || userRole === 'cleaner' || userRole === 'maintenance'}
             >
               {t('states.occupied')}
             </button>

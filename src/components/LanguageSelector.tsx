@@ -6,6 +6,7 @@ const languages = [
   { code: 'es', name: 'Español' },
   { code: 'de', name: 'Deutsch' },
   { code: 'pl', name: 'Polski' },
+  { code: 'sq', name: 'Shqip' },
 ];
 
 const LanguageIcon = () => (

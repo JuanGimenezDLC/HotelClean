@@ -38,12 +38,24 @@
     "reasonLabel": "Motivo de la Relimpieza",
     "markButton": "Marcar"
   },
+  "cleanModal": {
+    "title": "Marcar como Limpia",
+    "message": "¿Cómo se ha preparado la habitación?",
+    "singleBed": "Individual",
+    "doubleBed": "Doble",
+    "closeButton": "Cerrar"
+  },
+  "roomType": {
+    "single": "Habitación Individual",
+    "double": "Habitación Doble"
+  },
   "states": {
     "dirty": "Sucia",
     "clean": "Limpia",
     "occupied": "Ocupada",
     "problem": "Problema",
     "reclean": "Relimpieza",
+    "reclean_occupied": "Relimpieza (Ocupada)",
     "blocked": "Bloqueada"
   },
   "filters": {

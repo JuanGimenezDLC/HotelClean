@@ -38,12 +38,24 @@
     "reasonLabel": "Reason for Recleaning",
     "markButton": "Mark"
   },
+  "cleanModal": {
+    "title": "Mark as Clean",
+    "message": "How has the room been prepared?",
+    "singleBed": "Single",
+    "doubleBed": "Double",
+    "closeButton": "Close"
+  },
+  "roomType": {
+    "single": "Single Room",
+    "double": "Double Room"
+  },
   "states": {
     "dirty": "Dirty",
     "clean": "Clean",
     "occupied": "Occupied",
     "problem": "Problem",
     "reclean": "Reclean",
+    "reclean_occupied": "Reclean (Occupied)",
     "blocked": "Blocked"
   },
   "filters": {

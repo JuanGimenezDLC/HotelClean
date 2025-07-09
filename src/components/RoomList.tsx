@@ -6,6 +6,7 @@ import { db, auth } from '../firebase';
 import { Room, User } from '../types';
 import ReportProblemModal from './ReportProblemModal';
 import RecleanModal from './RecleanModal';
+import CleanModal from './CleanModal';
 import LanguageSelector from './LanguageSelector';
 import { ModernRoomCard } from './ModernRoomCard';
 import './ModernRoomCard.css';
@@ -24,6 +25,7 @@ const RoomList: React.FC<RoomListProps> = ({ user }) => {
   const [selectedRoom, setSelectedRoom] = useState<Room | null>(null);
   const [isReportModalOpen, setReportModalOpen] = useState(false);
   const [isRecleanModalOpen, setRecleanModalOpen] = useState(false);
+  const [isCleanModalOpen, setCleanModalOpen] = useState(false);
 
   const getInitialFilter = () => {
     switch (user.role) {
@@ -46,13 +48,15 @@ const RoomList: React.FC<RoomListProps> = ({ user }) => {
       
       const filteredRooms = roomsData.filter(room => {
         const modernStatus = getModernStatus(room);
+        const baseStatus = room.baseStatus || (room.status !== 'Bloqueada' ? room.status : 'Sucia');
+
         switch (filter) {
           case 'Sucia':
-            return modernStatus === 'dirty';
+            return baseStatus === 'Sucia' || modernStatus === 'reclean';
           case 'Limpia':
-            return modernStatus === 'clean';
+            return baseStatus === 'Limpia';
           case 'Ocupada':
-            return modernStatus === 'occupied';
+            return baseStatus === 'Ocupada';
           case 'Bloqueada':
             return modernStatus === 'blocked';
           case 'problem':
@@ -95,7 +99,7 @@ const RoomList: React.FC<RoomListProps> = ({ user }) => {
     return foundUser ? foundUser.email : 'Usuario desconocido';
   };
 
-  const handleSetStatus = async (roomId: string, newBaseStatus: 'Limpia' | 'Sucia' | 'Ocupada') => {
+  const handleSetStatus = async (roomId: string, newBaseStatus: 'Limpia' | 'Sucia' | 'Ocupada', bedType?: 'single' | 'double') => {
     const roomRef = doc(db, 'rooms', roomId);
     const room = rooms.find((r) => r.id === roomId);
 
@@ -110,6 +114,9 @@ const RoomList: React.FC<RoomListProps> = ({ user }) => {
         updateData.lastCleanedBy = user.uid;
         updateData.lastCleanedAt = Timestamp.now();
         updateData.recleaningReason = '';
+        if (bedType) {
+          updateData.bedType = bedType;
+        }
       }
 
       await updateDoc(roomRef, updateData);
@@ -124,6 +131,11 @@ const RoomList: React.FC<RoomListProps> = ({ user }) => {
   const openRecleanModal = (room: Room) => {
     setSelectedRoom(room);
     setRecleanModalOpen(true);
+  };
+
+  const openCleanModal = (room: Room) => {
+    setSelectedRoom(room);
+    setCleanModalOpen(true);
   };
   
   const handleResolveProblem = async (roomId: string, problemId: string) => {
@@ -221,14 +233,18 @@ const RoomList: React.FC<RoomListProps> = ({ user }) => {
                     lastCleanedAt: room.lastCleanedAt ? room.lastCleanedAt.toDate().toLocaleString() : undefined,
                     problems: unresolvedProblems,
                     recleaningReason: room.recleaningReason,
+                    bedType: room.bedType,
                   }}
                   userRole={userRole}
                   onStatusChange={(newStatus) => {
-                    let firestoreStatus: 'Limpia' | 'Sucia' | 'Ocupada' = 'Sucia';
-                    if (newStatus === 'clean') firestoreStatus = 'Limpia';
-                    if (newStatus === 'dirty') firestoreStatus = 'Sucia';
-                    if (newStatus === 'occupied') firestoreStatus = 'Ocupada';
-                    handleSetStatus(room.id, firestoreStatus);
+                    if (newStatus === 'clean') {
+                      openCleanModal(room);
+                    } else {
+                      let firestoreStatus: 'Limpia' | 'Sucia' | 'Ocupada' = 'Sucia';
+                      if (newStatus === 'dirty') firestoreStatus = 'Sucia';
+                      if (newStatus === 'occupied') firestoreStatus = 'Ocupada';
+                      handleSetStatus(room.id, firestoreStatus);
+                    }
                   }}
                   onReportProblem={() => openReportModal(room)}
                   onReclean={() => openRecleanModal(room)}
@@ -251,6 +267,16 @@ const RoomList: React.FC<RoomListProps> = ({ user }) => {
               isOpen={isRecleanModalOpen}
               onClose={() => setRecleanModalOpen(false)}
               room={selectedRoom}
+            />
+            <CleanModal
+              isOpen={isCleanModalOpen}
+              onClose={() => setCleanModalOpen(false)}
+              onSelect={(bedType) => {
+                if (selectedRoom) {
+                  handleSetStatus(selectedRoom.id, 'Limpia', bedType);
+                }
+                setCleanModalOpen(false);
+              }}
             />
           </>
         )}

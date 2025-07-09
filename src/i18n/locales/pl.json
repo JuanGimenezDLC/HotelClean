@@ -38,12 +38,24 @@
     "reasonLabel": "Powód ponownego sprzątania",
     "markButton": "Oznacz"
   },
+  "cleanModal": {
+    "title": "Oznacz jako Czysty",
+    "message": "Jak przygotowano pokój?",
+    "singleBed": "Pojedyncze",
+    "doubleBed": "Podwójne",
+    "closeButton": "Zamknij"
+  },
+  "roomType": {
+    "single": "Pokój jednoosobowy",
+    "double": "Pokój dwuosobowy"
+  },
   "states": {
     "dirty": "Brudny",
     "clean": "Czysty",
     "occupied": "Zajęty",
     "problem": "Problem",
     "reclean": "Do ponownego sprzątania",
+    "reclean_occupied": "Do ponownego sprzątania (Zajęty)",
     "blocked": "Zablokowany"
   },
   "filters": {
