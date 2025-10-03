@@ -1,0 +1,95 @@
+.confirmation-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(10, 10, 15, 0.6);
+  backdrop-filter: blur(8px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1050; /* Asegura que esté por encima de otros elementos */
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.confirmation-modal-content {
+  background: var(--card-bg-color, rgba(40, 40, 50, 0.8));
+  border: 1px solid var(--card-border-color, rgba(255, 255, 255, 0.1));
+  border-radius: 16px;
+  padding: 24px;
+  width: 90%;
+  max-width: 450px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  animation: slideIn 0.4s ease-out;
+  color: var(--text-color-primary, #EAEAEA);
+}
+
+@keyframes slideIn {
+  from { transform: translateY(-30px) scale(0.95); opacity: 0; }
+  to { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+.confirmation-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--card-border-color, rgba(255, 255, 255, 0.1));
+  padding-bottom: 12px;
+  margin-bottom: 16px;
+}
+
+.confirmation-modal-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.confirmation-modal-body {
+  margin-bottom: 24px;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--text-color-secondary, #A0A0B0);
+}
+
+.confirmation-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+/* Reutilizamos los estilos de los botones de la tarjeta si es posible */
+.confirmation-modal-footer .btn {
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.confirmation-modal-footer .btn-danger {
+  background-color: var(--dirty-color, #FF6B6B);
+  border: 1px solid var(--dirty-color, #FF6B6B);
+  color: #111;
+}
+
+.confirmation-modal-footer .btn-danger:hover {
+  background-color: transparent;
+  color: var(--dirty-color, #FF6B6B);
+}
+
+.confirmation-modal-footer .btn-success {
+  background-color: var(--clean-color, #39D392);
+  border: 1px solid var(--clean-color, #39D392);
+  color: #111;
+}
+
+.confirmation-modal-footer .btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}

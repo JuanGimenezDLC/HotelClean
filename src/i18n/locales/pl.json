@@ -27,11 +27,15 @@
     "pendingProblems": "Oczekujące problemy",
     "unlockAction": "Odblokuj Pokój",
     "lockAction": "Zablokuj Pokój"
-  },
+  },  
+  "roomCard": { "mark_for_check": "Check Out" },
   "reportProblemModal": {
     "title": "Zgłoś problem w pokoju {{roomNumber}}",
     "descriptionLabel": "Opis problemu",
-    "reportButton": "Zgłoś"
+    "reportButton": "Zgłoś",
+    "photoButton": "Dodaj zdjęcie",
+    "photoLabel": "Dodaj zdjęcie (Opcjonalnie)",
+    "loadingButton": "Zapisywanie..."
   },
   "recleanModal": {
     "title": "Oznacz do ponownego sprzątania - Pokój {{roomNumber}}",

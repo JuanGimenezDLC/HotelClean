@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { collection, onSnapshot, doc, updateDoc, Timestamp } from 'firebase/firestore';
+import { collection, onSnapshot, doc, updateDoc, Timestamp, deleteField } from 'firebase/firestore';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { signOut } from 'firebase/auth';
 import { useTranslation } from 'react-i18next';
 import { TFunction } from 'i18next';
-import { db, auth } from '../firebase';
+import { db, auth, storage } from '../firebase';
 import { Room, User } from '../types';
 import ReportProblemModal from './ReportProblemModal';
 import RecleanModal from './RecleanModal';
@@ -124,12 +125,28 @@ const RoomList: React.FC<RoomListProps> = ({ user }) => {
     }
   };
 
+  const handleReclean = async (roomId: string, reason: string, file: File | null) => {
+    const roomRef = doc(db, 'rooms', roomId);
+    let imageUrl = '';
+
+    if (file) {
+      const storageRef = ref(storage, `reclean-images/${roomId}-${Date.now()}-${file.name}`);
+      await uploadBytes(storageRef, file);
+      imageUrl = await getDownloadURL(storageRef);
+    }
+
+    await updateDoc(roomRef, {
+      status: 'Sucia',
+      recleaningReason: reason,
+      recleaningImageUrl: imageUrl || null,
+    });
+  };
+
   const handleMarkForCheck = async (roomId: string, bedType: 'single' | 'double') => {
     const roomRef = doc(db, 'rooms', roomId);
     await updateDoc(roomRef, {
       status: 'Sucia',
       bedType: bedType,
-      recleaningReason: 'check', // Using this field to mark for check
     });
   };
   
@@ -166,24 +183,36 @@ const RoomList: React.FC<RoomListProps> = ({ user }) => {
       const updatedProblems = room.reportedProblems.map((p) =>
         p.id === problemId ? { ...p, isResolved: true } : p
       );
-      await updateDoc(roomRef, { reportedProblems: updatedProblems });
+
+      const allProblemsResolved = updatedProblems.every((p) => p.isResolved);
+
+      const updateData: any = { reportedProblems: updatedProblems };
+
+      if (allProblemsResolved) {
+        // Si no hay baseStatus, es probable que la habitación estuviera 'Sucia' o 'Limpia'
+        // antes del problema. Por seguridad, la marcamos como 'Sucia' para revisión.
+        const newStatus = room.baseStatus || 'Sucia';
+        updateData.status = newStatus;
+        updateData.baseStatus = null; // Limpiamos el baseStatus
+      }
+
+      await updateDoc(roomRef, updateData);
     }
   };
 
   const handleToggleBlock = async (room: Room) => {
     const roomRef = doc(db, 'rooms', room.id);
-    let newStatus: 'Limpia' | 'Sucia' | 'Ocupada' | 'Bloqueada';
-    let newBaseStatus: 'Limpia' | 'Sucia' | 'Ocupada' | undefined;
 
     if (room.status === 'Bloqueada') {
-      newStatus = room.baseStatus || 'Sucia';
-      newBaseStatus = undefined;
+      // Desbloquear: Volver al estado base y eliminar baseStatus
+      await updateDoc(roomRef, {
+        status: room.baseStatus || 'Sucia',
+        baseStatus: deleteField()
+      });
     } else {
-      newStatus = 'Bloqueada';
-      newBaseStatus = room.status as 'Limpia' | 'Sucia' | 'Ocupada';
+      // Bloquear: Guardar estado actual en baseStatus y poner status en 'Bloqueada'
+      await updateDoc(roomRef, { status: 'Bloqueada', baseStatus: room.status });
     }
-    
-    await updateDoc(roomRef, { status: newStatus, baseStatus: newBaseStatus });
   };
 
   const getBaseStatus = (room: Room): 'clean' | 'dirty' | 'occupied' => {
@@ -289,6 +318,11 @@ const RoomList: React.FC<RoomListProps> = ({ user }) => {
               isOpen={isRecleanModalOpen}
               onClose={() => setRecleanModalOpen(false)}
               room={selectedRoom}
+              onMark={async (reason, file) => {
+                if (selectedRoom) {
+                  await handleReclean(selectedRoom.id, reason, file);
+                }
+              }}
             />
             <CheckModal
               isOpen={isCheckModalOpen}

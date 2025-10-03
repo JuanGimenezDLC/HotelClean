@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import './ModernRoomCard.css';
 import { TFunction } from 'i18next';
 import { Timestamp } from 'firebase/firestore';
+import ConfirmationModal from './ConfirmationModal';
 
 export interface Problem {
   id: string;
@@ -73,6 +74,7 @@ export interface ModernRoom {
   lastCleanedAt?: string;
   problems: Problem[];
   recleaningReason?: string;
+  recleaningImageUrl?: string;
   bedType?: 'single' | 'double';
 }
 
@@ -90,6 +92,21 @@ interface ModernRoomCardProps {
 
 export const ModernRoomCard: React.FC<ModernRoomCardProps> = ({ t, room, userRole, onStatusChange, onReportProblem, onReclean, onResolveProblem, onToggleBlock, onMarkForCheck }) => {
   const [imageModalUrl, setImageModalUrl] = useState<string | null>(null);
+  const [isConfirmModalOpen, setConfirmModalOpen] = useState(false);
+  const [problemToResolve, setProblemToResolve] = useState<Problem | null>(null);
+
+  const handleOpenConfirmModal = (problem: Problem) => {
+    setProblemToResolve(problem);
+    setConfirmModalOpen(true);
+  };
+
+  const handleConfirmResolve = () => {
+    if (problemToResolve) {
+      onResolveProblem(problemToResolve.id);
+    }
+    setConfirmModalOpen(false);
+    setProblemToResolve(null);
+  };
 
   const statusConfig = {
     clean: { text: t('states.clean'), icon: <CleanIcon />, className: 'status-clean' },
@@ -148,7 +165,7 @@ export const ModernRoomCard: React.FC<ModernRoomCardProps> = ({ t, room, userRol
                           </button>
                         )}
                         {canResolve && (
-                          <button onClick={() => onResolveProblem(problem.id)} className="resolve-button-small">
+                          <button onClick={() => handleOpenConfirmModal(problem)} className="resolve-button-small">
                             {t('roomCard.resolveButton')}
                           </button>
                         )}
@@ -160,7 +177,14 @@ export const ModernRoomCard: React.FC<ModernRoomCardProps> = ({ t, room, userRol
             )}
 
             {room.status === 'reclean' && room.recleaningReason && (
-              <p className="detail-text"><strong>{t('roomCard.recleaningReason')}</strong> {room.recleaningReason}</p>
+              <div className="reclean-reason-container">
+                <p className="detail-text"><strong>{t('roomCard.recleaningReason')}</strong> {room.recleaningReason}</p>
+                {room.recleaningImageUrl && (
+                  <button onClick={() => setImageModalUrl(room.recleaningImageUrl!)} className="camera-button-reclean">
+                    <CameraIcon />
+                  </button>
+                )}
+              </div>
             )}
             
             {room.status === 'clean' && room.lastCleanedBy && (
@@ -174,32 +198,51 @@ export const ModernRoomCard: React.FC<ModernRoomCardProps> = ({ t, room, userRol
           </main>
 
           <footer className="room-card-footer">
-            <div className="status-actions">
-              <button onClick={() => onStatusChange('clean')} className={`action-button ${room.baseStatus === 'clean' ? 'active' : ''}`} disabled={room.baseStatus === 'clean' || userRole === 'maintenance'}>
-                {t('states.clean')}
-              </button>
-              <button onClick={() => onStatusChange('dirty')} className={`action-button ${room.baseStatus === 'dirty' ? 'active' : ''}`} disabled={room.baseStatus === 'dirty' || userRole === 'cleaner' || userRole === 'maintenance'}>
-                {t('states.dirty')}
-              </button>
-              <button onClick={() => onStatusChange('occupied')} className={`action-button ${room.baseStatus === 'occupied' ? 'active' : ''}`} disabled={room.baseStatus === 'occupied' || userRole === 'cleaner' || userRole === 'maintenance'}>
-                {t('states.occupied')}
-              </button>
-            </div>
-            <div className="secondary-actions">
-              <button onClick={onReportProblem} className="action-button problem-button" >
-                {t('roomCard.reportProblemButton')}
-              </button>
-              {userRole === 'supervisor' && (
-                <button onClick={onReclean} className="action-button reclean-button" >
-                  {t('roomCard.recleanButton')}
+            {userRole === 'cleaner' && (
+              <div className="status-actions">
+                <button onClick={() => onStatusChange('clean')} className={`action-button ${room.baseStatus === 'clean' ? 'active' : ''}`} disabled={room.baseStatus === 'clean'}>
+                  {t('states.clean')}
                 </button>
-              )}
-              {userRole === 'supervisor' && (
-                <button onClick={() => onMarkForCheck()} className="action-button checkout-button">
-                  {t('mark_for_check')}
+                <button onClick={onReportProblem} className="action-button problem-button" >
+                  {t('roomCard.reportProblemButton')}
                 </button>
-              )}
-            </div>
+              </div>
+            )}
+
+            {userRole === 'supervisor' && (
+              <>
+                <div className="status-actions">
+                  <button onClick={() => onStatusChange('clean')} className={`action-button ${room.baseStatus === 'clean' ? 'active' : ''}`} disabled={room.baseStatus === 'clean'}>
+                    {t('states.clean')}
+                  </button>
+                  <button onClick={() => onStatusChange('dirty')} className={`action-button ${room.baseStatus === 'dirty' ? 'active' : ''}`} disabled={room.baseStatus === 'dirty'}>
+                    {t('states.dirty')}
+                  </button>
+                  <button onClick={() => onStatusChange('occupied')} className={`action-button ${room.baseStatus === 'occupied' ? 'active' : ''}`} disabled={room.baseStatus === 'occupied'}>
+                    {t('states.occupied')}
+                  </button>
+                </div>
+                <div className="secondary-actions">
+                  <button onClick={onReportProblem} className="action-button problem-button" >
+                    {t('roomCard.reportProblemButton')}
+                  </button>
+                  <button onClick={onReclean} className="action-button reclean-button" >
+                    {t('roomCard.recleanButton')}
+                  </button>
+                  <button onClick={onMarkForCheck} className="action-button checkout-button">
+                    {t('roomCard.mark_for_check')}
+                  </button>
+                </div>
+              </>
+            )}
+
+            {userRole === 'maintenance' && (
+              <div className="secondary-actions">
+                <button onClick={onReportProblem} className="action-button problem-button" >
+                  {t('roomCard.reportProblemButton')}
+                </button>
+              </div>
+            )}
           </footer>
         </div>
       </div>
@@ -208,6 +251,18 @@ export const ModernRoomCard: React.FC<ModernRoomCardProps> = ({ t, room, userRol
         <div className="image-modal-overlay" onClick={() => setImageModalUrl(null)}>
           <img src={imageModalUrl} alt="Problem" />
         </div>
+      )}
+
+      {problemToResolve && (
+        <ConfirmationModal
+          isOpen={isConfirmModalOpen}
+          onClose={() => setConfirmModalOpen(false)}
+          onConfirm={handleConfirmResolve}
+          title={t('confirmationModal.resolveTitle')}
+          message={t('confirmationModal.resolveMessage', {
+            problemDescription: problemToResolve.description
+          })}
+        />
       )}
     </>
   );

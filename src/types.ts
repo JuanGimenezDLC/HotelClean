@@ -19,6 +19,7 @@ export interface Room {
   lastCleanedBy?: string; // UID del último usuario que limpió la habitación (opcional)
   lastCleanedAt?: Timestamp; // Marca de tiempo de la última limpieza (opcional)
   recleaningReason?: string; // Motivo por el cual la habitación necesita ser relimpiada (opcional)
+  recleaningImageUrl?: string; // URL de la imagen para la relimpieza (opcional)
   bedType?: 'single' | 'double'; // Tipo de cama para la que se ha preparado la habitación
   reportedProblems: ReportedProblem[]; // Array de problemas reportados para esta habitación
   // Se ha hecho obligatorio (sin '?') para asegurar que siempre es un array,

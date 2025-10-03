@@ -27,17 +27,28 @@
     "pendingProblems": "Pending Problems",
     "unlockAction": "Unlock Room",
     "lockAction": "Lock Room",
-    "mark_for_check": "Mark for Check"
+    "mark_for_check": "Check Out"
   },
   "reportProblemModal": {
     "title": "Report Problem in Room {{roomNumber}}",
     "descriptionLabel": "Problem Description",
-    "reportButton": "Report"
+    "reportButton": "Report",
+    "photoButton": "Add Photo",
+    "photoLabel": "Add Photo (Optional)",
+    "loadingButton": "Saving..."
   },
   "recleanModal": {
     "title": "Mark for Recleaning - Room {{roomNumber}}",
     "reasonLabel": "Reason for Recleaning",
-    "markButton": "Mark"
+    "photoLabel": "Add Photo (Optional)",
+    "markButton": "Mark",
+    "loadingButton": "Saving..."
+  },
+  "confirmationModal": {
+    "resolveTitle": "Confirm Resolution",
+    "resolveMessage": "Mark the problem '{{problemDescription}}' as resolved?",
+    "confirmButton": "Confirm",
+    "cancelButton": "Cancel"
   },
   "cleanModal": {
     "title": "Mark as Clean",

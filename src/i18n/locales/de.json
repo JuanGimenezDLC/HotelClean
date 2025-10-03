@@ -27,11 +27,15 @@
     "pendingProblems": "Ausstehende Probleme",
     "unlockAction": "Zimmer Entsperren",
     "lockAction": "Zimmer Sperren"
-  },
+  },  
+  "roomCard": { "mark_for_check": "Check Out" },
   "reportProblemModal": {
     "title": "Problem in Zimmer {{roomNumber}} Melden",
     "descriptionLabel": "Problembeschreibung",
-    "reportButton": "Melden"
+    "reportButton": "Melden",
+    "photoButton": "Foto hinzufügen",
+    "photoLabel": "Foto hinzufügen (Optional)",
+    "loadingButton": "Speichern..."
   },
   "recleanModal": {
     "title": "Für Nachreinigung Markieren - Zimmer {{roomNumber}}",

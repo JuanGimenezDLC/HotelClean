@@ -27,17 +27,28 @@
     "pendingProblems": "Problemas Pendientes",
     "unlockAction": "Desbloquear Habitación",
     "lockAction": "Bloquear Habitación",
-    "mark_for_check": "Marcar para Revisión"
+    "mark_for_check": "Check Out"
   },
   "reportProblemModal": {
     "title": "Reportar Problema en Habitación {{roomNumber}}",
     "descriptionLabel": "Descripción del Problema",
-    "reportButton": "Reportar"
+    "reportButton": "Reportar",
+    "photoButton": "Añadir Foto",
+    "photoLabel": "Añadir Foto (Opcional)",
+    "loadingButton": "Guardando..."
   },
   "recleanModal": {
     "title": "Marcar para Relimpieza - Habitación {{roomNumber}}",
     "reasonLabel": "Motivo de la Relimpieza",
-    "markButton": "Marcar"
+    "photoLabel": "Añadir Foto (Opcional)",
+    "markButton": "Marcar",
+    "loadingButton": "Guardando..."
+  },
+  "confirmationModal": {
+    "resolveTitle": "Confirmar Resolución",
+    "resolveMessage": "¿Marcar el problema '{{problemDescription}}' como resuelto?",
+    "confirmButton": "Confirmar",
+    "cancelButton": "Cancelar"
   },
   "cleanModal": {
     "title": "Marcar como Limpia",

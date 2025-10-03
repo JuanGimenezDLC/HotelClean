@@ -27,11 +27,15 @@
     "pendingProblems": "Problemet në Pritje",
     "unlockAction": "Zhbloko Dhomën",
     "lockAction": "Blloko Dhomën"
-  },
+  },  
+  "roomCard": { "mark_for_check": "Check Out" },
   "reportProblemModal": {
     "title": "Raporto Problem në Dhomën {{roomNumber}}",
     "descriptionLabel": "Përshkrimi i Problemit",
-    "reportButton": "Raporto"
+    "reportButton": "Raporto",
+    "photoButton": "Shto Foto",
+    "photoLabel": "Shto Foto (Opsionale)",
+    "loadingButton": "Duke ruajtur..."
   },
   "recleanModal": {
     "title": "Shëno për Ri-pastrim - Dhoma {{roomNumber}}",
