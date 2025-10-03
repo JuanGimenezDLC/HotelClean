@@ -22,13 +22,13 @@ const DoublePersonIcon = () => (
   </svg>
 );
 
-interface CleanModalProps {
+interface CheckModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSelect: (bedType: 'single' | 'double') => void;
 }
 
-const CleanModal: React.FC<CleanModalProps> = ({ isOpen, onClose, onSelect }) => {
+const CheckModal: React.FC<CheckModalProps> = ({ isOpen, onClose, onSelect }) => {
   const { t } = useTranslation();
 
   if (!isOpen) return null;
@@ -36,26 +36,26 @@ const CleanModal: React.FC<CleanModalProps> = ({ isOpen, onClose, onSelect }) =>
   return (
     <div className="modal-overlay">
       <div className="modal-content">
-        <h5 className="modal-title">{t('cleanModal.title')}</h5>
+        <h5 className="modal-title">{t('checkModal.title')}</h5>
         <div className="modal-body">
-          <p>{t('cleanModal.message')}</p>
+          <p>{t('checkModal.message')}</p>
           <div className="bed-options">
             <button onClick={() => onSelect('single')} className="bed-option-button">
               <SinglePersonIcon />
-              <span>{t('cleanModal.singleBed')}</span>
+              <span>{t('checkModal.singleBed')}</span>
             </button>
             <button onClick={() => onSelect('double')} className="bed-option-button double">
               <DoublePersonIcon />
-              <span>{t('cleanModal.doubleBed')}</span>
+              <span>{t('checkModal.doubleBed')}</span>
             </button>
           </div>
         </div>
         <div className="modal-footer">
-          <button onClick={onClose} className="btn btn-secondary">{t('cleanModal.closeButton')}</button>
+          <button onClick={onClose} className="btn btn-secondary">{t('checkModal.closeButton')}</button>
         </div>
       </div>
     </div>
   );
 };
 
-export default CleanModal;
+export default CheckModal;

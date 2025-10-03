@@ -26,7 +26,8 @@
     "recleanButton": "Reclean",
     "pendingProblems": "Pending Problems",
     "unlockAction": "Unlock Room",
-    "lockAction": "Lock Room"
+    "lockAction": "Lock Room",
+    "mark_for_check": "Mark for Check"
   },
   "reportProblemModal": {
     "title": "Report Problem in Room {{roomNumber}}",
@@ -41,6 +42,13 @@
   "cleanModal": {
     "title": "Mark as Clean",
     "message": "How has the room been prepared?",
+    "singleBed": "Single",
+    "doubleBed": "Double",
+    "closeButton": "Close"
+  },
+  "checkModal": {
+    "title": "Mark for Check",
+    "message": "How should the room be prepared for cleaning?",
     "singleBed": "Single",
     "doubleBed": "Double",
     "closeButton": "Close"

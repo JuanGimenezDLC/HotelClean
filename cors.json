@@ -1,0 +1,26 @@
+[
+  {
+    "origin": [
+      "http://localhost:3000",
+      "https://hotel-e8a92.web.app",
+      "https://hotel-e8a92.firebaseapp.com"
+    ],
+    "method": [
+      "GET",
+      "POST",
+      "PUT",
+      "DELETE",
+      "OPTIONS"
+    ],
+    "responseHeader": [
+      "Content-Type",
+      "Authorization",
+      "X-Goog-Upload-Protocol",
+      "X-Goog-Upload-Command",
+      "X-Goog-Upload-Header-Content-Length",
+      "X-Goog-Upload-Header-Content-Type",
+      "X-Goog-Upload-Offset"
+    ],
+    "maxAgeSeconds": 3600
+  }
+]

@@ -6,6 +6,7 @@ export interface ReportedProblem {
   reportedBy: string; // UID del usuario que reportó el problema
   reportedAt: Timestamp; // Marca de tiempo de cuándo se reportó el problema
   isResolved: boolean; // Indica si el problema ha sido resuelto
+  imageUrl?: string;
 }
 
 export interface Room {

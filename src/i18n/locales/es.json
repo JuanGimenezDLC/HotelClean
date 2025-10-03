@@ -26,7 +26,8 @@
     "recleanButton": "Relimpieza",
     "pendingProblems": "Problemas Pendientes",
     "unlockAction": "Desbloquear Habitación",
-    "lockAction": "Bloquear Habitación"
+    "lockAction": "Bloquear Habitación",
+    "mark_for_check": "Marcar para Revisión"
   },
   "reportProblemModal": {
     "title": "Reportar Problema en Habitación {{roomNumber}}",
@@ -41,6 +42,13 @@
   "cleanModal": {
     "title": "Marcar como Limpia",
     "message": "¿Cómo se ha preparado la habitación?",
+    "singleBed": "Individual",
+    "doubleBed": "Doble",
+    "closeButton": "Cerrar"
+  },
+  "checkModal": {
+    "title": "Marcar para Revisión",
+    "message": "¿Cómo se debe preparar la habitación para la limpieza?",
     "singleBed": "Individual",
     "doubleBed": "Doble",
     "closeButton": "Cerrar"
