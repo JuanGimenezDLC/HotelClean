@@ -71,6 +71,12 @@
     "single": "Habitación Individual",
     "double": "Habitación Doble"
   },
+  "cleanConfirmationModal": {
+    "title": "Confirmar Limpieza",
+    "message": "¿Confirmar limpieza de habitación {{roomNumber}} ({{bedType}})?",
+    "confirmButton": "Confirmar",
+    "cancelButton": "Cancelar"
+  },
   "states": {
     "dirty": "Sucia",
     "clean": "Limpia",

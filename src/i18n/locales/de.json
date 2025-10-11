@@ -71,6 +71,12 @@
     "single": "Einzelzimmer",
     "double": "Doppelzimmer"
   },
+  "cleanConfirmationModal": {
+    "title": "Reinigung bestätigen",
+    "message": "Reinigung für Zimmer {{roomNumber}} ({{bedType}}) bestätigen?",
+    "confirmButton": "Bestätigen",
+    "cancelButton": "Abbrechen"
+  },
   "states": {
     "dirty": "Schmutzig",
     "clean": "Sauber",

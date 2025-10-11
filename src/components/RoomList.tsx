@@ -10,6 +10,7 @@ import ReportProblemModal from './ReportProblemModal';
 import RecleanModal from './RecleanModal';
 import CleanModal from './CleanModal';
 import CheckModal from './CheckModal';
+import CleanConfirmationModal from './CleanConfirmationModal'; // Importar el nuevo modal
 import LanguageSelector from './LanguageSelector';
 import { ModernRoomCard, ModernRoom } from './ModernRoomCard';
 import './ModernRoomCard.css';
@@ -210,14 +211,28 @@ const RoomList: React.FC<RoomListProps> = ({ user }) => {
     const roomRef = doc(db, 'rooms', roomId);
     await updateDoc(roomRef, {
       status: 'Sucia',
+      baseStatus: 'Sucia',
       bedType: bedType,
+      cleaningReason: 'Check-out', // Esto activará el estado visual 'limpiar'
+      recleaningReason: deleteField(),
+      lastCleanedBy: deleteField(),
+      lastCleanedAt: deleteField(),
     });
 
-    // Actualización optimista
+    // Actualización optimista para una UI más rápida
     setRooms(prevRooms =>
       prevRooms.map(r =>
         r.id === roomId
-          ? { ...r, status: 'Sucia', bedType: bedType }
+          ? { 
+              ...r, 
+              status: 'Sucia', 
+              baseStatus: 'Sucia',
+              bedType: bedType,
+              cleaningReason: 'Check-out',
+              recleaningReason: undefined,
+              lastCleanedBy: undefined,
+              lastCleanedAt: undefined,
+            }
           : r
       ));
   };

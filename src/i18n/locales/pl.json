@@ -71,6 +71,12 @@
     "single": "Pokój jednoosobowy",
     "double": "Pokój dwuosobowy"
   },
+  "cleanConfirmationModal": {
+    "title": "Potwierdź sprzątanie",
+    "message": "Potwierdzić sprzątanie pokoju {{roomNumber}} ({{bedType}})?",
+    "confirmButton": "Potwierdź",
+    "cancelButton": "Anuluj"
+  },
   "states": {
     "dirty": "Brudny",
     "clean": "Czysty",

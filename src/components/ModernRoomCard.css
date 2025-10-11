@@ -513,3 +513,9 @@
   height: 24px;
   color: #333;
 }
+
+.action-button.btn-check {
+  position: relative !important;
+  clip: auto !important;
+  pointer-events: auto !important;
+}

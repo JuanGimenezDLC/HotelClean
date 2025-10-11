@@ -71,6 +71,12 @@
     "single": "Single Room",
     "double": "Double Room"
   },
+  "cleanConfirmationModal": {
+    "title": "Confirm Clean",
+    "message": "Confirm cleaning for room {{roomNumber}} ({{bedType}})?",
+    "confirmButton": "Confirm",
+    "cancelButton": "Cancel"
+  },
   "states": {
     "dirty": "Dirty",
     "clean": "Clean",

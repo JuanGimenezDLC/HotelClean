@@ -71,6 +71,12 @@
     "single": "Dhomë Tek",
     "double": "Dhomë Çift"
   },
+  "cleanConfirmationModal": {
+    "title": "Konfirmo Pastrimin",
+    "message": "Konfirmo pastrimin për dhomën {{roomNumber}} ({{bedType}})?",
+    "confirmButton": "Konfirmo",
+    "cancelButton": "Anulo"
+  },
   "states": {
     "dirty": "E papastër",
     "clean": "E pastër",
