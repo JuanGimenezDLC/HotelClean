@@ -16,6 +16,7 @@
     "cleanedBy": "Pastruar nga:",
     "cleanedAt": "Koha:",
     "recleaningReason": "Arsyeja për ri-pastrim:",
+    "cleaningReason": "Arsyeja për pastrim:",
     "reportedProblems": "Problemet e Raportuara:",
     "resolved": "(Zgjidhur)",
     "resolveButton": "Zgjidh",
@@ -26,9 +27,11 @@
     "recleanButton": "Ri-pastro",
     "pendingProblems": "Problemet në Pritje",
     "unlockAction": "Zhbloko Dhomën",
-    "lockAction": "Blloko Dhomën"
-  },  
-  "roomCard": { "mark_for_check": "Check Out" },
+    "lockAction": "Blloko Dhomën",
+    "mark_for_check": "Check Out",
+    "requestCleaning": "Kërko pastrim",
+    "limpiarButton": "Pastro"
+  },
   "reportProblemModal": {
     "title": "Raporto Problem në Dhomën {{roomNumber}}",
     "descriptionLabel": "Përshkrimi i Problemit",
@@ -40,11 +43,26 @@
   "recleanModal": {
     "title": "Shëno për Ri-pastrim - Dhoma {{roomNumber}}",
     "reasonLabel": "Arsyeja për Ri-pastrim",
-    "markButton": "Shëno"
+    "photoLabel": "Shto Foto (Opsionale)",
+    "markButton": "Shëno",
+    "loadingButton": "Duke ruajtur..."
+  },
+  "confirmationModal": {
+    "resolveTitle": "Konfirmo Zgjidhjen",
+    "resolveMessage": "Shëno problemin '{{problemDescription}}' si të zgjidhur?",
+    "confirmButton": "Konfirmo",
+    "cancelButton": "Anulo"
   },
   "cleanModal": {
     "title": "Shëno si të Pastër",
     "message": "Si është përgatitur dhoma?",
+    "singleBed": "Tek",
+    "doubleBed": "Çift",
+    "closeButton": "Mbyll"
+  },
+  "checkModal": {
+    "title": "Shëno për Kontroll",
+    "message": "Si duhet të përgatitet dhoma për pastrim?",
     "singleBed": "Tek",
     "doubleBed": "Çift",
     "closeButton": "Mbyll"
@@ -60,7 +78,9 @@
     "problem": "Problem",
     "reclean": "Ri-pastro",
     "reclean_occupied": "Ri-pastro (E zënë)",
-    "blocked": "E bllokuar"
+    "blocked": "E bllokuar",
+    "dirty_occupied": "E papastër (E zënë)",
+    "limpiar": "Pastro"
   },
   "filters": {
     "all_number": "Të gjithë numrat",

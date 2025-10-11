@@ -11,6 +11,8 @@
   --problem-color: #FFD166;
   --occupied-color: #4D96FF;
   --reclean-color: #FF9F4D; /* Naranja para relimpieza */
+  --color-limpiar-aurora: #f1c40f30;
+  --color-limpiar-bright: #f1c40f;
   --color-resolve: #00bcd4; /* Un color cian para resolver */
 
   /* Animaciones */
@@ -90,6 +92,26 @@
   to { transform: scale(1.2); }
 }
 
+@keyframes slideOut {
+  0% {
+    transform: scale(1) translateX(0);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.05) translateX(0);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1.05) translateX(150%);
+    opacity: 0;
+  }
+}
+
+.room-card.animating-out {
+  animation: slideOut 0.8s forwards ease-in-out;
+  z-index: 100; /* Asegura que esté por encima de otras tarjetas durante la animación */
+}
+
 
 /* --- Colores de Estado y Aurora --- */
 .status-clean .aurora-background::before { background: radial-gradient(circle, var(--clean-color), transparent 60%); }
@@ -104,11 +126,20 @@
 .status-occupied .aurora-background::before { background: radial-gradient(circle, var(--occupied-color), transparent 60%); }
 .status-occupied .aurora-background::after { background: radial-gradient(circle, var(--clean-color), transparent 60%); }
 
-.status-reclean .aurora-background::before { background: radial-gradient(circle, var(--problem-color), transparent 60%); }
-.status-reclean .aurora-background::after { background: radial-gradient(circle, var(--occupied-color), transparent 60%); }
+.status-reclean {
+  --aurora-color: var(--color-reclean-aurora);
+  --status-color: var(--color-reclean-bright);
+}
 
-/* Estilos para el estado de bloqueo */
-.status-blocked .status-indicator { color: var(--problem-color); }
+.status-limpiar {
+  --aurora-color: var(--color-limpiar-aurora);
+  --status-color: var(--color-limpiar-bright);
+}
+
+.status-blocked {
+  --aurora-color: var(--color-blocked-aurora);
+  --status-color: var(--color-blocked-bright);
+}
 .is-blocked {
   border-color: var(--problem-color);
   box-shadow: 0 0 20px rgba(255, 209, 102, 0.5);
@@ -140,6 +171,37 @@
   background-color: rgba(255, 255, 255, 0.1);
   color: var(--text-color-primary);
   transform: scale(1.1);
+}
+
+.request-cleaning-button {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(255, 165, 0, 0.2);
+  border: 1px solid #FFA500;
+  color: #FFA500;
+  border-radius: 50%;
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.3s ease;
+}
+
+.request-cleaning-button:hover {
+  background-color: rgba(255, 165, 0, 0.4);
+  color: #fff;
+  transform: scale(1.1);
+}
+
+.request-cleaning-button.active {
+  background-color: #FFA500;
+  border-color: #FFA500;
+  color: #1f1f23;
+  cursor: not-allowed;
 }
 
 /* --- Estilos cuando la habitación ESTÁ BLOQUEADA --- */
@@ -199,6 +261,7 @@
 .status-problem .status-indicator { color: var(--problem-color); }
 .status-occupied .status-indicator { color: var(--occupied-color); }
 .status-reclean .status-indicator { color: var(--problem-color); }
+.status-limpiar .status-indicator { color: var(--color-limpiar-bright); }
 
 
 .room-number {
@@ -238,48 +301,83 @@
   gap: 10px;
 }
 
+/* --- Estilos Consistentes para Botones de Acción --- */
+
+/* Estado base para todos los botones de acción */
 .action-button {
   flex-grow: 1;
   padding: 12px;
   border-radius: 12px;
-  border: 1px solid var(--card-border-color);
-  background: rgba(255, 255, 255, 0.05);
-  color: var(--text-color-primary); /* Texto blanco para buena legibilidad */
   font-weight: 600;
   cursor: pointer;
-  transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease, border-color var(--transition-speed) ease;
+  background-color: transparent; /* Sin fondo por defecto */
+  border: 1px solid transparent; /* Borde transparente por defecto */
+  transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out, border-color 0.2s ease-in-out;
 }
 
-.action-button:hover:not([disabled]) {
-  background: rgba(255, 255, 255, 0.1);
-  color: var(--text-color-primary);
-  border-color: rgba(255, 255, 255, 0.3);
-}
-
-/* El estado deshabilitado solo se aplica a botones que NO están activos */
-.action-button:disabled:not(.active) {
+.action-button:disabled {
   cursor: not-allowed;
   opacity: 0.6;
 }
 
-/* El botón activo, aunque esté deshabilitado, mantiene su apariencia */
+/* Cuando un botón está activo, no queremos que la opacidad de 'disabled' le afecte */
 .action-button.active:disabled {
-  cursor: not-allowed;
-  opacity: 1; /* Mantiene la opacidad completa */
+  opacity: 1;
 }
 
-
-
-.action-button.active {
-  color: #000;
-  border-width: 2px;
+/* --- Botón Limpiar (Verde) --- */
+.action-button.btn-clean { background-color: rgba(0, 230, 118, 0.2); color: rgba(255, 255, 255, 0.8); border-color: rgba(0, 230, 118, 0.5); }
+.action-button.btn-clean:hover,
+.action-button.btn-clean.active {
+  background-color: #00e676; /* Verde más vivo */
+  color: white;
+  border-color: #00e676;
 }
 
-/* Colores de botones activos */
-.status-actions .action-button.active:nth-child(1) { background-color: var(--clean-color); border-color: var(--clean-color); }
-.status-actions .action-button.active:nth-child(2) { background-color: var(--dirty-color); border-color: var(--dirty-color); }
-.status-actions .action-button.active:nth-child(3) { background-color: var(--occupied-color); border-color: var(--occupied-color); }
+/* --- Botón Sucia (Rojo) --- */
+.action-button.btn-dirty { background-color: rgba(255, 23, 68, 0.2); color: rgba(255, 255, 255, 0.8); border-color: rgba(255, 23, 68, 0.5); }
+.action-button.btn-dirty:hover,
+.action-button.btn-dirty.active {
+  background-color: #ff1744; /* Rojo más vivo */
+  color: white;
+  border-color: #ff1744;
+}
 
+/* --- Botón Ocupada (Azul) --- */
+.action-button.btn-occupied { background-color: rgba(41, 121, 255, 0.2); color: rgba(255, 255, 255, 0.8); border-color: rgba(41, 121, 255, 0.5); }
+.action-button.btn-occupied:hover,
+.action-button.btn-occupied.active {
+  background-color: #2979ff; /* Azul más vivo */
+  color: white;
+  border-color: #2979ff;
+}
+
+/* --- Botón Problema (Amarillo) --- */
+.action-button.btn-problem { background-color: rgba(255, 234, 0, 0.2); color: rgba(255, 255, 255, 0.8); border-color: rgba(255, 234, 0, 0.5); }
+.action-button.btn-problem:hover,
+.action-button.btn-problem.active {
+  background-color: #ffea00; /* Amarillo más vivo */
+  color: white; /* Texto blanco para consistencia */
+  border-color: #ffea00;
+}
+
+/* --- Botón Relimpieza (Naranja) --- */
+.action-button.btn-reclean { background-color: rgba(255, 109, 0, 0.2); color: rgba(255, 255, 255, 0.8); border-color: rgba(255, 109, 0, 0.5); }
+.action-button.btn-reclean:hover,
+.action-button.btn-reclean.active {
+  background-color: #ff6d00; /* Naranja más vivo */
+  color: white;
+  border-color: #ff6d00;
+}
+
+/* --- Botón Marcar para Salida (Naranja suave) --- */
+.action-button.btn-check { background-color: rgba(255, 179, 0, 0.2); color: rgba(255, 255, 255, 0.8); border-color: rgba(255, 179, 0, 0.5); }
+.action-button.btn-check:hover,
+.action-button.btn-check.active {
+  background-color: #ffb300; /* Ámbar más vivo */
+  color: white; /* Texto blanco para consistencia */
+  border-color: #ffb300;
+}
 
 /* --- Contenedor para botones de acciones secundarias --- */
 .secondary-actions {
@@ -292,45 +390,6 @@
 /* El botón de reportar problema ocupa toda la fila si es el único */
 .secondary-actions > .problem-button:only-child {
   grid-column: 1 / -1; /* Ocupa todo el ancho */
-}
-
-.action-button.problem-button {
-  background-color: var(--problem-color);
-  border: 2px solid var(--problem-color);
-  color: #000;
-}
-
-.action-button.problem-button:hover {
-  background-color: transparent;
-  color: var(--problem-color);
-}
-
-.action-button.reclean-button {
-  background-color: var(--reclean-color, var(--problem-color)); /* Fallback por si no está definida */
-  border: 2px solid var(--reclean-color, var(--problem-color));
-  color: #000;
-}
-
-.action-button.reclean-button:hover {
-  background-color: transparent;
-  color: var(--reclean-color, var(--problem-color));
-}
-
-.action-button.resolve-button {
-  background-color: transparent;
-  border: 1px solid var(--color-resolve); /* Un color verde para la resolución */
-  color: var(--color-resolve);
-  flex-grow: 1;
-}
-
-.secondary-actions .checkout-button {
-  background-color: rgba(255, 165, 0, 0.2); /* Naranja suave */
-  color: #FFA500;
-}
-
-.secondary-actions .checkout-button:hover {
-  background-color: rgba(255, 165, 0, 0.4);
-  color: #fff;
 }
 
 /* --- Estilos para la lista de problemas --- */

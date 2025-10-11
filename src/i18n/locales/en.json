@@ -16,6 +16,7 @@
     "cleanedBy": "Cleaned by:",
     "cleanedAt": "Time:",
     "recleaningReason": "Reason for re-cleaning:",
+    "cleaningReason": "Reason for cleaning:",
     "reportedProblems": "Reported Problems:",
     "resolved": "(Resolved)",
     "resolveButton": "Resolve",
@@ -27,7 +28,9 @@
     "pendingProblems": "Pending Problems",
     "unlockAction": "Unlock Room",
     "lockAction": "Lock Room",
-    "mark_for_check": "Check Out"
+    "mark_for_check": "Check Out",
+    "requestCleaning": "Request cleaning",
+    "limpiarButton": "Clean"
   },
   "reportProblemModal": {
     "title": "Report Problem in Room {{roomNumber}}",
@@ -75,7 +78,9 @@
     "problem": "Problem",
     "reclean": "Reclean",
     "reclean_occupied": "Reclean (Occupied)",
-    "blocked": "Blocked"
+    "blocked": "Blocked",
+    "dirty_occupied": "Dirty (Occupied)",
+    "limpiar": "Clean Up"
   },
   "filters": {
     "all_number": "All Numbers",

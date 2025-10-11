@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { collection, onSnapshot, doc, updateDoc, Timestamp, deleteField } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { signOut } from 'firebase/auth';
@@ -19,7 +19,7 @@ interface RoomListProps {
   user: User;
 }
 
-type ModernRoomStatus = 'clean' | 'dirty' | 'problem' | 'occupied' | 'reclean' | 'blocked';
+type ModernRoomStatus = 'clean' | 'dirty' | 'problem' | 'occupied' | 'reclean' | 'blocked' | 'dirty_occupied' | 'limpiar';
 
 const RoomList: React.FC<RoomListProps> = ({ user }) => {
   const { t, i18n } = useTranslation();
@@ -31,6 +31,7 @@ const RoomList: React.FC<RoomListProps> = ({ user }) => {
   const [isCleanModalOpen, setCleanModalOpen] = useState(false);
   const [isCheckoutModalOpen, setCheckoutModalOpen] = useState(false);
   const [isCheckModalOpen, setCheckModalOpen] = useState(false);
+  const [animatingOutRoomId, setAnimatingOutRoomId] = useState<string | null>(null);
 
   const getInitialFilter = () => {
     switch (user.role) {
@@ -47,53 +48,77 @@ const RoomList: React.FC<RoomListProps> = ({ user }) => {
 
   const [filter, setFilter] = useState(getInitialFilter());
 
+  // Usamos useRef para mantener referencias actualizadas de las dependencias
+  // que cambian con frecuencia (user, filter), para evitar re-suscribirnos a 
+  // Firebase innecesariamente y solucionar bugs de "closure".
+  const userRef = useRef(user);
   useEffect(() => {
-    const unsubscribeRooms = onSnapshot(collection(db, 'rooms'), (snapshot) => {
-      const roomsData = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() } as Room));
-      
-      const filteredRooms = roomsData.filter(room => {
-        const modernStatus = getModernStatus(room);
-        const baseStatus = room.baseStatus || (room.status !== 'Bloqueada' ? room.status : 'Sucia');
+    userRef.current = user;
+  }, [user]);
 
-        switch (filter) {
-          case 'Sucia':
-            return baseStatus === 'Sucia' || modernStatus === 'reclean';
-          case 'Limpia':
-            return baseStatus === 'Limpia';
-          case 'Ocupada':
-            return baseStatus === 'Ocupada';
-          case 'Bloqueada':
-            return modernStatus === 'blocked';
-          case 'problem':
-            return modernStatus === 'problem';
-          default:
-            return true;
-        }
-      });
+  const filterRef = useRef(filter);
+  useEffect(() => {
+    filterRef.current = filter;
+  }, [filter]);
 
-      const sortedRooms = filteredRooms.sort((a, b) => {
-        if (filter === 'status') {
-          const isADirty = a.status === 'Sucia';
-          const isBDirty = b.status === 'Sucia';
-          if (isADirty && !isBDirty) return -1;
-          if (!isADirty && isBDirty) return 1;
-        }
-        return a.id.localeCompare(b.id, undefined, { numeric: true });
-      });
-
-      setRooms(sortedRooms);
-    });
-
+  useEffect(() => {
+    // Primero, nos suscribimos a los usuarios.
     const unsubscribeUsers = onSnapshot(collection(db, 'users'), (snapshot) => {
       const usersData = snapshot.docs.map((doc) => ({ uid: doc.id, ...doc.data() } as User));
       setUsers(usersData);
+
+      // UNA VEZ que tenemos los usuarios, nos suscribimos a las habitaciones.
+      // Esto evita condiciones de carrera donde las habitaciones se procesan antes de tener los datos de usuario.
+      const unsubscribeRooms = onSnapshot(collection(db, 'rooms'), (roomSnapshot) => {
+        const roomsData = roomSnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() } as Room));
+        
+        const filteredRooms = roomsData.filter(room => {
+          const currentFilter = filterRef.current;
+          const currentUser = userRef.current;
+          const modernStatus = getModernStatus(room);
+          const baseStatus = room.baseStatus || (room.status !== 'Bloqueada' ? room.status : 'Sucia');
+
+          switch (currentFilter) {
+            case 'Sucia':
+              if (currentUser.role === 'cleaner') {
+                return baseStatus === 'Sucia' || modernStatus === 'limpiar' || (modernStatus === 'reclean' && room.lastCleanedBy === currentUser.uid);
+              } else {
+                return baseStatus === 'Sucia' || modernStatus === 'reclean' || modernStatus === 'limpiar';
+              }
+            case 'Limpia':
+              return baseStatus === 'Limpia';
+            case 'Ocupada':
+              return baseStatus === 'Ocupada';
+            case 'Bloqueada':
+              return modernStatus === 'blocked';
+            case 'problem':
+              return modernStatus === 'problem';
+            default:
+              return true;
+          }
+        });
+
+        const sortedRooms = filteredRooms.sort((a, b) => {
+          if (filterRef.current === 'status') {
+            const isADirty = a.status === 'Sucia';
+            const isBDirty = b.status === 'Sucia';
+            if (isADirty && !isBDirty) return -1;
+            if (!isADirty && isBDirty) return 1;
+          }
+          return a.id.localeCompare(b.id, undefined, { numeric: true });
+        });
+
+        setRooms(sortedRooms);
+      });
+
+      // Devolvemos la función para desuscribirnos de las habitaciones cuando el componente se desmonte.
+      return () => unsubscribeRooms();
     });
 
     return () => {
-      unsubscribeRooms();
       unsubscribeUsers();
     };
-  }, [filter]);
+  }, []); // Las dependencias ahora están vacías, la suscripción se crea una sola vez.
 
   const handleLogout = () => {
     signOut(auth);
@@ -108,21 +133,50 @@ const RoomList: React.FC<RoomListProps> = ({ user }) => {
     const roomRef = doc(db, 'rooms', roomId);
     const room = rooms.find((r) => r.id === roomId);
 
-    if (room) {
-      const isBlocked = room.status === 'Bloqueada';
-      const updateData: any = {
-        status: isBlocked ? 'Bloqueada' : newBaseStatus,
-        baseStatus: newBaseStatus,
-      };
+    if (!room) return;
 
-      if (newBaseStatus === 'Limpia') {
-        updateData.lastCleanedBy = user.uid;
-        updateData.lastCleanedAt = Timestamp.now();
-        updateData.recleaningReason = '';
-      }
+    const isBlocked = room.status === 'Bloqueada';
+    const updateData: any = {
+      status: isBlocked ? 'Bloqueada' : newBaseStatus,
+      baseStatus: newBaseStatus,
+    };
 
-      await updateDoc(roomRef, updateData);
+    if (newBaseStatus === 'Limpia') {
+      updateData.lastCleanedBy = user.uid;
+      updateData.lastCleanedAt = Timestamp.now();
+      updateData.recleaningReason = deleteField();
+      updateData.cleaningReason = deleteField();
     }
+
+    // --- Lógica de Animación para Limpiadores ---
+    if (user.role === 'cleaner' && newBaseStatus === 'Limpia') {
+      // Animación desactivada temporalmente para depuración
+      // setAnimatingOutRoomId(roomId);
+      // setTimeout(() => {
+      //   updateDoc(roomRef, updateData).then(() => {
+      //     setRooms(prevRooms => prevRooms.filter(r => r.id !== roomId));
+      //   });
+      // }, 800);
+      // return; // Termina la ejecución aquí para el limpiador
+      
+      // Comportamiento inmediato sin animación para depuración
+      await updateDoc(roomRef, updateData);
+      setRooms(prevRooms => prevRooms.filter(r => r.id !== roomId));
+      return;
+    }
+
+    // --- Lógica de Actualización Inmediata para todos los demás casos ---
+    await updateDoc(roomRef, updateData);
+    // Actualización optimista para una UI reactiva
+    setRooms(prevRooms => prevRooms.map(r => {
+      if (r.id !== roomId) return r;
+      const localUpdate = { ...updateData };
+      // Reemplazamos los objetos de Firebase con valores válidos para el estado local
+      if (localUpdate.recleaningReason && typeof localUpdate.recleaningReason === 'object') localUpdate.recleaningReason = undefined;
+      if (localUpdate.cleaningReason && typeof localUpdate.cleaningReason === 'object') localUpdate.cleaningReason = undefined;
+      if (localUpdate.baseStatus && typeof localUpdate.baseStatus === 'object') localUpdate.baseStatus = undefined;
+      return { ...r, ...localUpdate };
+    }));
   };
 
   const handleReclean = async (roomId: string, reason: string, file: File | null) => {
@@ -137,9 +191,19 @@ const RoomList: React.FC<RoomListProps> = ({ user }) => {
 
     await updateDoc(roomRef, {
       status: 'Sucia',
+      baseStatus: 'Sucia',
       recleaningReason: reason,
       recleaningImageUrl: imageUrl || null,
     });
+
+    // Actualización optimista
+    setRooms(prevRooms =>
+      prevRooms.map(r =>
+        r.id === roomId
+          ? { ...r, status: 'Sucia', baseStatus: 'Sucia', recleaningReason: reason, recleaningImageUrl: imageUrl || undefined }
+          : r
+      )
+    );
   };
 
   const handleMarkForCheck = async (roomId: string, bedType: 'single' | 'double') => {
@@ -148,6 +212,14 @@ const RoomList: React.FC<RoomListProps> = ({ user }) => {
       status: 'Sucia',
       bedType: bedType,
     });
+
+    // Actualización optimista
+    setRooms(prevRooms =>
+      prevRooms.map(r =>
+        r.id === roomId
+          ? { ...r, status: 'Sucia', bedType: bedType }
+          : r
+      ));
   };
   
   const openReportModal = (room: Room) => {
@@ -197,6 +269,12 @@ const RoomList: React.FC<RoomListProps> = ({ user }) => {
       }
 
       await updateDoc(roomRef, updateData);
+      // Actualización optimista
+      setRooms(prevRooms =>
+        prevRooms.map(r =>
+          r.id === roomId ? { ...r, ...updateData } : r
+        )
+      );
     }
   };
 
@@ -204,14 +282,21 @@ const RoomList: React.FC<RoomListProps> = ({ user }) => {
     const roomRef = doc(db, 'rooms', room.id);
 
     if (room.status === 'Bloqueada') {
+      const updateData = { status: room.baseStatus || 'Sucia', baseStatus: deleteField() };
       // Desbloquear: Volver al estado base y eliminar baseStatus
-      await updateDoc(roomRef, {
-        status: room.baseStatus || 'Sucia',
-        baseStatus: deleteField()
-      });
+      await updateDoc(roomRef, updateData);
+      // Actualización optimista
+      setRooms(prevRooms =>
+        prevRooms.map(r => r.id === room.id ? { ...r, status: room.baseStatus || 'Sucia', baseStatus: undefined } : r)
+      );
     } else {
+      const updateData = { status: 'Bloqueada', baseStatus: room.status };
       // Bloquear: Guardar estado actual en baseStatus y poner status en 'Bloqueada'
-      await updateDoc(roomRef, { status: 'Bloqueada', baseStatus: room.status });
+      await updateDoc(roomRef, updateData);
+      // Actualización optimista
+      setRooms(prevRooms =>
+        prevRooms.map(r => r.id === room.id ? { ...r, status: 'Bloqueada', baseStatus: room.status as 'Sucia' | 'Limpia' | 'Ocupada' } : r)
+      );
     }
   };
 
@@ -230,10 +315,38 @@ const RoomList: React.FC<RoomListProps> = ({ user }) => {
     if (room.status === 'Bloqueada') return 'blocked';
     if (room.reportedProblems && room.reportedProblems.some(p => !p.isResolved)) return 'problem';
     if (room.recleaningReason) return 'reclean';
+    if (room.cleaningReason) return 'limpiar';
     if (room.status === 'Limpia') return 'clean';
     if (room.status === 'Ocupada') return 'occupied';
+    if (room.status === 'Sucia' && room.baseStatus === 'Ocupada') return 'dirty_occupied';
     return 'dirty';
   };
+
+  const handleToggleRequestCleaning = async (room: Room): Promise<void> => {
+    const roomRef = doc(db, 'rooms', room.id);
+    const isCleaningRequested = room.cleaningReason;
+    let updateData: any;
+  
+    if (isCleaningRequested) {
+      // Un-request cleaning: revert to occupied and clear the cleaning reason
+      updateData = {
+        status: 'Ocupada',
+        baseStatus: 'Ocupada',
+        cleaningReason: deleteField(),
+      };
+      await updateDoc(roomRef, updateData);
+      setRooms(prevRooms => prevRooms.map(r => r.id === room.id ? { ...r, status: 'Ocupada', baseStatus: 'Ocupada', cleaningReason: undefined } : r));
+    } else {
+      // Request cleaning
+      updateData = {
+        status: 'Sucia',
+        baseStatus: 'Ocupada',
+        cleaningReason: 'Cliente ha solicitado limpieza',
+      };
+      await updateDoc(roomRef, updateData);
+      setRooms(prevRooms => prevRooms.map(r => r.id === room.id ? { ...r, ...updateData } : r));
+    }
+  }
 
   return (
     <>
@@ -286,9 +399,11 @@ const RoomList: React.FC<RoomListProps> = ({ user }) => {
                     lastCleanedAt: room.lastCleanedAt ? room.lastCleanedAt.toDate().toLocaleString() : undefined,
                     problems: unresolvedProblems,
                     recleaningReason: room.recleaningReason,
+                    cleaningReason: room.cleaningReason,
                     bedType: room.bedType,
                   } as ModernRoom}
                   userRole={userRole}
+                  isAnimatingOut={animatingOutRoomId === room.id}
                   onStatusChange={(newStatus) => {
                     let firestoreStatus: 'Limpia' | 'Sucia' | 'Ocupada' = 'Sucia'; // Default
                     if (newStatus === 'clean') firestoreStatus = 'Limpia';
@@ -301,6 +416,7 @@ const RoomList: React.FC<RoomListProps> = ({ user }) => {
                   onMarkForCheck={() => openCheckModal(room)}
                   onResolveProblem={(problemId) => handleResolveProblem(room.id, problemId)}
                   onToggleBlock={() => handleToggleBlock(room)}
+                  onRequestCleaning={() => handleToggleRequestCleaning(room)}
                 />
               </div>
             );

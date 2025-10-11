@@ -16,6 +16,7 @@
     "cleanedBy": "Limpiada por:",
     "cleanedAt": "Hora:",
     "recleaningReason": "Motivo de la relimpieza:",
+    "cleaningReason": "Motivo de la limpieza:",
     "reportedProblems": "Problemas Reportados:",
     "resolved": "(Resuelto)",
     "resolveButton": "Resolver",
@@ -27,7 +28,9 @@
     "pendingProblems": "Problemas Pendientes",
     "unlockAction": "Desbloquear Habitación",
     "lockAction": "Bloquear Habitación",
-    "mark_for_check": "Check Out"
+    "mark_for_check": "Check Out",
+    "requestCleaning": "Solicitar limpieza",
+    "limpiarButton": "Limpiar"
   },
   "reportProblemModal": {
     "title": "Reportar Problema en Habitación {{roomNumber}}",
@@ -75,7 +78,9 @@
     "problem": "Problema",
     "reclean": "Relimpieza",
     "reclean_occupied": "Relimpieza (Ocupada)",
-    "blocked": "Bloqueada"
+    "blocked": "Bloqueada",
+    "dirty_occupied": "Sucia (Ocupada)",
+    "limpiar": "Limpiar"
   },
   "filters": {
     "all_number": "Todos los Números",

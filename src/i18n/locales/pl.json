@@ -16,6 +16,7 @@
     "cleanedBy": "Posprzątane przez:",
     "cleanedAt": "Godzina:",
     "recleaningReason": "Powód ponownego sprzątania:",
+    "cleaningReason": "Powód sprzątania:",
     "reportedProblems": "Zgłoszone problemy:",
     "resolved": "(Rozwiązany)",
     "resolveButton": "Rozwiąż",
@@ -26,9 +27,11 @@
     "recleanButton": "Posprzątaj ponownie",
     "pendingProblems": "Oczekujące problemy",
     "unlockAction": "Odblokuj Pokój",
-    "lockAction": "Zablokuj Pokój"
-  },  
-  "roomCard": { "mark_for_check": "Check Out" },
+    "lockAction": "Zablokuj Pokój",
+    "mark_for_check": "Check Out",
+    "requestCleaning": "Zażądaj sprzątania",
+    "limpiarButton": "Sprzątnij"
+  },
   "reportProblemModal": {
     "title": "Zgłoś problem w pokoju {{roomNumber}}",
     "descriptionLabel": "Opis problemu",
@@ -40,11 +43,26 @@
   "recleanModal": {
     "title": "Oznacz do ponownego sprzątania - Pokój {{roomNumber}}",
     "reasonLabel": "Powód ponownego sprzątania",
-    "markButton": "Oznacz"
+    "photoLabel": "Dodaj zdjęcie (Opcjonalnie)",
+    "markButton": "Oznacz",
+    "loadingButton": "Zapisywanie..."
+  },
+  "confirmationModal": {
+    "resolveTitle": "Potwierdź Rozwiązanie",
+    "resolveMessage": "Oznaczyć problem '{{problemDescription}}' jako rozwiązany?",
+    "confirmButton": "Potwierdź",
+    "cancelButton": "Anuluj"
   },
   "cleanModal": {
     "title": "Oznacz jako Czysty",
     "message": "Jak przygotowano pokój?",
+    "singleBed": "Pojedyncze",
+    "doubleBed": "Podwójne",
+    "closeButton": "Zamknij"
+  },
+  "checkModal": {
+    "title": "Oznacz do Sprawdzenia",
+    "message": "Jak należy przygotować pokój do sprzątania?",
     "singleBed": "Pojedyncze",
     "doubleBed": "Podwójne",
     "closeButton": "Zamknij"
@@ -60,7 +78,9 @@
     "problem": "Problem",
     "reclean": "Do ponownego sprzątania",
     "reclean_occupied": "Do ponownego sprzątania (Zajęty)",
-    "blocked": "Zablokowany"
+    "blocked": "Zablokowany",
+    "dirty_occupied": "Brudny (Zajęty)",
+    "limpiar": "Sprzątnij"
   },
   "filters": {
     "all_number": "Wszystkie Numery",

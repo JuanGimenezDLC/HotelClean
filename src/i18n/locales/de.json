@@ -16,6 +16,7 @@
     "cleanedBy": "Gereinigt von:",
     "cleanedAt": "Uhrzeit:",
     "recleaningReason": "Grund für die Nachreinigung:",
+    "cleaningReason": "Grund für die Reinigung:",
     "reportedProblems": "Gemeldete Probleme:",
     "resolved": "(Erledigt)",
     "resolveButton": "Lösen",
@@ -26,9 +27,11 @@
     "recleanButton": "Nachreinigung",
     "pendingProblems": "Ausstehende Probleme",
     "unlockAction": "Zimmer Entsperren",
-    "lockAction": "Zimmer Sperren"
-  },  
-  "roomCard": { "mark_for_check": "Check Out" },
+    "lockAction": "Zimmer Sperren",
+    "mark_for_check": "Check Out",
+    "requestCleaning": "Reinigung anfordern",
+    "limpiarButton": "Reinigen"
+  },
   "reportProblemModal": {
     "title": "Problem in Zimmer {{roomNumber}} Melden",
     "descriptionLabel": "Problembeschreibung",
@@ -40,11 +43,26 @@
   "recleanModal": {
     "title": "Für Nachreinigung Markieren - Zimmer {{roomNumber}}",
     "reasonLabel": "Grund für die Nachreinigung",
-    "markButton": "Markieren"
+    "photoLabel": "Foto hinzufügen (Optional)",
+    "markButton": "Markieren",
+    "loadingButton": "Speichern..."
+  },
+  "confirmationModal": {
+    "resolveTitle": "Auflösung Bestätigen",
+    "resolveMessage": "Das Problem '{{problemDescription}}' als gelöst markieren?",
+    "confirmButton": "Bestätigen",
+    "cancelButton": "Abbrechen"
   },
   "cleanModal": {
     "title": "Als Sauber markieren",
     "message": "Wie wurde das Zimmer vorbereitet?",
+    "singleBed": "Einzelbett",
+    "doubleBed": "Doppelbett",
+    "closeButton": "Schließen"
+  },
+  "checkModal": {
+    "title": "Zur Überprüfung Markieren",
+    "message": "Wie soll das Zimmer für die Reinigung vorbereitet werden?",
     "singleBed": "Einzelbett",
     "doubleBed": "Doppelbett",
     "closeButton": "Schließen"
@@ -60,7 +78,9 @@
     "problem": "Problem",
     "reclean": "Nachreinigung",
     "reclean_occupied": "Nachreinigung (Besetzt)",
-    "blocked": "Blockiert"
+    "blocked": "Blockiert",
+    "dirty_occupied": "Schmutzig (Besetzt)",
+    "limpiar": "Reinigen"
   },
   "filters": {
     "all_number": "Alle Nummern",
