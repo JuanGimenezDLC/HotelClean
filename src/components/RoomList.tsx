@@ -10,6 +10,7 @@ import ReportProblemModal from './ReportProblemModal';
 import RecleanModal from './RecleanModal';
 import CleanModal from './CleanModal';
 import CheckModal from './CheckModal';
+import WarningModal from './WarningModal';
 import CleanConfirmationModal from './CleanConfirmationModal'; // Importar el nuevo modal
 import LanguageSelector from './LanguageSelector';
 import { ModernRoomCard, ModernRoom } from './ModernRoomCard';
@@ -32,6 +33,7 @@ const RoomList: React.FC<RoomListProps> = ({ user }) => {
   const [isCleanModalOpen, setCleanModalOpen] = useState(false);
   const [isCheckoutModalOpen, setCheckoutModalOpen] = useState(false);
   const [isCheckModalOpen, setCheckModalOpen] = useState(false);
+  const [isCheckInWarningModalOpen, setCheckInWarningModalOpen] = useState(false);
   const [animatingOutRoomId, setAnimatingOutRoomId] = useState<string | null>(null);
 
   const getInitialFilter = () => {
@@ -262,6 +264,11 @@ const RoomList: React.FC<RoomListProps> = ({ user }) => {
     setCheckModalOpen(true);
   };
   
+  const openCheckInWarningModal = () => {
+    setCheckInWarningModalOpen(true);
+  };
+
+
   const handleResolveProblem = async (roomId: string, problemId: string) => {
     const roomRef = doc(db, 'rooms', roomId);
     const room = rooms.find((r) => r.id === roomId);
@@ -420,12 +427,19 @@ const RoomList: React.FC<RoomListProps> = ({ user }) => {
                   userRole={userRole}
                   isAnimatingOut={animatingOutRoomId === room.id}
                   onStatusChange={(newStatus) => {
-                    if (newStatus === 'clean') openCleanModal(room);
+                    if (newStatus === 'clean') {
+                      openCleanModal(room);
+                    } else if (newStatus === 'dirty') {
+                      handleSetStatus(room.id, 'Sucia');
+                    } else if (newStatus === 'occupied') {
+                      handleSetStatus(room.id, 'Ocupada');
+                    }
                   }}
                   onReportProblem={() => openReportModal(room)}
                   onReclean={() => openRecleanModal(room)}
                   onMarkForCheck={() => openCheckModal(room)}
                   onResolveProblem={(problemId) => handleResolveProblem(room.id, problemId)}
+                  onCheckInAttemptOnDirty={openCheckInWarningModal}
                   onToggleBlock={() => handleToggleBlock(room)}
                   onRequestCleaning={() => handleToggleRequestCleaning(room)}
                 />
@@ -471,6 +485,12 @@ const RoomList: React.FC<RoomListProps> = ({ user }) => {
                 }
               }}
               room={selectedRoom}
+            />
+            <WarningModal
+              isOpen={isCheckInWarningModalOpen}
+              onClose={() => setCheckInWarningModalOpen(false)}
+              title={t('warningModal.checkInTitle')}
+              message={t('warningModal.checkInMessage')}
             />
           </>
         )}

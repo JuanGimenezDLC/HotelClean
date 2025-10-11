@@ -326,59 +326,100 @@
 }
 
 /* --- Botón Limpiar (Verde) --- */
-.action-button.btn-clean { background-color: rgba(0, 230, 118, 0.2); color: rgba(255, 255, 255, 0.8); border-color: rgba(0, 230, 118, 0.5); }
-.action-button.btn-clean:hover,
-.action-button.btn-clean.active {
+.action-button.btn-clean { background-color: rgba(0, 230, 118, 0.2); color: #EAEAEA; border-color: rgba(0, 230, 118, 0.5); }
+.action-button.btn-clean:hover {
   background-color: #00e676; /* Verde más vivo */
-  color: white;
+  color: #1f1f23; /* Texto oscuro para contraste */
   border-color: #00e676;
+}
+.action-button.btn-clean.active,
+.action-button.btn-clean.active:hover {
+  background-color: #00e676;
+  color: #1f1f23;
+  border-color: #00e676;
+  pointer-events: none; /* Ignora los clics */
+  cursor: default; /* El cursor no cambia a la mano */
 }
 
 /* --- Botón Sucia (Rojo) --- */
-.action-button.btn-dirty { background-color: rgba(255, 23, 68, 0.2); color: rgba(255, 255, 255, 0.8); border-color: rgba(255, 23, 68, 0.5); }
-.action-button.btn-dirty:hover,
-.action-button.btn-dirty.active {
+.action-button.btn-dirty { background-color: rgba(255, 23, 68, 0.2); color: #EAEAEA; border-color: rgba(255, 23, 68, 0.5); }
+.action-button.btn-dirty:hover {
   background-color: #ff1744; /* Rojo más vivo */
-  color: white;
+  color: #EAEAEA;
   border-color: #ff1744;
+}
+.action-button.btn-dirty.active,
+.action-button.btn-dirty.active:hover {
+  background-color: #ff1744;
+  color: #EAEAEA;
+  border-color: #ff1744;
+  pointer-events: none;
+  cursor: default;
 }
 
 /* --- Botón Ocupada (Azul) --- */
-.action-button.btn-occupied { background-color: rgba(41, 121, 255, 0.2); color: rgba(255, 255, 255, 0.8); border-color: rgba(41, 121, 255, 0.5); }
-.action-button.btn-occupied:hover,
-.action-button.btn-occupied.active {
+.action-button.btn-occupied { background-color: rgba(41, 121, 255, 0.2); color: #EAEAEA; border-color: rgba(41, 121, 255, 0.5); }
+.action-button.btn-occupied:hover {
   background-color: #2979ff; /* Azul más vivo */
-  color: white;
+  color: #EAEAEA;
   border-color: #2979ff;
+}
+.action-button.btn-occupied.active,
+.action-button.btn-occupied.active:hover {
+  background-color: #2979ff;
+  color: #EAEAEA;
+  border-color: #2979ff;
+  pointer-events: none;
+  cursor: default;
 }
 
 /* --- Botón Problema (Amarillo) --- */
-.action-button.btn-problem { background-color: rgba(255, 234, 0, 0.2); color: rgba(255, 255, 255, 0.8); border-color: rgba(255, 234, 0, 0.5); }
-.action-button.btn-problem:hover,
-.action-button.btn-problem.active {
+.action-button.btn-problem { background-color: rgba(255, 234, 0, 0.2); color: #EAEAEA; border-color: rgba(255, 234, 0, 0.5); }
+.action-button.btn-problem:hover {
   background-color: #ffea00; /* Amarillo más vivo */
-  color: white; /* Texto blanco para consistencia */
+  color: #1f1f23; /* Texto oscuro para contraste */
   border-color: #ffea00;
+}
+.action-button.btn-problem.active,
+.action-button.btn-problem.active:hover {
+  background-color: #ffea00;
+  color: #1f1f23;
+  border-color: #ffea00;
+  pointer-events: none;
+  cursor: default;
 }
 
 /* --- Botón Relimpieza (Naranja) --- */
-.action-button.btn-reclean { background-color: rgba(255, 109, 0, 0.2); color: rgba(255, 255, 255, 0.8); border-color: rgba(255, 109, 0, 0.5); }
-.action-button.btn-reclean:hover,
-.action-button.btn-reclean.active {
+.action-button.btn-reclean { background-color: rgba(255, 109, 0, 0.2); color: #EAEAEA; border-color: rgba(255, 109, 0, 0.5); }
+.action-button.btn-reclean:hover {
   background-color: #ff6d00; /* Naranja más vivo */
-  color: white;
+  color: #EAEAEA;
   border-color: #ff6d00;
+}
+.action-button.btn-reclean.active,
+.action-button.btn-reclean.active:hover {
+  background-color: #ff6d00;
+  color: #EAEAEA;
+  border-color: #ff6d00;
+  pointer-events: none;
+  cursor: default;
 }
 
 /* --- Botón Marcar para Salida (Naranja suave) --- */
-.action-button.btn-check { background-color: rgba(255, 179, 0, 0.2); color: rgba(255, 255, 255, 0.8); border-color: rgba(255, 179, 0, 0.5); }
-.action-button.btn-check:hover,
-.action-button.btn-check.active {
+.action-button.btn-check { background-color: rgba(255, 179, 0, 0.2); color: #EAEAEA; border-color: rgba(255, 179, 0, 0.5); }
+.action-button.btn-check:hover {
   background-color: #ffb300; /* Ámbar más vivo */
-  color: white; /* Texto blanco para consistencia */
+  color: #1f1f23; /* Texto oscuro para contraste */
   border-color: #ffb300;
 }
 
+/* --- Botón Check-in (Azul claro) --- */
+.action-button.btn-check-in { background-color: rgba(0, 188, 212, 0.2); color: #EAEAEA; border-color: rgba(0, 188, 212, 0.5); }
+.action-button.btn-check-in:hover {
+  background-color: #00BCD4; /* Cian más vivo */
+  color: #1f1f23; /* Texto oscuro para contraste */
+  border-color: #00BCD4;
+}
 /* --- Contenedor para botones de acciones secundarias --- */
 .secondary-actions {
   display: grid; /* Usamos grid para un control más fino */

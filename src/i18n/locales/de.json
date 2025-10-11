@@ -29,6 +29,7 @@
     "unlockAction": "Zimmer Entsperren",
     "lockAction": "Zimmer Sperren",
     "mark_for_check": "Check Out",
+    "check_in": "Check-in",
     "requestCleaning": "Reinigung anfordern",
     "limpiarButton": "Reinigen"
   },
@@ -96,5 +97,10 @@
     "occupied_only": "Nur Besetzt",
     "blocked_only": "Nur Blockiert",
     "problem_only": "Nur Probleme"
+  },
+  "warningModal": {
+    "checkInTitle": "Aktion nicht erlaubt",
+    "checkInMessage": "Ein Zimmer, das nicht sauber ist, kann nicht eingecheckt werden.",
+    "acceptButton": "Akzeptieren"
   }
 }

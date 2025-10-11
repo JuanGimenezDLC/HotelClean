@@ -29,6 +29,7 @@
     "unlockAction": "Odblokuj Pokój",
     "lockAction": "Zablokuj Pokój",
     "mark_for_check": "Check Out",
+    "check_in": "Check in",
     "requestCleaning": "Zażądaj sprzątania",
     "limpiarButton": "Sprzątnij"
   },
@@ -96,5 +97,10 @@
     "occupied_only": "Tylko Zajęte",
     "blocked_only": "Tylko Zablokowane",
     "problem_only": "Tylko Problemy"
+  },
+  "warningModal": {
+    "checkInTitle": "Akcja niedozwolona",
+    "checkInMessage": "Nie można zameldować gościa w pokoju, który nie jest czysty.",
+    "acceptButton": "Akceptuj"
   }
 }

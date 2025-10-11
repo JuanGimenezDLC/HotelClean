@@ -29,6 +29,7 @@
     "unlockAction": "Unlock Room",
     "lockAction": "Lock Room",
     "mark_for_check": "Check Out",
+    "check_in": "Check-in",
     "requestCleaning": "Request cleaning",
     "limpiarButton": "Clean"
   },
@@ -96,5 +97,10 @@
     "occupied_only": "Occupied Only",
     "blocked_only": "Blocked Only",
     "problem_only": "Problem Only"
+  },
+  "warningModal": {
+    "checkInTitle": "Action Not Allowed",
+    "checkInMessage": "Cannot check-in a room that is not clean.",
+    "acceptButton": "Accept"
   }
 }

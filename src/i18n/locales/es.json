@@ -29,6 +29,7 @@
     "unlockAction": "Desbloquear Habitación",
     "lockAction": "Bloquear Habitación",
     "mark_for_check": "Check Out",
+    "check_in": "Check-in",
     "requestCleaning": "Solicitar limpieza",
     "limpiarButton": "Limpiar"
   },
@@ -96,5 +97,10 @@
     "occupied_only": "Solo Ocupadas",
     "blocked_only": "Solo Bloqueadas",
     "problem_only": "Solo con Problemas"
+  },
+  "warningModal": {
+    "checkInTitle": "Acción no permitida",
+    "checkInMessage": "No se puede hacer check-in en una habitación que no está limpia.",
+    "acceptButton": "Aceptar"
   }
 }

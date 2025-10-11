@@ -29,6 +29,7 @@
     "unlockAction": "Zhbloko Dhomën",
     "lockAction": "Blloko Dhomën",
     "mark_for_check": "Check Out",
+    "check_in": "Check-in",
     "requestCleaning": "Kërko pastrim",
     "limpiarButton": "Pastro"
   },
@@ -96,5 +97,10 @@
     "occupied_only": "Vetëm të zëna",
     "blocked_only": "Vetëm të bllokuara",
     "problem_only": "Vetëm me probleme"
+  },
+  "warningModal": {
+    "checkInTitle": "Veprim i palejuar",
+    "checkInMessage": "Nuk mund të bëhet check-in në një dhomë që nuk është e pastër.",
+    "acceptButton": "Prano"
   }
 }

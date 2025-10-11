@@ -104,11 +104,12 @@ interface ModernRoomCardProps {
   onResolveProblem: (problemId: string) => void;
   onToggleBlock: () => void;
   onMarkForCheck: () => void;
+  onCheckInAttemptOnDirty: () => void;
   onRequestCleaning: () => void;
   isAnimatingOut?: boolean;
 }
 
-export const ModernRoomCard: React.FC<ModernRoomCardProps> = ({ t, room, userRole, onStatusChange, onReportProblem, onReclean, onResolveProblem, onToggleBlock, onMarkForCheck, onRequestCleaning, isAnimatingOut }) => {
+export const ModernRoomCard: React.FC<ModernRoomCardProps> = ({ t, room, userRole, onStatusChange, onReportProblem, onReclean, onResolveProblem, onToggleBlock, onMarkForCheck, onCheckInAttemptOnDirty, onRequestCleaning, isAnimatingOut }) => {
   const [imageModalUrl, setImageModalUrl] = useState<string | null>(null);
   const [isConfirmModalOpen, setConfirmModalOpen] = useState(false);
   const [problemToResolve, setProblemToResolve] = useState<Problem | null>(null);
@@ -125,6 +126,14 @@ export const ModernRoomCard: React.FC<ModernRoomCardProps> = ({ t, room, userRol
     setConfirmModalOpen(false);
     setProblemToResolve(null);
   };
+
+  const handleCheckInClick = () => {
+    if (room.baseStatus === 'clean') {
+      onStatusChange('occupied');
+    } else {
+      onCheckInAttemptOnDirty();
+    }
+  }
 
   const statusConfig = {
     clean: { text: t('states.clean'), icon: <CleanIcon />, className: 'status-clean' },
@@ -154,7 +163,9 @@ export const ModernRoomCard: React.FC<ModernRoomCardProps> = ({ t, room, userRol
             <div className="status-indicator">
               {config.icon}
               <span>
-                {t(`states.${room.status.toLowerCase()}`)}
+                {room.status === 'limpiar' && room.baseStatus === 'occupied'
+                  ? `${t('states.limpiar')} (${t('states.occupied')})`
+                  : t(`states.${room.status.toLowerCase()}`)}
                 {isBlocked && ` (${t(`states.${room.baseStatus.toLowerCase()}`)})`}
                 {room.status === 'problem' && ` (${t(`states.${room.baseStatus.toLowerCase()}`)})`}
               </span>
@@ -240,7 +251,7 @@ export const ModernRoomCard: React.FC<ModernRoomCardProps> = ({ t, room, userRol
           <footer className="room-card-footer">
             {userRole === 'cleaner' && (
               <div className="status-actions">
-                <button onClick={() => onStatusChange('clean')} className={`action-button btn-clean ${room.baseStatus === 'clean' ? 'active' : ''}`} disabled={room.baseStatus === 'clean'}>
+                <button onClick={() => onStatusChange('clean')} className={`action-button btn-clean ${room.baseStatus === 'clean' ? 'active' : ''}`}>
                   {t('states.clean')}
                 </button>
                 <button onClick={onReportProblem} className="action-button btn-problem" >
@@ -252,13 +263,13 @@ export const ModernRoomCard: React.FC<ModernRoomCardProps> = ({ t, room, userRol
             {userRole === 'supervisor' && (
               <>
                 <div className="status-actions">
-                  <button onClick={() => onStatusChange('clean')} className={`action-button btn-clean ${room.baseStatus === 'clean' ? 'active' : ''}`} disabled={room.baseStatus === 'clean'}>
+                  <button onClick={() => onStatusChange('clean')} className={`action-button btn-clean ${room.baseStatus === 'clean' ? 'active' : ''}`}>
                     {t('states.clean')}
                   </button>
-                  <button onClick={() => onStatusChange('dirty')} className={`action-button btn-dirty ${room.baseStatus === 'dirty' ? 'active' : ''}`} disabled={room.baseStatus === 'dirty'}>
+                  <button onClick={() => onStatusChange('dirty')} className={`action-button btn-dirty ${room.baseStatus === 'dirty' ? 'active' : ''}`}>
                     {t('states.dirty')}
                   </button>
-                  <button onClick={() => onStatusChange('occupied')} className={`action-button btn-occupied ${room.baseStatus === 'occupied' ? 'active' : ''}`} disabled={room.baseStatus === 'occupied'}>
+                  <button onClick={() => onStatusChange('occupied')} className={`action-button btn-occupied ${room.baseStatus === 'occupied' ? 'active' : ''}`}>
                     {t('states.occupied')}
                   </button>
                 </div>
@@ -268,6 +279,9 @@ export const ModernRoomCard: React.FC<ModernRoomCardProps> = ({ t, room, userRol
                   </button>
                   <button onClick={onReclean} className="action-button btn-reclean" >
                     {t('roomCard.recleanButton')}
+                  </button>
+                  <button onClick={handleCheckInClick} className="action-button btn-check-in">
+                    {t('roomCard.check_in')}
                   </button>
                   <button onClick={onMarkForCheck} className="action-button btn-check">
                     {t('roomCard.mark_for_check')}
