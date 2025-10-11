@@ -420,11 +420,7 @@ const RoomList: React.FC<RoomListProps> = ({ user }) => {
                   userRole={userRole}
                   isAnimatingOut={animatingOutRoomId === room.id}
                   onStatusChange={(newStatus) => {
-                    let firestoreStatus: 'Limpia' | 'Sucia' | 'Ocupada' = 'Sucia'; // Default
-                    if (newStatus === 'clean') firestoreStatus = 'Limpia';
-                    if (newStatus === 'dirty') firestoreStatus = 'Sucia';
-                    if (newStatus === 'occupied') firestoreStatus = 'Ocupada';
-                    handleSetStatus(room.id, firestoreStatus);
+                    if (newStatus === 'clean') openCleanModal(room);
                   }}
                   onReportProblem={() => openReportModal(room)}
                   onReclean={() => openRecleanModal(room)}
@@ -464,6 +460,17 @@ const RoomList: React.FC<RoomListProps> = ({ user }) => {
                 }
                 setCheckModalOpen(false);
               }}
+            />
+            <CleanConfirmationModal
+              isOpen={isCleanModalOpen}
+              onClose={() => setCleanModalOpen(false)}
+              onConfirm={() => {
+                if (selectedRoom) {
+                  handleSetStatus(selectedRoom.id, 'Limpia');
+                  setCleanModalOpen(false); // <-- ¡Añadido! Cierra el modal después de confirmar.
+                }
+              }}
+              room={selectedRoom}
             />
           </>
         )}
