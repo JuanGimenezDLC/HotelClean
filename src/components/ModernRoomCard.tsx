@@ -273,17 +273,18 @@ export const ModernRoomCard: React.FC<ModernRoomCardProps> = ({ t, room, userRol
                     {t('states.occupied')}
                   </button>
                 </div>
+                <div className="actions-divider"></div>
                 <div className="secondary-actions">
-                  <button onClick={onReportProblem} className="action-button btn-problem" >
+                  <button onClick={onReportProblem} className="action-button btn-secondary btn-problem-color" >
                     {t('roomCard.reportProblemButton')}
                   </button>
-                  <button onClick={onReclean} className="action-button btn-reclean" >
+                  <button onClick={onReclean} className="action-button btn-secondary btn-reclean-color" >
                     {t('roomCard.recleanButton')}
                   </button>
-                  <button onClick={handleCheckInClick} className="action-button btn-check-in">
+                  <button onClick={handleCheckInClick} className="action-button btn-secondary btn-check-in-color">
                     {t('roomCard.check_in')}
                   </button>
-                  <button onClick={onMarkForCheck} className="action-button btn-check">
+                  <button onClick={onMarkForCheck} className="action-button btn-secondary btn-check-out-color">
                     {t('roomCard.mark_for_check')}
                   </button>
                 </div>

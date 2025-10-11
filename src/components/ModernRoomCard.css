@@ -296,6 +296,13 @@
   gap: 12px;
 }
 
+.actions-divider {
+  height: 1px;
+  background-color: var(--card-border-color);
+  margin: 12px 0;
+  width: 100%;
+}
+
 .status-actions {
   display: flex;
   gap: 10px;
@@ -420,6 +427,26 @@
   color: #1f1f23; /* Texto oscuro para contraste */
   border-color: #00BCD4;
 }
+
+/* --- Estilo Unificado para Botones Secundarios --- */
+.action-button.btn-secondary {
+  background-color: #FFFBEB; /* Amarillo claro sólido */
+  color: #374151; /* Gris oscuro para el texto, para buena legibilidad */
+  border: 1px solid #FDE68A; /* Borde amarillo un poco más oscuro */
+}
+
+.action-button.btn-secondary:hover {
+  background-color: #FEF3C7; /* Amarillo un poco más oscuro para el hover */
+  color: #111827; /* Texto negro para máximo contraste en hover */
+}
+
+/* Colores de borde para mantener la identidad de la acción */
+.action-button.btn-secondary.btn-problem-color:hover { border-color: var(--problem-color); }
+.action-button.btn-secondary.btn-reclean-color:hover { border-color: var(--reclean-color); }
+.action-button.btn-secondary.btn-check-in-color:hover { border-color: #00BCD4; }
+.action-button.btn-secondary.btn-check-out-color:hover { border-color: #ffb300; }
+
+
 /* --- Contenedor para botones de acciones secundarias --- */
 .secondary-actions {
   display: grid; /* Usamos grid para un control más fino */
