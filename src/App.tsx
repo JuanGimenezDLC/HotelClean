@@ -1,23 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { onAuthStateChanged, User as FirebaseUser } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
 import { auth, db } from './firebase';
-import { initializeRooms } from './initFirestore';
 import { User } from './types';
-import Login from './components/Login';
 import RoomList from './components/RoomList';
-import Footer from './components/Footer'; // Importar el Footer
-import 'bootstrap/dist/css/bootstrap.min.css';
-import './components/RoomList.css';
-import './Responsive.css'; // Importar los estilos responsivos
+import Login from './components/Login';
+import './App.css';
 
-const App: React.FC = () => {
+function App() {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    initializeRooms();
-  }, []);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser: FirebaseUser | null) => {
@@ -31,27 +23,18 @@ const App: React.FC = () => {
       }
       setLoading(false);
     });
-
     return () => unsubscribe();
   }, []);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <div className="loading-spinner-container"><div className="animate-spin"></div></div>; // Or a proper loading component
   }
 
   return (
     <div className="App">
-      <div className="background-glow"></div>
-      {user ? (
-        <>
-          <RoomList user={user} />
-          <Footer />
-        </>
-      ) : (
-        <Login />
-      )}
+      {user ? <RoomList user={user} /> : <Login />}
     </div>
   );
-};
+}
 
 export default App;

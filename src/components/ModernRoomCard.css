@@ -1,482 +1,278 @@
-/* --- Variables de Diseño --- */
-:root {
-  --card-bg-color: rgba(35, 35, 45, 0.6); /* Fondo de tarjeta semitransparente */
-  --card-border-color: rgba(255, 255, 255, 0.15);
-  --text-color-primary: #EAEAEA;
-  --text-color-secondary: #A0A0B0;
-  
-  /* Colores de estado */
-  --clean-color: #39D392;
-  --dirty-color: #FF6B6B;
-  --problem-color: #FFD166;
-  --occupied-color: #4D96FF;
-  --reclean-color: #FF9F4D; /* Naranja para relimpieza */
-  --color-limpiar-aurora: #f1c40f30;
-  --color-limpiar-bright: #f1c40f;
-  --color-resolve: #00bcd4; /* Un color cian para resolver */
+/* New styles for ModernRoomCard based on 'lovable' design */
 
-  /* Animaciones */
-  --transition-speed: 0.4s;
-}
-
-/* --- Estructura de la Tarjeta --- */
-.room-card {
+.modern-room-card {
   position: relative;
-  border-radius: 20px;
-  overflow: hidden; /* Clave para que el fondo no se salga */
-  border: 1px solid var(--card-border-color);
-  background: var(--card-bg-color);
-  backdrop-filter: blur(12px) saturate(150%); /* Efecto Glassmorphism */
-  -webkit-backdrop-filter: blur(12px) saturate(150%);
-  transition: transform var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-}
-
-.room-card:hover {
-  transform: translateY(-8px) scale(1.02);
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
-}
-
-.room-card-content {
-  position: relative;
-  z-index: 2; /* Por encima del fondo aurora */
-  padding: 24px;
   display: flex;
   flex-direction: column;
+  border-radius: 1rem; /* rounded-2xl */
+  border: 1px solid hsl(var(--border));
+  background-color: hsl(var(--card));
+  color: hsl(var(--card-foreground));
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); /* shadow-sm */
+  transition: all 0.3s ease;
   height: 100%;
 }
 
-/* --- Efecto de Fondo Aurora --- */
-.aurora-background {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 1;
-  opacity: 0;
-  transition: opacity var(--transition-speed) ease;
+.modern-room-card:hover {
+  transform: translateY(-0.25rem);
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
 }
 
-.room-card:hover .aurora-background {
-  opacity: 1;
-}
+/* Status-specific styles */
+.modern-room-card.status-clean { background-color: hsl(var(--status-clean) / 0.1); }
+.modern-room-card.status-dirty { background-color: hsl(var(--status-dirty) / 0.1); }
+.modern-room-card.status-occupied { background-color: hsl(var(--status-occupied) / 0.1); }
+.modern-room-card.status-problem { background-color: hsl(var(--status-problem) / 0.1); }
+.modern-room-card.status-reclean { background-color: hsl(var(--status-reclean) / 0.1); }
+.modern-room-card.status-blocked { background-color: hsl(var(--status-blocked) / 0.1); }
+.modern-room-card.status-limpiar { background-color: hsl(var(--status-limpiar) / 0.1); }
 
-.aurora-background::before,
-.aurora-background::after {
-  content: '';
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(60px);
-  animation: aurora-glow 8s infinite alternate;
-}
+.modern-room-card.status-clean:hover { box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1), 0 0 0 2px hsl(var(--status-clean) / 0.5); }
+.modern-room-card.status-dirty:hover { box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1), 0 0 0 2px hsl(var(--status-dirty) / 0.5); }
+.modern-room-card.status-occupied:hover { box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1), 0 0 0 2px hsl(var(--status-occupied) / 0.5); }
+.modern-room-card.status-problem:hover { box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1), 0 0 0 2px hsl(var(--status-problem) / 0.5); }
+.modern-room-card.status-reclean:hover { box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1), 0 0 0 2px hsl(var(--status-reclean) / 0.5); }
+.modern-room-card.status-blocked:hover { box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1), 0 0 0 2px hsl(var(--status-blocked) / 0.5); }
+.modern-room-card.status-limpiar:hover { box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1), 0 0 0 2px hsl(var(--status-limpiar) / 0.5); }
 
-.aurora-background::before {
-  width: 200px;
-  height: 200px;
-  top: -50px;
-  left: -50px;
-}
-
-.aurora-background::after {
-  width: 150px;
-  height: 150px;
-  bottom: -40px;
-  right: -40px;
-  animation-delay: -4s;
-}
-
-@keyframes aurora-glow {
-  from { transform: scale(1); }
-  to { transform: scale(1.2); }
-}
-
-@keyframes slideOut {
-  0% {
-    transform: scale(1) translateX(0);
-    opacity: 1;
-  }
-  50% {
-    transform: scale(1.05) translateX(0);
-    opacity: 1;
-  }
-  100% {
-    transform: scale(1.05) translateX(150%);
-    opacity: 0;
-  }
-}
-
-.room-card.animating-out {
-  animation: slideOut 0.8s forwards ease-in-out;
-  z-index: 100; /* Asegura que esté por encima de otras tarjetas durante la animación */
-}
-
-
-/* --- Colores de Estado y Aurora --- */
-.status-clean .aurora-background::before { background: radial-gradient(circle, var(--clean-color), transparent 60%); }
-.status-clean .aurora-background::after { background: radial-gradient(circle, var(--occupied-color), transparent 60%); }
-
-.status-dirty .aurora-background::before { background: radial-gradient(circle, var(--dirty-color), transparent 60%); }
-.status-dirty .aurora-background::after { background: radial-gradient(circle, var(--problem-color), transparent 60%); }
-
-.status-problem .aurora-background::before { background: radial-gradient(circle, var(--problem-color), transparent 60%); }
-.status-problem .aurora-background::after { background: radial-gradient(circle, var(--dirty-color), transparent 60%); }
-
-.status-occupied .aurora-background::before { background: radial-gradient(circle, var(--occupied-color), transparent 60%); }
-.status-occupied .aurora-background::after { background: radial-gradient(circle, var(--clean-color), transparent 60%); }
-
-.status-reclean {
-  --aurora-color: var(--color-reclean-aurora);
-  --status-color: var(--color-reclean-bright);
-}
-
-.status-limpiar {
-  --aurora-color: var(--color-limpiar-aurora);
-  --status-color: var(--color-limpiar-bright);
-}
-
-.status-blocked {
-  --aurora-color: var(--color-blocked-aurora);
-  --status-color: var(--color-blocked-bright);
-}
-.is-blocked {
-  border-color: var(--problem-color);
-  box-shadow: 0 0 20px rgba(255, 209, 102, 0.5);
-}
-
-/* --- Estilos para el Botón de Bloqueo --- */
-.block-button {
-  position: absolute;
-  top: 16px; /* Alineado con el padding */
-  right: 16px;
-  width: 40px;
-  height: 40px;
+/* Card Header */
+.card-header-lovable {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  
-  background-color: rgba(255, 255, 255, 0.05); /* Fondo sutil */
-  border: 1px solid var(--card-border-color);
-  color: var(--text-color-secondary);
-  
-  border-radius: 50%;
-  cursor: pointer;
-  padding: 0;
-  
-  transition: all 0.3s ease;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 1.5rem; /* p-6 increased padding */
+  border-bottom: 1px solid hsl(var(--border));
 }
 
-.block-button:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-  color: var(--text-color-primary);
-  transform: scale(1.1);
+.card-room-number-prefix {
+  font-size: 0.875rem; /* text-sm */
+  color: hsl(var(--muted-foreground));
+  margin: 0.25rem 0 0 0; /* mt-1 */
+  font-weight: 500;
 }
 
-.request-cleaning-button {
-  position: absolute;
-  top: 16px;
-  right: 16px;
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: rgba(255, 165, 0, 0.2);
-  border: 1px solid #FFA500;
-  color: #FFA500;
-  border-radius: 50%;
-  cursor: pointer;
-  padding: 0;
-  transition: all 0.3s ease;
-}
-
-.request-cleaning-button:hover {
-  background-color: rgba(255, 165, 0, 0.4);
-  color: #fff;
-  transform: scale(1.1);
-}
-
-.request-cleaning-button.active {
-  background-color: #FFA500;
-  border-color: #FFA500;
-  color: #1f1f23;
-  cursor: not-allowed;
-}
-
-/* --- Estilos cuando la habitación ESTÁ BLOQUEADA --- */
-.is-blocked .block-button {
-  background-color: var(--problem-color);
-  border-color: var(--problem-color);
-  color: #1f1f23; /* Color oscuro para el icono */
-}
-
-.is-blocked .block-button:hover {
-  background-color: var(--problem-color);
-  box-shadow: 0 0 15px rgba(255, 209, 102, 0.6);
-}
-
-
-
-.status-indicator {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-weight: 600;
-  font-size: 1.1rem;
-  margin-bottom: 8px;
-  transition: color var(--transition-speed) ease;
-}
-
-.status-indicator .bed-type-icon {
-  display: flex;
-  align-items: center;
-}
-
-.status-indicator .bed-type-icon svg {
-  width: 28px;
-  height: 28px;
-  stroke: #FFFFFF; /* Color del icono siempre blanco */
-}
-
-.status-indicator .bed-type-icon.double svg {
-  width: 56px; /* El doble de ancho que el icono individual */
-}
-
-.room-card:hover .status-indicator .bed-type-icon svg {
-  /* Se elimina la transición de color para que permanezca blanco */
-}
-
-.status-indicator svg {
-  transition: transform var(--transition-speed) ease;
-}
-
-.room-card:hover .status-indicator svg {
-  transform: rotate(-10deg) scale(1.1);
-}
-
-/* Colores del indicador de estado */
-.status-clean .status-indicator { color: var(--clean-color); }
-.status-dirty .status-indicator { color: var(--dirty-color); }
-.status-problem .status-indicator { color: var(--problem-color); }
-.status-occupied .status-indicator { color: var(--occupied-color); }
-.status-reclean .status-indicator { color: var(--problem-color); }
-.status-limpiar .status-indicator { color: var(--color-limpiar-bright); }
-
-
-.room-number {
-  font-size: 2rem;
-  font-weight: 700;
-  color: var(--text-color-primary);
+.card-room-number-main {
+  font-size: 2.25rem; /* text-4xl */
+  font-weight: 800; /* font-extrabold */
+  color: hsl(var(--foreground));
   margin: 0;
+  line-height: 1.1;
 }
 
-.room-card-body {
-  flex-grow: 1; /* Ocupa el espacio disponible */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem; /* gap-2 */
+  padding: 0.5rem 1rem; /* px-4 py-2 increased padding */
+  border-radius: 0.75rem; /* rounded-xl */
+  font-size: 0.875rem; /* text-sm increased size */
+  font-weight: 700; /* font-bold */
+  margin-bottom: 0.5rem; /* mb-2 */
 }
 
-.detail-text {
-  color: var(--text-color-primary); /* CAMBIO: Texto principal blanco */
-  font-size: 0.95rem;
-  line-height: 1.5;
+.status-badge-icon {
+  width: 1rem; /* w-4 increased size */
+  height: 1rem; /* h-4 increased size */
 }
 
-.detail-text strong {
-  color: var(--text-color-primary);
-  font-weight: 600;
+/* Applying colors to status badge */
+.status-badge.status-clean { background-color: hsl(var(--status-clean) / 0.1); color: hsl(var(--status-clean)); }
+.status-badge.status-dirty { background-color: hsl(var(--status-dirty) / 0.1); color: hsl(var(--status-dirty)); }
+.status-badge.status-occupied { background-color: hsl(var(--status-occupied) / 0.1); color: hsl(var(--status-occupied)); }
+.status-badge.status-problem { background-color: hsl(var(--status-problem) / 0.1); color: hsl(var(--status-problem)); }
+.status-badge.status-reclean { background-color: hsl(var(--status-reclean) / 0.1); color: hsl(var(--status-reclean)); }
+.status-badge.status-blocked { background-color: hsl(var(--status-blocked) / 0.1); color: hsl(var(--status-blocked)); }
+.status-badge.status-limpiar { background-color: hsl(var(--status-limpiar) / 0.1); color: hsl(var(--status-limpiar)); }
+
+.card-header-icons {
+  display: flex;
+  flex-direction: column; /* Stack icons vertically in header right side */
+  align-items: center;
+  gap: 0.5rem; /* gap-2 */
+  color: hsl(var(--muted-foreground));
 }
 
-/* --- Pie de Página y Acciones --- */
-.room-card-footer {
-  padding-top: 16px;
-  margin-top: 16px;
-  border-top: 1px solid var(--card-border-color);
+.block-button-wrapper {
+  width: 2.5rem; /* w-10 */
+  height: 2.5rem; /* h-10 */
+  border-radius: 9999px; /* rounded-full */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: hsl(var(--muted));
+  transition: background-color 0.2s;
+}
+
+.block-button-wrapper:hover {
+  background-color: hsl(var(--accent));
+}
+
+.card-header-icons svg {
+  height: 1.25rem; /* h-5 */
+  width: 1.25rem; /* w-5 */
+}
+.card-header-icons button {
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  color: inherit;
+}
+
+/* Card Body */
+.card-body-content {
+  flex: 1 1 0%;
+  padding-left: 1.25rem;
+  padding-right: 1.25rem;
+  padding-bottom: 1.25rem;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 0.75rem;
 }
 
-.actions-divider {
-  height: 1px;
-  background-color: var(--card-border-color);
-  margin: 12px 0;
-  width: 100%;
-}
-
-.status-actions {
+.card-info-item {
   display: flex;
-  gap: 10px;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: hsl(var(--muted-foreground));
+}
+.card-info-item svg {
+  height: 1rem;
+  width: 1rem;
+}
+.card-info-item span {
+  font-weight: 500;
+  color: hsl(var(--foreground));
 }
 
-/* --- Estilos Consistentes para Botones de Acción --- */
-
-/* Estado base para todos los botones de acción */
-.action-button {
-  flex-grow: 1;
-  padding: 12px;
-  border-radius: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  background-color: transparent; /* Sin fondo por defecto */
-  border: 1px solid transparent; /* Borde transparente por defecto */
-  transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+.card-problems-list {
+  margin-top: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
-
-.action-button:disabled {
-  cursor: not-allowed;
-  opacity: 0.6;
-}
-
-/* Cuando un botón está activo, no queremos que la opacidad de 'disabled' le afecte */
-.action-button.active:disabled {
-  opacity: 1;
-}
-
-/* --- Botón Limpiar (Verde) --- */
-.action-button.btn-clean { background-color: rgba(0, 230, 118, 0.2); color: #EAEAEA; border-color: rgba(0, 230, 118, 0.5); }
-.action-button.btn-clean:hover {
-  background-color: #00e676; /* Verde más vivo */
-  color: #1f1f23; /* Texto oscuro para contraste */
-  border-color: #00e676;
-}
-.action-button.btn-clean.active,
-.action-button.btn-clean.active:hover {
-  background-color: #00e676;
-  color: #1f1f23;
-  border-color: #00e676;
-  pointer-events: none; /* Ignora los clics */
-  cursor: default; /* El cursor no cambia a la mano */
-}
-
-/* --- Botón Sucia (Rojo) --- */
-.action-button.btn-dirty { background-color: rgba(255, 23, 68, 0.2); color: #EAEAEA; border-color: rgba(255, 23, 68, 0.5); }
-.action-button.btn-dirty:hover {
-  background-color: #ff1744; /* Rojo más vivo */
-  color: #EAEAEA;
-  border-color: #ff1744;
-}
-.action-button.btn-dirty.active,
-.action-button.btn-dirty.active:hover {
-  background-color: #ff1744;
-  color: #EAEAEA;
-  border-color: #ff1744;
-  pointer-events: none;
-  cursor: default;
-}
-
-/* --- Botón Ocupada (Azul) --- */
-.action-button.btn-occupied { background-color: rgba(41, 121, 255, 0.2); color: #EAEAEA; border-color: rgba(41, 121, 255, 0.5); }
-.action-button.btn-occupied:hover {
-  background-color: #2979ff; /* Azul más vivo */
-  color: #EAEAEA;
-  border-color: #2979ff;
-}
-.action-button.btn-occupied.active,
-.action-button.btn-occupied.active:hover {
-  background-color: #2979ff;
-  color: #EAEAEA;
-  border-color: #2979ff;
-  pointer-events: none;
-  cursor: default;
-}
-
-/* --- Botón Problema (Amarillo) --- */
-.action-button.btn-problem { background-color: rgba(255, 234, 0, 0.2); color: #EAEAEA; border-color: rgba(255, 234, 0, 0.5); }
-.action-button.btn-problem:hover {
-  background-color: #ffea00; /* Amarillo más vivo */
-  color: #1f1f23; /* Texto oscuro para contraste */
-  border-color: #ffea00;
-}
-.action-button.btn-problem.active,
-.action-button.btn-problem.active:hover {
-  background-color: #ffea00;
-  color: #1f1f23;
-  border-color: #ffea00;
-  pointer-events: none;
-  cursor: default;
-}
-
-/* --- Botón Relimpieza (Naranja) --- */
-.action-button.btn-reclean { background-color: rgba(255, 109, 0, 0.2); color: #EAEAEA; border-color: rgba(255, 109, 0, 0.5); }
-.action-button.btn-reclean:hover {
-  background-color: #ff6d00; /* Naranja más vivo */
-  color: #EAEAEA;
-  border-color: #ff6d00;
-}
-.action-button.btn-reclean.active,
-.action-button.btn-reclean.active:hover {
-  background-color: #ff6d00;
-  color: #EAEAEA;
-  border-color: #ff6d00;
-  pointer-events: none;
-  cursor: default;
-}
-
-/* --- Botón Marcar para Salida (Naranja suave) --- */
-.action-button.btn-check { background-color: rgba(255, 179, 0, 0.2); color: #EAEAEA; border-color: rgba(255, 179, 0, 0.5); }
-.action-button.btn-check:hover {
-  background-color: #ffb300; /* Ámbar más vivo */
-  color: #1f1f23; /* Texto oscuro para contraste */
-  border-color: #ffb300;
-}
-
-/* --- Botón Check-in (Azul claro) --- */
-.action-button.btn-check-in { background-color: rgba(0, 188, 212, 0.2); color: #EAEAEA; border-color: rgba(0, 188, 212, 0.5); }
-.action-button.btn-check-in:hover {
-  background-color: #00BCD4; /* Cian más vivo */
-  color: #1f1f23; /* Texto oscuro para contraste */
-  border-color: #00BCD4;
-}
-
-/* --- Estilo Unificado para Botones Secundarios --- */
-.action-button.btn-secondary {
-  background-color: #FFFBEB; /* Amarillo claro sólido */
-  color: #374151; /* Gris oscuro para el texto, para buena legibilidad */
-  border: 1px solid #FDE68A; /* Borde amarillo un poco más oscuro */
-}
-
-.action-button.btn-secondary:hover {
-  background-color: #FEF3C7; /* Amarillo un poco más oscuro para el hover */
-  color: #111827; /* Texto negro para máximo contraste en hover */
-}
-
-/* Colores de borde para mantener la identidad de la acción */
-.action-button.btn-secondary.btn-problem-color:hover { border-color: var(--problem-color); }
-.action-button.btn-secondary.btn-reclean-color:hover { border-color: var(--reclean-color); }
-.action-button.btn-secondary.btn-check-in-color:hover { border-color: #00BCD4; }
-.action-button.btn-secondary.btn-check-out-color:hover { border-color: #ffb300; }
-
-
-/* --- Contenedor para botones de acciones secundarias --- */
-.secondary-actions {
-  display: grid; /* Usamos grid para un control más fino */
-  grid-template-columns: 1fr 1fr; /* Dos columnas de igual tamaño */
-  gap: 12px;
-  margin-top: 12px;
-}
-
-/* El botón de reportar problema ocupa toda la fila si es el único */
-.secondary-actions > .problem-button:only-child {
-  grid-column: 1 / -1; /* Ocupa todo el ancho */
-}
-
-/* --- Estilos para la lista de problemas --- */
-.problem-item {
+.card-problem-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  font-size: 0.875rem;
 }
-
-.problem-actions {
+.card-problem-item-text {
+  color: hsl(var(--foreground));
+}
+.card-problem-item-actions {
   display: flex;
-  align-items: center;
-  gap: 8px;
+  gap: 0.5rem;
 }
 
-.camera-button {
+/* Card Footer */
+.card-footer-actions {
+  margin-top: auto;
+  border-top: 1px solid hsl(var(--border));
+  padding: 1rem; /* p-4 */
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem; /* space-y-3 */
+}
+
+.card-actions-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem; /* gap-3 */
+}
+
+.card-action-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.5rem; /* rounded-md */
+  font-size: 0.875rem;
+  font-weight: 500;
+  padding: 0.75rem 1rem;
+  border: 1px solid hsl(var(--border));
+  background-color: hsl(var(--card));
+  color: hsl(var(--foreground));
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+.card-action-button:hover {
+  background-color: hsl(var(--accent));
+}
+.card-action-button.full-width {
+  grid-column: 1 / -1;
+}
+
+.card-action-button.btn-problem {
+  color: hsl(var(--warning-foreground));
+  background-color: hsl(var(--warning) / 0.1);
+  border-color: hsl(var(--warning) / 0.2);
+}
+.card-action-button.btn-problem:hover {
+  background-color: hsl(var(--warning) / 0.2);
+}
+
+.card-action-button.btn-reclean {
+  color: hsl(var(--status-reclean) / 1);
+  background-color: hsl(var(--status-reclean) / 0.1);
+  border-color: hsl(var(--status-reclean) / 0.2);
+}
+.card-action-button.btn-reclean:hover {
+  background-color: hsl(var(--status-reclean) / 0.2);
+}
+
+.card-action-button.btn-check-in {
+  background-color: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+  border-color: hsl(var(--primary));
+}
+.card-action-button.btn-check-in:hover {
+  background-color: hsl(var(--primary) / 0.9);
+}
+
+.card-action-button.btn-check-out {
+  background-color: hsl(var(--secondary));
+}
+.card-action-button.btn-check-out:hover {
+  background-color: hsl(var(--muted));
+}
+
+/* Status Toggle Group */
+.status-toggle-group {
+  display: flex;
+  width: 100%;
+  background-color: hsl(var(--muted));
+  border-radius: 9999px; /* rounded-full */
+  padding: 0.25rem; /* p-1 */
+  border: 1px solid hsl(var(--border));
+}
+
+.status-toggle-button {
+  flex: 1;
+  padding: 0.75rem 0.5rem;
+  font-size: 0.875rem; /* text-sm */
+  font-weight: 600; /* font-semibold */
+  border-radius: 9999px; /* rounded-full */
+  border: none;
+  background-color: transparent;
+  color: hsl(var(--muted-foreground));
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.status-toggle-button.active {
+  background-color: hsl(var(--card));
+  color: hsl(var(--foreground));
+  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1); /* shadow */
+}
+
+.status-toggle-button:not(.active):hover {
+  color: hsl(var(--foreground));
+}
+
+.camera-button, .resolve-button-small {
   background: transparent;
   border: none;
-  color: var(--accent-color);
   cursor: pointer;
   padding: 4px;
   display: flex;
@@ -484,12 +280,16 @@
   border-radius: 50%;
   transition: background-color 0.3s;
 }
-
-.camera-button:hover {
-  background-color: rgba(77, 150, 255, 0.2);
+.camera-button:hover, .resolve-button-small:hover {
+  background-color: hsl(var(--accent));
+}
+.resolve-button-small {
+  color: hsl(var(--primary));
+}
+.camera-button {
+  color: hsl(var(--muted-foreground));
 }
 
-/* --- Estilos para el modal de imagen --- */
 .image-modal-overlay {
   position: fixed;
   top: 0;
@@ -501,7 +301,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1100; /* Superior al modal normal */
+  z-index: 1100;
   cursor: pointer;
 }
 
@@ -510,80 +310,4 @@
   max-height: 90vh;
   border-radius: 12px;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
-}
-
-
-/* Estilos para la lista de problemas */
-.problems-list {
-  margin-top: 16px;
-  padding-top: 16px;
-  border-top: 1px solid var(--card-border-color);
-}
-
-.problems-title {
-  font-size: 1rem;
-  font-weight: 600;
-  color: var(--text-color-secondary);
-  margin-bottom: 8px;
-}
-
-.problems-list ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.problem-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px; /* Añadimos un poco de espacio */
-  padding: 8px;
-  background-color: rgba(0, 0, 0, 0.2);
-  border-radius: 8px;
-  color: var(--text-color-primary);
-}
-
-/* El span que contiene la descripción del problema */
-.problem-item span {
-  flex-grow: 1; /* Permite que el texto ocupe el espacio disponible */
-  word-break: break-word; /* Fuerza el salto de línea para palabras largas */
-  margin-right: 8px; /* Espacio para que no se pegue al botón */
-}
-
-.resolve-button-small {
-  padding: 4px 8px;
-  font-size: 0.8rem;
-  background-color: var(--color-resolve);
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  flex-shrink: 0; /* Previene que el botón se encoja */
-  white-space: nowrap; /* Evita que el texto del botón se rompa */
-}
-
-.resolve-button-small:hover {
-  background-color: #0097a7;
-}
-
-
-.bed-type-icon {
-  margin-left: 10px;
-}
-
-.bed-type-icon svg {
-  width: 24px;
-  height: 24px;
-  color: #333;
-}
-
-.action-button.btn-check {
-  position: relative !important;
-  clip: auto !important;
-  pointer-events: auto !important;
 }

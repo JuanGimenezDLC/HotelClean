@@ -1,82 +1,75 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 :root {
-  --primary-glow: radial-gradient(circle, rgba(0, 123, 255, 0.4) 0%, rgba(0, 123, 255, 0) 60%);
-  --secondary-glow: radial-gradient(circle, rgba(255, 23, 68, 0.3) 0%, rgba(255, 23, 68, 0) 60%);
-  --tertiary-glow: radial-gradient(circle, rgba(40, 167, 69, 0.3) 0%, rgba(40, 167, 69, 0) 60%);
+  --background: 30 25% 97%;
+  --foreground: 220 25% 18%;
+
+  --card: 0 0% 100%;
+  --card-foreground: 220 25% 18%;
+
+  --popover: 0 0% 100%;
+  --popover-foreground: 220 25% 18%;
+
+  --primary: 162 63% 41%;
+  --primary-foreground: 0 0% 100%;
+
+  --secondary: 220 14% 96%;
+  --secondary-foreground: 220 25% 18%;
+
+  --muted: 220 14% 96%;
+  --muted-foreground: 220 10% 46%;
+
+  --accent: 162 63% 95%;
+  --accent-foreground: 162 63% 25%;
+
+  --destructive: 4 84% 60%;
+  --destructive-foreground: 0 0% 100%;
+
+  --warning: 38 92% 50%;
+  --warning-foreground: 38 92% 15%;
+
+  --success: 162 63% 41%;
+  --success-foreground: 0 0% 100%;
+
+  --occupied: 231 48% 56%;
+  --occupied-foreground: 0 0% 100%;
+
+  --border: 220 13% 91%;
+  --input: 220 13% 91%;
+  --ring: 162 63% 41%;
+
+  --radius: 1rem;
+
+  /* Status indicator colors */
+  --status-clean: 162 63% 41%;
+  --status-dirty: 4 84% 60%;
+  --status-occupied: 231 48% 56%;
+  --status-problem: 38 92% 50%;
+  --status-reclean: 27 92% 53%; /* orange-500 */
+  --status-blocked: 220 9% 46%; /* gray-500 */
+  --status-limpiar: 48 96% 50%; /* yellow-500 */
+
+  --sidebar-background: 0 0% 98%;
+  --sidebar-foreground: 240 5.3% 26.1%;
+  --sidebar-primary: 240 5.9% 10%;
+  --sidebar-primary-foreground: 0 0% 98%;
+  --sidebar-accent: 240 4.8% 95.9%;
+  --sidebar-accent-foreground: 240 5.9% 10%;
+  --sidebar-border: 220 13% 91%;
+  --sidebar-ring: 217.2 91.2% 59.8%;
+}
+
+* {
+  border-color: hsl(var(--border));
 }
 
 body {
   margin: 0;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-family: 'Inter', system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  
-  background-color: #101015; /* Fondo base muy oscuro */
-  color: #EAEAEA;
-  
-  /* --- Efecto de Fondo Aurora --- */
-  position: relative;
-  overflow-x: hidden; /* Previene el desbordamiento horizontal */
-}
-
-body::before,
-body::after {
-  content: '';
-  position: fixed; /* Fijo para que no se desplace con el scroll */
-  width: 800px;
-  height: 800px;
-  border-radius: 50%;
-  opacity: 0.5;
-  z-index: -1; /* Detrás de todo el contenido */
-  filter: blur(100px);
-  
-  /* Animación sutil */
-  animation: move-glow 25s infinite alternate;
-}
-
-/* Primera luz (azul) */
-body::before {
-  background: var(--primary-glow);
-  top: -20%;
-  left: -20%;
-  animation-delay: -12s;
-}
-
-/* Segunda luz (rojo/rosa) */
-body::after {
-  background: var(--secondary-glow);
-  bottom: -20%;
-  right: -20%;
-}
-
-/* Opcional: una tercera luz para más dinamismo */
-.background-glow {
-  position: fixed;
-  width: 600px;
-  height: 600px;
-  border-radius: 50%;
-  background: var(--tertiary-glow);
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  opacity: 0.4;
-  z-index: -1;
-  filter: blur(120px);
-  animation: move-glow 30s infinite alternate;
-  animation-delay: -5s;
-}
-
-@keyframes move-glow {
-  0% {
-    transform: translate(0, 0) scale(1);
-  }
-  50% {
-    transform: translate(100px, 50px) scale(1.2);
-  }
-  100% {
-    transform: translate(-50px, -100px) scale(1);
-  }
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
 }
 
 /* Animación para el spinner de carga */
@@ -94,6 +87,5 @@ body::after {
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 }

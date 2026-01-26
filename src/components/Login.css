@@ -1,0 +1,232 @@
+/* src/components/Login.css */
+
+.login-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem; /* p-6 */
+  background-color: hsl(var(--background)); /* Use global background */
+}
+
+.login-card {
+  width: 100%;
+  max-width: 28rem; /* max-w-md (100% vs 28rem) */
+  animation: fade-in-up 0.5s ease-out;
+  color: hsl(var(--foreground)); /* Ensure text color is consistent */
+}
+
+.login-logo-section {
+  text-align: center;
+  margin-bottom: 2.5rem; /* mb-10 */
+}
+
+.login-logo-wrapper {
+  width: 4rem; /* w-16 */
+  height: 4rem; /* h-16 */
+  border-radius: 1rem; /* rounded-2xl */
+  background: linear-gradient(to bottom right, hsl(var(--primary), 0.2), hsl(var(--primary), 0.05)); /* bg-gradient-to-br from-primary/20 to-primary/5 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1rem auto; /* mx-auto mb-4 */
+  box-shadow: 0 2px 15px -3px rgba(0, 0, 0, 0.07), 0 10px 20px -2px rgba(0, 0, 0, 0.04); /* shadow-soft */
+}
+
+.login-logo-icon {
+  color: hsl(var(--primary));
+  font-weight: 700; /* font-bold */
+  font-size: 1.5rem; /* text-2xl */
+}
+
+.login-title {
+  font-size: 1.5rem; /* text-2xl */
+  font-weight: 700; /* font-bold */
+  margin-bottom: 0.25rem; /* mb-1 */
+  color: hsl(var(--foreground));
+}
+
+.login-subtitle {
+  font-size: 0.875rem; /* text-sm */
+  color: hsl(var(--muted-foreground));
+}
+
+.login-roles-list {
+  space-y: 0.75rem; /* space-y-3 */
+}
+
+.login-role-button {
+  width: 100%;
+  padding: 1.25rem; /* p-5 */
+  text-align: left;
+  transition: all 0.3s ease-in-out; /* transition-all duration-300 */
+  border-radius: 1rem; /* rounded-2xl */
+  border: 1px solid transparent; /* border border-transparent */
+  cursor: pointer;
+  font-family: inherit; /* Inherit font from body */
+  background-repeat: no-repeat; /* From bg-gradient-to-r */
+}
+
+.login-role-button:hover {
+  border-color: hsl(var(--border) / 0.5); /* hover:border-border/50 */
+  box-shadow: 0 4px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 30px -5px rgba(0, 0, 0, 0.04); /* hover:shadow-medium */
+  transform: translateY(-0.125rem); /* hover:-translate-y-0.5 */
+}
+
+.login-role-button:active {
+  transform: scale(0.98); /* active:scale-[0.98] */
+}
+
+.login-role-button-content {
+  display: flex;
+  align-items: center;
+  gap: 1rem; /* gap-4 */
+}
+
+.login-role-icon-wrapper {
+  width: 3.5rem; /* w-14 */
+  height: 3.5rem; /* h-14 */
+  border-radius: 0.75rem; /* rounded-xl */
+  background-color: hsl(var(--card)); /* bg-card */
+  box-shadow: 0 2px 15px -3px rgba(0, 0, 0, 0.07), 0 10px 20px -2px rgba(0, 0, 0, 0.04); /* shadow-sm */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: hsl(var(--foreground));
+}
+
+.login-role-icon {
+  width: 1.75rem; /* w-7 */
+  height: 1.75rem; /* h-7 */
+}
+
+.login-role-text {
+  flex: 1; /* flex-1 */
+}
+
+.login-role-label {
+  font-weight: 600; /* font-semibold */
+  font-size: 1.125rem; /* text-lg */
+  margin-bottom: 0.25rem; /* mb-1 (implicitly from Tailwind's default spacing) */
+  color: hsl(var(--foreground));
+}
+
+.login-role-description {
+  font-size: 0.875rem; /* text-sm */
+  color: hsl(var(--muted-foreground));
+}
+
+.login-role-arrow {
+  width: 1.25rem; /* w-5 */
+  height: 1.25rem; /* h-5 */
+  color: hsl(var(--muted-foreground));
+  transition: transform 0.3s ease-in-out; /* transition-transform duration-300 */
+}
+
+.login-role-button:hover .login-role-arrow {
+  transform: translateX(0.25rem); /* translate-x-1 */
+}
+
+.login-footer {
+  text-align: center;
+  font-size: 0.75rem; /* text-xs */
+  color: hsl(var(--muted-foreground));
+  margin-top: 2rem; /* mt-8 */
+}
+
+/* Specific gradient colors for roles - need to match original Tailwind classes */
+/* These would need to be defined in :root or applied inline if not using Tailwind's direct mapping */
+/* Example for 'from-blue-500/20 to-indigo-500/20' */
+.login-role-button.role-reception {
+  background-image: linear-gradient(to right, rgba(99, 102, 241, 0.1), rgba(79, 70, 229, 0.1)); /* from-indigo-500/20 to-blue-500/20 - adjusted order */
+}
+.login-role-button.role-reception:hover {
+  background-image: linear-gradient(to right, rgba(99, 102, 241, 0.15), rgba(79, 70, 229, 0.15)); /* hover:from-indigo-500/30 hover:to-blue-500/30 */
+}
+
+.login-role-button.role-cleaning {
+  background-image: linear-gradient(to right, rgba(16, 185, 129, 0.1), rgba(5, 150, 141, 0.1)); /* from-emerald-500/20 to-teal-500/20 */
+}
+.login-role-button.role-cleaning:hover {
+  background-image: linear-gradient(to right, rgba(16, 185, 129, 0.15), rgba(5, 150, 141, 0.15)); /* hover:from-emerald-500/30 hover:to-teal-500/30 */
+}
+
+.login-role-button.role-maintenance {
+  background-image: linear-gradient(to right, rgba(245, 158, 11, 0.1), rgba(234, 88, 12, 0.1)); /* from-amber-500/20 to-orange-500/20 */
+}
+.login-role-button.role-maintenance:hover {
+  background-image: linear-gradient(to right, rgba(245, 158, 11, 0.15), rgba(234, 88, 12, 0.15)); /* hover:from-amber-500/30 hover:to-orange-500/30 */
+}
+
+/* Animation for fade-in-up */
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Styles for the form part */
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem; /* gap-4 */
+  margin-top: 1.5rem; /* mt-6 */
+}
+
+.login-form input {
+  width: 100%;
+  padding: 0.75rem 1rem; /* py-3 px-4 */
+  border-radius: 0.75rem; /* rounded-xl */
+  border: 1px solid hsl(var(--border));
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+  font-size: 1rem; /* text-base */
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.login-form input:focus {
+  outline: none;
+  border-color: hsl(var(--ring));
+  box-shadow: 0 0 0 2px hsl(var(--ring) / 0.2);
+}
+
+.login-submit-button {
+  width: 100%;
+  padding: 0.75rem; /* py-3 */
+  border-radius: 0.75rem; /* rounded-xl */
+  border: none;
+  background-color: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+  font-weight: 600; /* font-semibold */
+  font-size: 1rem; /* text-base */
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.login-submit-button:hover {
+  background-color: hsl(var(--primary) / 0.9);
+}
+
+.login-error {
+  color: hsl(var(--destructive));
+  font-size: 0.875rem; /* text-sm */
+  text-align: center;
+  margin-top: 0.5rem;
+}
+
+.back-button {
+  background: none;
+  border: none;
+  color: hsl(var(--muted-foreground));
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.875rem;
+  margin-bottom: 1rem;
+}

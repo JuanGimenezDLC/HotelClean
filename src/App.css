@@ -36,3 +36,41 @@
     transform: rotate(360deg);
   }
 }
+
+.loading-spinner-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100vw;
+}
+
+/* Layout styles from Lovable */
+.main-content {
+    padding: 1.5rem; /* p-6 */
+    flex: 1;
+}
+
+.lovable-grid {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: 1.5rem; /* gap-6 */
+}
+
+@media (min-width: 640px) { /* sm: */
+  .lovable-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) { /* lg: */
+  .lovable-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1280px) { /* xl: */
+  .lovable-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
