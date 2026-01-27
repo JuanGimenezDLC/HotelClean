@@ -39,7 +39,11 @@
     "reportButton": "Report",
     "photoButton": "Add Photo",
     "photoLabel": "Add Photo (Optional)",
-    "loadingButton": "Saving..."
+    "loadingButton": "Saving...",
+    "roomDescription": "Room {{roomNumber}}",
+    "descriptionPlaceholder": "Describe the problem...",
+    "cancelButton": "Cancel",
+    "removeImageAriaLabel": "Remove image"
   },
   "recleanModal": {
     "title": "Mark for Recleaning - Room {{roomNumber}}",

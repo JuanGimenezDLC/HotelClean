@@ -38,8 +38,11 @@
     "descriptionLabel": "Descripción del Problema",
     "reportButton": "Reportar",
     "photoButton": "Añadir Foto",
-    "photoLabel": "Añadir Foto (Opcional)",
-    "loadingButton": "Guardando..."
+    "loadingButton": "Guardando...",
+    "roomDescription": "Habitación {{roomNumber}}",
+    "descriptionPlaceholder": "Describe el problema...",
+    "cancelButton": "Cancelar",
+    "removeImageAriaLabel": "Eliminar imagen"
   },
   "recleanModal": {
     "title": "Marcar para Relimpieza - Habitación {{roomNumber}}",
