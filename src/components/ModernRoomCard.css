@@ -176,65 +176,51 @@
   gap: 0.75rem; /* space-y-3 */
 }
 
-.card-actions-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.75rem; /* gap-3 */
-}
+/* Utility classes matching the snippet */
+.grid { display: grid; }
+.grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.gap-2 { gap: 0.5rem; }
+.mt-3 { margin-top: 0.75rem; }
+.text-xs { font-size: 0.75rem; line-height: 1rem; }
+.w-3\.5 { width: 0.875rem; }
+.h-3\.5 { height: 0.875rem; }
+.disabled\:opacity-40:disabled { opacity: 0.4; }
 
-.card-action-button {
+/* Action Button Styles */
+.action-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: 0.5rem; /* rounded-md */
-  font-size: 0.875rem;
+  gap: 0.5rem;
+  border-radius: 9999px; /* rounded-full */
   font-weight: 500;
-  padding: 0.75rem 1rem;
-  border: 1px solid hsl(var(--border));
-  background-color: hsl(var(--card));
-  color: hsl(var(--foreground));
+  transition: all 0.2s;
   cursor: pointer;
-  transition: background-color 0.2s;
-}
-.card-action-button:hover {
-  background-color: hsl(var(--accent));
-}
-.card-action-button.full-width {
-  grid-column: 1 / -1;
+  border: 1px solid transparent;
+  padding: 0.625rem 1rem; /* py-2.5 px-4 slightly larger */
+  height: 2.5rem; /* h-10 slightly taller */
 }
 
-.card-action-button.btn-problem {
-  color: hsl(var(--warning-foreground));
-  background-color: hsl(var(--warning) / 0.1);
-  border-color: hsl(var(--warning) / 0.2);
-}
-.card-action-button.btn-problem:hover {
-  background-color: hsl(var(--warning) / 0.2);
-}
-
-.card-action-button.btn-reclean {
-  color: hsl(var(--status-reclean) / 1);
-  background-color: hsl(var(--status-reclean) / 0.1);
-  border-color: hsl(var(--status-reclean) / 0.2);
-}
-.card-action-button.btn-reclean:hover {
-  background-color: hsl(var(--status-reclean) / 0.2);
-}
-
-.card-action-button.btn-check-in {
-  background-color: hsl(var(--primary));
-  color: hsl(var(--primary-foreground));
-  border-color: hsl(var(--primary));
-}
-.card-action-button.btn-check-in:hover {
-  background-color: hsl(var(--primary) / 0.9);
-}
-
-.card-action-button.btn-check-out {
+.action-btn--secondary {
   background-color: hsl(var(--secondary));
+  color: hsl(var(--secondary-foreground));
 }
-.card-action-button.btn-check-out:hover {
+.action-btn--secondary:hover {
+  background-color: hsl(var(--secondary) / 0.8);
+}
+
+.action-btn--ghost {
+  background-color: transparent;
+  color: hsl(var(--muted-foreground));
+}
+.action-btn--ghost:hover {
   background-color: hsl(var(--muted));
+  color: hsl(var(--foreground));
+}
+
+.action-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
 }
 
 /* Status Toggle Group */

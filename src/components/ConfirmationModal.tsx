@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import './ConfirmationModal.css';
+import { X } from 'lucide-react';
 
 interface ConfirmationModalProps {
   isOpen: boolean;
@@ -10,38 +10,40 @@ interface ConfirmationModalProps {
   message: string;
 }
 
-const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
-  isOpen,
-  onClose,
-  onConfirm,
-  title,
-  message,
-}) => {
+const ConfirmationModal: React.FC<ConfirmationModalProps> = ({ isOpen, onClose, onConfirm, title, message }) => {
   const { t } = useTranslation();
 
-  if (!isOpen) {
-    return null;
-  }
+  if (!isOpen) return null;
 
   return (
-    <div className="confirmation-modal-overlay" onClick={onClose}>
-      <div className="confirmation-modal-content" onClick={(e) => e.stopPropagation()}>
-        <div className="confirmation-modal-header">
-          <h5 className="confirmation-modal-title">{title}</h5>
-          <button type="button" className="close-button" onClick={onClose}>
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+        <div className="modal-header">
+          <h5 className="modal-title">
+            {title}
+          </h5>
+          <button
+            type="button"
+            className="close-button"
+            onClick={onClose}
+          >
             &times;
           </button>
         </div>
-        <div className="confirmation-modal-body">
-          <p>{message}</p>
+        
+        <div className="modal-body">
+          <p>
+          {message}
+        </p>
+
+          <div className="modal-actions" style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginTop: '20px' }}>
+            <button onClick={onClose} className="cancel-button" style={{ padding: '8px 16px', border: '1px solid #ccc', borderRadius: '4px', background: 'white', cursor: 'pointer' }}>
+            {t('cancel')}
+          </button>
+            <button onClick={onConfirm} className="confirm-button" style={{ padding: '8px 16px', border: 'none', borderRadius: '4px', background: '#007bff', color: 'white', cursor: 'pointer' }}>
+            {t('confirm')}
+          </button>
         </div>
-        <div className="confirmation-modal-footer">
-          <button onClick={onClose} className="btn btn-danger">
-            {t('confirmationModal.cancelButton')}
-          </button>
-          <button onClick={onConfirm} className="btn btn-success">
-            {t('confirmationModal.confirmButton')}
-          </button>
         </div>
       </div>
     </div>

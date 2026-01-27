@@ -17,6 +17,10 @@ import {
   User,
   Wrench,
   Camera,
+  AlertTriangle,
+  RotateCcw,
+  LogIn,
+  LogOut,
 } from 'lucide-react';
 
 export interface Problem {
@@ -216,21 +220,44 @@ export const ModernRoomCard: React.FC<ModernRoomCardProps> = ({ t, room, userRol
                   {t('states.occupied')}
                 </button>
               </div>
-              <div className="card-actions-grid">
-                <button onClick={onReportProblem} className="card-action-button btn-problem">{t('roomCard.reportProblemButton')}</button>
-                <button onClick={onReclean} className="card-action-button btn-reclean">{t('roomCard.recleanButton')}</button>
-                <button onClick={handleCheckInClick} className="card-action-button btn-check-in">
+              <div className="grid grid-cols-2 gap-2 mt-3">
+                <button 
+                  onClick={onReportProblem} 
+                  className="action-btn action-btn--secondary text-xs"
+                >
+                  <AlertTriangle className="w-3.5 h-3.5" />
+                  {t('roomCard.reportProblemButton')}
+                </button>
+                <button 
+                  onClick={onReclean} 
+                  className="action-btn action-btn--secondary text-xs"
+                >
+                  <RotateCcw className="w-3.5 h-3.5" />
+                  {t('roomCard.recleanButton')}
+                </button>
+                <button
+                  onClick={handleCheckInClick}
+                  disabled={room.baseStatus === 'occupied'}
+                  className="action-btn action-btn--ghost text-xs disabled:opacity-40"
+                >
+                  <LogIn className="w-3.5 h-3.5" />
                   {t('roomCard.check_in')}
                 </button>
-                <button onClick={onMarkForCheck} className="card-action-button btn-check-out">
+                <button
+                  onClick={onMarkForCheck}
+                  disabled={room.baseStatus !== 'occupied'}
+                  className="action-btn action-btn--ghost text-xs disabled:opacity-40"
+                >
+                  <LogOut className="w-3.5 h-3.5" />
                   {t('roomCard.mark_for_check')}
                 </button>
               </div>
             </>
           )}
           {userRole === 'maintenance' && (
-            <div className="card-actions-grid">
-              <button onClick={onReportProblem} className="card-action-button full-width">
+            <div className="grid grid-cols-1 gap-2 mt-3">
+              <button onClick={onReportProblem} className="action-btn action-btn--secondary text-xs w-full">
+                <AlertTriangle className="w-3.5 h-3.5" />
                 {t('roomCard.reportProblemButton')}
               </button>
             </div>

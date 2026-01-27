@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Room } from '../types';
-import './RecleanModal.css';
+import { Camera, X } from 'lucide-react';
 
 interface RecleanModalProps {
   isOpen: boolean;
@@ -13,26 +13,39 @@ interface RecleanModalProps {
 const RecleanModal: React.FC<RecleanModalProps> = ({ isOpen, onClose, room, onMark }) => {
   const { t } = useTranslation();
   const [reason, setReason] = useState('');
-  const [file, setFile] = useState<File | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setFile(e.target.files[0]);
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setImageFile(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
     }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!reason) return;
+    if (!reason || isSubmitting) return;
 
-    setIsLoading(true);
-    await onMark(reason, file);
-    setIsLoading(false);
-
-    setReason('');
-    setFile(null);
-    onClose();
+    setIsSubmitting(true);
+    try {
+      await onMark(reason, imageFile);
+      setReason('');
+      setImageFile(null);
+      setImagePreview(null);
+      onClose();
+    } catch (error) {
+      console.error("Error requesting reclean:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   if (!isOpen) return null;
@@ -41,36 +54,69 @@ const RecleanModal: React.FC<RecleanModalProps> = ({ isOpen, onClose, room, onMa
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
-          <h5 className="modal-title">{t('recleanModal.title', { roomNumber: room.id })}</h5>
-          <button type="button" className="close-button" onClick={onClose}>
+          <h5 className="modal-title">
+            {t('recleanModal.title', { roomNumber: room.id })}
+          </h5>
+          <button
+            type="button"
+            className="close-button"
+            onClick={onClose}
+          >
             &times;
           </button>
         </div>
+
         <div className="modal-body">
           <form onSubmit={handleSubmit}>
             <div className="form-group">
-              <label className="form-label">{t('recleanModal.reasonLabel')}</label>
-              <textarea
-                className="form-textarea"
-                value={reason}
-                onChange={(e) => setReason(e.target.value)}
-                required
-                autoFocus
-              ></textarea>
-            </div>
-            <div className="form-group">
-              <label className="form-label">{t('recleanModal.photoLabel')}</label>
-              <input
-                type="file"
-                className="form-input-file"
-                onChange={handleFileChange}
-                accept="image/*"
-              />
-            </div>
-            <button type="submit" className="submit-button" disabled={!reason || isLoading}>
-              {isLoading ? t('recleanModal.loadingButton') : t('recleanModal.markButton')}
+              <label className="form-label">
+              {t('recleanModal.reasonLabel')}
+            </label>
+            <textarea
+              className="form-textarea"
+              value={reason}
+              onChange={(e) => setReason(e.target.value)}
+              required
+              rows={3}
+              autoFocus
+              placeholder={t('recleanModal.reasonPlaceholder')}
+            ></textarea>
+          </div>
+
+          <div className="form-group">
+            <input
+              type="file"
+              accept="image/*"
+              capture="environment"
+              onChange={handleImageChange}
+              style={{ display: 'none' }}
+              ref={fileInputRef}
+            />
+            <button
+              type="button"
+              className="photo-button"
+              onClick={() => fileInputRef.current?.click()}
+              disabled={isSubmitting}
+            >
+              <Camera className="w-5 h-5 mr-2" />
+              {t('recleanModal.photoButton')}
             </button>
-          </form>
+
+            {imagePreview && (
+              <div className="image-preview">
+                <img src={imagePreview} alt="Preview" />
+              </div>
+            )}
+          </div>
+
+          <button
+            type="submit"
+            className="submit-button"
+            disabled={!reason || isSubmitting}
+          >
+            {isSubmitting ? t('recleanModal.submitting') : t('recleanModal.submitButton')}
+          </button>
+        </form>
         </div>
       </div>
     </div>

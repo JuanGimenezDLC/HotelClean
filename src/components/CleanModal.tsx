@@ -1,58 +1,36 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import './CleanModal.css';
-
-const SinglePersonIcon = () => (
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-    <circle cx="12" cy="7" r="4"></circle>
-  </svg>
-);
-
-const DoublePersonIcon = () => (
-  <svg width="40" height="24" viewBox="0 0 40 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <g transform="translate(-2, 0)">
-      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-      <circle cx="12" cy="7" r="4"></circle>
-    </g>
-    <g transform="translate(14, 0)">
-      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-      <circle cx="12" cy="7" r="4"></circle>
-    </g>
-  </svg>
-);
+import { Room } from '../types';
+import { CheckCircle2, X } from 'lucide-react';
 
 interface CleanModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSelect: (bedType: 'single' | 'double') => void;
+  room: Room;
 }
 
-const CleanModal: React.FC<CleanModalProps> = ({ isOpen, onClose, onSelect }) => {
+const CleanModal: React.FC<CleanModalProps> = ({ isOpen, onClose, room }) => {
   const { t } = useTranslation();
 
   if (!isOpen) return null;
 
+  // Auto-close after 2 seconds
+  setTimeout(onClose, 2000);
+
   return (
-    <div className="modal-overlay">
-      <div className="modal-content">
-        <h5 className="modal-title">{t('cleanModal.title')}</h5>
-        <div className="modal-body">
-          <p>{t('cleanModal.message')}</p>
-          <div className="bed-options">
-            <button onClick={() => onSelect('single')} className="bed-option-button">
-              <SinglePersonIcon />
-              <span>{t('cleanModal.singleBed')}</span>
-            </button>
-            <button onClick={() => onSelect('double')} className="bed-option-button double">
-              <DoublePersonIcon />
-              <span>{t('cleanModal.doubleBed')}</span>
-            </button>
-          </div>
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal-content" onClick={(e) => e.stopPropagation()} style={{ textAlign: 'center', padding: '2rem' }}>
+        <div style={{ marginBottom: '1rem', color: '#28a745' }}>
+          <CheckCircle2 size={48} />
         </div>
-        <div className="modal-footer">
-          <button onClick={onClose} className="btn btn-secondary">{t('cleanModal.closeButton')}</button>
-        </div>
+        
+        <h2 className="modal-title" style={{ marginBottom: '0.5rem' }}>
+          {t('cleanModal.title')}
+        </h2>
+        
+        <p>
+          {t('cleanModal.message', { roomNumber: room.id })}
+        </p>
       </div>
     </div>
   );
