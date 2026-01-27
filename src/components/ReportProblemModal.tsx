@@ -1,12 +1,33 @@
-
 import React, { useState, useRef } from 'react';
 import { doc, updateDoc, arrayUnion, Timestamp } from 'firebase/firestore';
 import { useTranslation } from 'react-i18next';
 import { db, storage } from '../firebase';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { Problem } from './ModernRoomCard';
 import { Room, User } from '../types';
-import './ReportProblemModal.css';
+import { Problem } from './ModernRoomCard'; // Assuming this type is correct
+import './ReportProblemModal.css'; // We will modify this CSS
+
+// Placeholder for an icon component if needed, or just a styled div
+const IconPlaceholder = () => (
+  <div className="icon-placeholder">
+    {/* You might replace this with an actual icon component if available */}
+    <svg className="w-5 h-5 text-warning" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20zm0 2a12 12 0 1 0 0-24 12 12 0 0 0 0 24z"></path>
+      <path d="M12 14h.01"></path>
+      <path d="M11 11h.01"></path>
+      <path d="M11 17h.01"></path>
+    </svg>
+  </div>
+);
+
+
+const SpinnerIcon = () => (
+  <svg className="animate-spin mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+  </svg>
+);
+
 
 interface ReportProblemModalProps {
   isOpen: boolean;
@@ -15,14 +36,14 @@ interface ReportProblemModalProps {
   user: User;
 }
 
-// --- Icono de Carga (Spinner) ---
-const SpinnerIcon = () => (
-  <svg className="animate-spin" style={{ marginRight: '0.75rem', height: '1.25rem', width: '1.25rem' }} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-  </svg>
-);
-
+// Quick options derived from the dialog component
+const quickOptions = [
+  "Grifo gotea",
+  "Aire acondicionado no funciona",
+  "Luz fundida",
+  "TV no funciona",
+  "Cerradura atascada",
+];
 
 const ReportProblemModal: React.FC<ReportProblemModalProps> = ({ isOpen, onClose, room, user }) => {
   const { t } = useTranslation();
@@ -52,9 +73,13 @@ const ReportProblemModal: React.FC<ReportProblemModalProps> = ({ isOpen, onClose
     }
   };
 
+  const handleQuickOption = (option: string) => {
+    setDescription(option);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!description || isSubmitting) return;
+    if (!description.trim() || isSubmitting) return;
 
     setIsSubmitting(true);
     try {
@@ -67,7 +92,7 @@ const ReportProblemModal: React.FC<ReportProblemModalProps> = ({ isOpen, onClose
       }
 
       const newProblem: Problem = {
-        id: new Date().getTime().toString() + Math.random().toString(36).substr(2, 9),
+        id: `${new Date().getTime()}${Math.random().toString(36).substr(2, 9)}`, // Ensure unique ID
         description,
         reportedBy: user.uid,
         reportedAt: Timestamp.now(),
@@ -80,14 +105,15 @@ const ReportProblemModal: React.FC<ReportProblemModalProps> = ({ isOpen, onClose
         reportedProblems: arrayUnion(newProblem),
       });
 
-      // Limpiar y cerrar solo si todo ha ido bien
+      // Reset form and close modal on success
       setDescription('');
       setImageFile(null);
       setImagePreview(null);
       onClose();
     } catch (error) {
       console.error("Error reporting problem:", error);
-      // Aquí podrías mostrar una notificación de error al usuario
+      // Optionally show a user-facing error message here
+      alert('Error reporting problem. Please try again.'); // Simple alert for now
     } finally {
       setIsSubmitting(false);
     }
@@ -99,24 +125,44 @@ const ReportProblemModal: React.FC<ReportProblemModalProps> = ({ isOpen, onClose
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
-          <h5 className="modal-title">{t('reportProblemModal.title', { roomNumber: room.id })}</h5>
-          <button type="button" className="close-button" onClick={onClose}>
+          <div className="dialog-header-content"> {/* Mimics DialogHeader content */}
+            <IconPlaceholder /> {/* Placeholder for the icon */}
+            <div className="dialog-title-description">
+              <h5 className="dialog-title">{t('reportProblemModal.title', { roomNumber: room.id })}</h5>
+              <p className="dialog-description">{t('reportProblemModal.roomDescription', { roomNumber: room.id })}</p>
+            </div>
+          </div>
+          <button type="button" className="close-button" onClick={onClose} aria-label="Close dialog">
             &times;
           </button>
         </div>
         <div className="modal-body">
-          <form onSubmit={handleSubmit}>
-            <div className="form-group">
-              <label className="form-label">{t('reportProblemModal.descriptionLabel')}</label>
+          <form onSubmit={handleSubmit} className="dialog-form"> {/* Apply form styling */}
+            <div className="quick-options-section"> {/* Mimics quick options container */}
+              {quickOptions.map((option) => (
+                <button
+                  key={option}
+                  type="button"
+                  onClick={() => handleQuickOption(option)}
+                  className={`quick-option-btn ${description === option ? 'active' : ''}`}
+                >
+                  {option}
+                </button>
+              ))}
+            </div>
+
+            <div className="textarea-section"> {/* Mimics textarea container */}
               <textarea
-                className="form-textarea"
+                placeholder={t('reportProblemModal.descriptionPlaceholder')} // Add translation key for placeholder
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
+                className="form-textarea" // This class will be styled in CSS
                 required
                 autoFocus
               ></textarea>
             </div>
-            <div className="form-group">
+
+            <div className="file-upload-section"> {/* Section for image upload */}
               <input
                 type="file"
                 accept="image/*"
@@ -127,26 +173,40 @@ const ReportProblemModal: React.FC<ReportProblemModalProps> = ({ isOpen, onClose
               />
               <button
                 type="button"
-                className="photo-button"
+                className="photo-button" // This class will be styled
                 onClick={() => fileInputRef.current?.click()}
               >
                 {t('reportProblemModal.photoButton')}
               </button>
               {imagePreview && (
-                <div className="image-preview">
+                <div className="image-preview-container"> {/* Mimics preview container */}
                   <button type="button" className="remove-image-button" onClick={handleRemoveImage} aria-label={t('reportProblemModal.removeImageAriaLabel')}>
                     &times;
                   </button>
-                  <img src={imagePreview} alt="Preview" />
+                  <img src={imagePreview} alt="Preview" className="image-preview-img" /> {/* Mimics preview image style */}
                 </div>
               )}
             </div>
-            <button type="submit" className="submit-button" disabled={!description || isSubmitting} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              {isSubmitting && <SpinnerIcon />}
-              {isSubmitting
-                ? t('reportProblemModal.loadingButton')
-                : t('reportProblemModal.reportButton')}
-            </button>
+
+            <div className="modal-footer"> {/* Footer for buttons */}
+              <button
+                type="button"
+                className="button ghost cancel-button" // Mimics ghost button for cancel
+                onClick={onClose}
+              >
+                {t('reportProblemModal.cancelButton')} {/* Add translation key */}
+              </button>
+              <button
+                type="submit"
+                className="button submit-button" // Primary button style
+                disabled={!description.trim() || isSubmitting}
+              >
+                {isSubmitting && <SpinnerIcon />}
+                {isSubmitting
+                  ? t('reportProblemModal.loadingButton')
+                  : t('reportProblemModal.reportButton')}
+              </button>
+            </div>
           </form>
         </div>
       </div>

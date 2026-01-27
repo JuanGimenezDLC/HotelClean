@@ -1,204 +1,272 @@
-/* --- Estilos para el Modal de Reportar Problema --- */
+/* ReportProblemModal.css */
 
-/* --- Variables de Diseño --- */
-:root {
-  --modal-bg-color: rgba(25, 25, 30, 0.8); /* Fondo oscuro y semitransparente */
-  --modal-content-bg: #1f1f23; /* Un gris muy oscuro para el contenido */
-  --card-border-color: rgba(255, 255, 255, 0.15);
-  --text-color-primary: #EAEAEA;
-  --text-color-secondary: #A0A0B0;
-  --accent-color: #4D96FF; /* Azul para elementos interactivos */
-  --danger-color: #FF6B6B;
-  --transition-speed: 0.3s;
-}
-
-/* --- Contenedor Principal del Modal --- */
+/* General Modal Styles - Mimicking DialogContent */
 .modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
-  background: var(--modal-bg-color);
-  backdrop-filter: blur(10px);
+  right: 0;
+  bottom: 0;
+  background-color: rgba(17, 24, 39, 0.6); /* Equivalent to 'bg-gray-900/60' or similar */
   display: flex;
-  justify-content: center;
   align-items: center;
-  z-index: 1000;
-  opacity: 0;
-  animation: fadeIn var(--transition-speed) forwards;
+  justify-content: center;
+  z-index: 50; /* High z-index to be on top */
 }
 
-@keyframes fadeIn {
-  to { opacity: 1; }
-}
-
-/* --- Contenido del Modal --- */
 .modal-content {
-  background: var(--modal-content-bg);
-  border-radius: 16px;
-  border: 1px solid var(--card-border-color);
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
-  width: 90%;
-  max-width: 500px;
-  padding: 28px;
-  transform: scale(0.95);
-  animation: slideIn var(--transition-speed) ease-out forwards;
+  background-color: hsl(var(--card)); /* Mimics bg-card, using CSS variables */
+  border: 1px solid hsl(var(--border)); /* Mimics border-border */
+  max-width: 384px; /* Equivalent to max-w-md */
+  width: 100%;
+  border-radius: 0.75rem; /* Rounded corners */
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* Custom shadow */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* Ensures content stays within rounded corners */
 }
 
-@keyframes slideIn {
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-/* --- Cabecera del Modal --- */
+/* Modal Header - Mimicking DialogHeader */
 .modal-header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid var(--card-border-color);
-  padding-bottom: 16px;
-  margin-bottom: 20px;
+  justify-content: space-between; /* Puts close button on the right */
+  padding: 1rem 1.5rem; /* Mimics dialog-header padding and gap */
+  border-bottom: 1px solid hsl(var(--border)); /* Separator line */
+  background-color: hsl(var(--card)); /* Match content background */
 }
 
-.modal-title {
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: var(--text-color-primary);
-  margin: 0;
+.dialog-header-content {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem; /* Equivalent to gap-3 */
+  margin-bottom: 0.5rem; /* Equivalent to mb-2 */
+}
+
+.icon-placeholder {
+  width: 2.5rem; /* w-10 */
+  height: 2.5rem; /* h-10 */
+  border-radius: 0.5rem; /* rounded-xl is often 0.75rem or 1rem, but let's use a common value */
+  background-color: hsla(var(--warning), 0.1); /* bg-warning/10 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: hsl(var(--warning)); /* Text color for the icon */
+}
+
+.icon-placeholder svg {
+  width: 1.25rem; /* w-5 */
+  height: 1.25rem; /* h-5 */
+}
+
+.dialog-title-description {
+  display: flex;
+  flex-direction: column;
+}
+
+.dialog-title {
+  font-size: 1.125rem; /* text-lg */
+  font-weight: 600; /* Semibold */
+  line-height: 1.4;
+  color: hsl(var(--foreground)); /* Default text color */
+}
+
+.dialog-description {
+  font-size: 0.875rem; /* text-sm */
+  color: hsl(var(--muted-foreground)); /* Mimics muted text color */
+  line-height: 1.2;
 }
 
 .close-button {
-  background: transparent;
+  background: none;
   border: none;
-  color: var(--text-color-secondary);
-  font-size: 2rem;
+  font-size: 1.5rem; /* Large 'x' */
+  line-height: 1;
   cursor: pointer;
-  transition: color var(--transition-speed), transform var(--transition-speed);
+  color: hsl(var(--muted-foreground));
+  padding: 0.25rem; /* Small touch target */
+  border-radius: 0.25rem; /* Slight rounding */
 }
 
 .close-button:hover {
-  color: var(--text-color-primary);
-  transform: rotate(90deg);
+  color: hsl(var(--foreground));
 }
 
-/* --- Cuerpo y Formulario --- */
+/* Modal Body */
 .modal-body {
-  color: var(--text-color-secondary);
+  padding: 1.5rem; /* Mimics dialog body padding */
+  flex-grow: 1; /* Allows body to take available space */
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem; /* Space between sections, mimicking space-y-4 */
 }
 
-.form-group {
-  margin-bottom: 20px;
+/* Quick Options */
+.quick-options-section {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem; /* Mimics gap-2/gap-half */
 }
 
-.form-label {
-  display: block;
-  font-size: 0.9rem;
-  font-weight: 500;
-  color: var(--text-color-secondary);
-  margin-bottom: 8px;
+.quick-option-btn {
+  padding: 0.375rem 0.75rem; /* px-3 py-1.5 */
+  border-radius: 0.5rem; /* rounded-lg */
+  font-size: 0.75rem; /* text-xs */
+  font-weight: 500; /* medium */
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+  border: none; /* Remove default button border */
 }
 
+.quick-option-btn.active {
+  background-color: hsl(var(--primary)); /* bg-primary */
+  color: hsl(var(--primary-foreground)); /* text-primary-foreground */
+}
+
+.quick-option-btn:not(.active) {
+  background-color: hsl(var(--muted)); /* bg-muted */
+  color: hsl(var(--muted-foreground)); /* text-muted-foreground */
+}
+
+.quick-option-btn:not(.active):hover {
+  background-color: hsl(var(--muted) / 0.8); /* hover:bg-muted/80 */
+}
+
+/* Textarea */
 .form-textarea {
-  width: 100%;
-  padding: 14px;
-  background: rgba(0, 0, 0, 0.2);
-  border: 1px solid var(--card-border-color);
-  border-radius: 10px;
-  color: var(--text-color-primary);
-  font-size: 1rem;
-  min-height: 120px;
-  resize: vertical;
-  transition: border-color var(--transition-speed), box-shadow var(--transition-speed);
+  min-height: 6.25rem; /* min-h-[100px] */
+  background-color: hsl(var(--muted)); /* bg-muted */
+  border: 0; /* border-0 */
+  width: 100%; /* Ensure it takes full width */
+  padding: 0.75rem 0.75rem; /* Default textarea padding, can be adjusted */
+  font-size: 0.875rem; /* text-base, similar to dialog text */
+  line-height: 1.5;
+  border-radius: 0.375rem; /* Default textarea radius, can be adjusted to match dialog */
+  resize: vertical; /* Allow vertical resizing */
+  transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out; /* Smooth transition for focus */
 }
 
 .form-textarea:focus {
   outline: none;
-  border-color: var(--accent-color);
-  box-shadow: 0 0 0 3px rgba(77, 150, 255, 0.3);
+  ring-width: 1px; /* focus-visible:ring-1 */
+  ring-color: hsl(var(--primary)); /* focus-visible:ring-primary */
 }
 
-/* --- Botón de Envío --- */
-.submit-button {
-  width: 100%;
-  padding: 14px;
-  border-radius: 10px;
-  border: none;
-  background: var(--accent-color);
-  color: #fff;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background-color var(--transition-speed), transform var(--transition-speed);
+/* File Upload Section */
+.file-upload-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem; /* Space between button and preview */
 }
 
-.submit-button:hover {
-  background: #3a86f8;
-  transform: translateY(-2px);
-}
-
-.submit-button:disabled {
-  background-color: #555;
-  cursor: not-allowed;
-  opacity: 0.7;
-}
-
-/* --- Estilos para el botón de la foto y la vista previa --- */
 .photo-button {
-  width: 100%;
-  padding: 12px;
-  border-radius: 10px;
-  border: 1px dashed var(--accent-color);
-  background: transparent;
-  color: var(--accent-color);
-  font-size: 0.9rem;
+  /* This will be styled as a primary/secondary button */
+  display: inline-flex; /* For centering spinner */
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem; /* Matches default button radius */
   font-weight: 500;
+  transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
   cursor: pointer;
-  transition: background-color var(--transition-speed), color var(--transition-speed);
-  margin-bottom: 16px;
+  border: 1px solid hsl(var(--input)); /* Base border color */
+  background-color: hsl(var(--background)); /* Default background */
+  color: hsl(var(--foreground)); /* Default text color */
 }
 
 .photo-button:hover {
-  background-color: rgba(77, 150, 255, 0.1);
-  color: #fff;
+  background-color: hsl(var(--muted)); /* Hover state */
 }
 
-.image-preview {
-  margin-top: 16px;
+.image-preview-container {
   position: relative;
-  text-align: center;
+  display: inline-block; /* To allow positioning of remove button */
+  border: 1px solid hsl(var(--border));
+  border-radius: 0.375rem;
+  overflow: hidden; /* Clip image */
+  max-width: 150px; /* Limit preview size */
 }
 
-.image-preview img {
+.image-preview-img {
+  display: block; /* Remove extra space below image */
   max-width: 100%;
-  max-height: 200px;
-  border-radius: 10px;
-  border: 1px solid var(--card-border-color);
+  height: auto;
 }
 
 .remove-image-button {
   position: absolute;
-  top: -10px;
-  right: -10px;
-  background-color: var(--danger-color);
-  color: white;
-  border: 2px solid var(--modal-content-bg);
-  border-radius: 50%;
-  width: 28px;
-  height: 28px;
-  font-size: 1.2rem;
-  line-height: 1;
-  cursor: pointer;
+  top: 0.25rem;
+  right: 0.25rem;
+  background-color: hsla(var(--background), 0.8); /* Semi-transparent background */
+  color: hsl(var(--foreground));
+  border: none;
+  border-radius: 50%; /* Circle */
+  width: 1.25rem; /* Small size */
+  height: 1.25rem;
   display: flex;
   align-items: center;
   justify-content: center;
+  cursor: pointer;
+  font-size: 0.8rem;
+  line-height: 1;
   padding: 0;
-  transition: transform 0.2s ease, background-color 0.2s ease;
+  transition: background-color 0.2s ease-in-out;
 }
 
 .remove-image-button:hover {
-  transform: scale(1.1);
-  background-color: #ff4d4d;
+  background-color: hsl(var(--destructive)); /* Red on hover */
+  color: hsl(var(--destructive-foreground));
+}
+
+/* Button Styles - Mimicking Button variants */
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.6rem 1.2rem; /* Standard button padding */
+  border-radius: 0.375rem; /* Standard button radius */
+  font-weight: 500; /* Medium */
+  font-size: 0.875rem; /* text-base */
+  line-height: 1.2;
+  transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+  cursor: pointer;
+  border: 1px solid transparent; /* Default transparent border */
+}
+
+.button.ghost {
+  background-color: transparent;
+  color: hsl(var(--muted-foreground));
+}
+
+.button.ghost:hover {
+  background-color: hsl(var(--muted));
+}
+
+.button.submit-button { /* Primary style */
+  background-color: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+}
+
+.button.submit-button:hover {
+  background-color: hsl(var(--primary) / 0.9);
+}
+
+.button.submit-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Footer specific styling */
+.modal-footer {
+  display: flex;
+  justify-content: flex-end; /* Align buttons to the right */
+  padding: 1rem 1.5rem; /* Match header padding */
+  border-top: 1px solid hsl(var(--border)); /* Separator */
+  gap: 0.5rem; /* Space between buttons */
+  background-color: hsl(var(--card)); /* Match other card elements */
+}
+
+/* Override existing form-group styles if they conflict, or ensure they work together */
+.form-group {
+  margin-bottom: 1rem; /* Standard form group spacing */
 }
