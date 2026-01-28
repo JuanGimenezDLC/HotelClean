@@ -31,18 +31,16 @@ const RoomFilter: React.FC<RoomFilterProps> = ({ activeFilter, onFilterChange })
 
   return (
     <div className="room-filter-wrapper">
-      <div className="room-filter-container">
-        {filterOptions.map((filter) => (
-          <button
-            key={filter.id}
-            className={`room-filter-button ${activeFilter === filter.id ? 'active' : ''}`}
-            onClick={() => onFilterChange(filter.id)}
-          >
-            {filter.icon && React.createElement(filter.icon, { className: "room-filter-icon" })}
-            <span>{t(filter.labelKey)}</span>
-          </button>
-        ))}
-      </div>
+      {filterOptions.map((filter) => (
+        <button
+          key={filter.id}
+          className={`room-filter-button ${activeFilter === filter.id ? 'active' : ''}`}
+          onClick={() => onFilterChange(filter.id)}
+        >
+          {filter.icon && React.createElement(filter.icon, { className: "room-filter-icon" })}
+          <span>{t(filter.labelKey)}</span>
+        </button>
+      ))}
     </div>
   );
 };
