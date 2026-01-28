@@ -65,9 +65,9 @@
 }
 
 .dialog-title {
-  font-size: 1.125rem; /* text-lg */
-  font-weight: 600; /* Semibold */
-  line-height: 1.4;
+  font-size: 1.5rem; /* text-2xl */
+  font-weight: 700; /* Bold */
+  line-height: 1.2;
   color: hsl(var(--foreground)); /* Default text color */
 }
 

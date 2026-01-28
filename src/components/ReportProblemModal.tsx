@@ -126,8 +126,7 @@ const ReportProblemModal: React.FC<ReportProblemModalProps> = ({ isOpen, onClose
           <div className="dialog-header-content"> {/* Mimics DialogHeader content */}
             <IconPlaceholder /> {/* Placeholder for the icon */}
             <div className="dialog-title-description">
-              <h5 className="dialog-title">{t('reportProblemModal.title')}</h5> {/* Removed roomNumber from here */}
-              <p className="dialog-description">{t('reportProblemModal.roomDescription', { roomNumber: room.id })}</p>
+              <h5 className="dialog-title">{t('roomCard.room')} {room.id}</h5>
             </div>
           </div>
           <button type="button" className="close-button" onClick={onClose} aria-label="Close dialog">
