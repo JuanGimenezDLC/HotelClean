@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
+import './LanguageSelector.css';
 
 const languages = [
   { code: 'en', name: 'English' },

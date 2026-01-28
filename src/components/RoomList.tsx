@@ -311,18 +311,18 @@ const RoomList: React.FC<RoomListProps> = ({ user }) => {
               <span className="lovable-logo-text-icon">H</span>
             </div>
             <div className="lovable-app-title-group">
-              <h1 className="lovable-app-title">{t('header.hotelManagerTitle')}</h1> {/* New key for 'Hotel Manager' */}
-              <p className="lovable-app-subtitle">{t('header.roomManagementSubtitle')}</p> {/* New key for 'Gestión de habitaciones' */}
+              <h1 className="lovable-app-title">{t('header.hotelManagerTitle', 'Hotel Manager')}</h1>
+              <p className="lovable-app-subtitle">{t('header.roomManagementSubtitle', 'Gestión de habitaciones')}</p>
             </div>
           </div>
 
           <div className="lovable-user-actions">
             <div className="lovable-online-status">
               <div className="lovable-online-dot" />
-              <span className="lovable-online-text">{t('header.onlineStatus')}</span>
+              <span className="lovable-online-text">{t('header.onlineStatus', 'En línea')}</span>
             </div>
 
-            <button className="lovable-user-dropdown-trigger" onClick={handleLogout}> {/* Using button for trigger for now */}
+            <div className="lovable-user-dropdown-trigger">
               <div className="lovable-user-avatar-wrapper">
                 <UserIcon className="lovable-user-avatar-icon" />
               </div>
@@ -330,8 +330,11 @@ const RoomList: React.FC<RoomListProps> = ({ user }) => {
                 <p className="lovable-user-role">{roleLabels[user.role] || user.role}</p>
                 <p className="lovable-user-email">{user.email}</p>
               </div>
+            </div>
+            <LanguageSelector currentLanguage={i18n.language} />
+            <button onClick={handleLogout} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '0.5rem', display: 'flex', alignItems: 'center', color: 'inherit' }} title={t('roomStatus.logoutButton')}>
+              <LogOut size={20} />
             </button>
-            <LanguageSelector currentLanguage={i18n.language} /> {/* Keep LanguageSelector */}
           </div>
         </div>
       </header>
