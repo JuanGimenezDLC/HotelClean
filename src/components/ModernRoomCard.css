@@ -184,6 +184,9 @@
 .text-xs { font-size: 0.75rem; line-height: 1rem; }
 .w-3\.5 { width: 0.875rem; }
 .h-3\.5 { height: 0.875rem; }
+.text-sm { font-size: 0.875rem; line-height: 1.25rem; }
+.w-4 { width: 1rem; }
+.h-4 { height: 1rem; }
 .disabled\:opacity-40:disabled { opacity: 0.4; }
 
 /* Action Button Styles */
@@ -199,6 +202,14 @@
   border: 1px solid transparent;
   padding: 0.625rem 1rem; /* py-2.5 px-4 slightly larger */
   height: 2.5rem; /* h-10 slightly taller */
+}
+
+.action-btn--primary {
+  background-color: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+}
+.action-btn--primary:hover {
+  background-color: hsl(var(--primary) / 0.8);
 }
 
 .action-btn--secondary {

@@ -189,11 +189,13 @@ export const ModernRoomCard: React.FC<ModernRoomCardProps> = ({ t, room, userRol
 
         <div className="card-footer-actions">
           {userRole === 'cleaner' && (
-            <div className="card-actions-grid">
-              <button onClick={() => onStatusChange('clean')} className="card-action-button">
+            <div className="grid grid-cols-2 gap-2">
+              <button onClick={() => onStatusChange('clean')} className="action-btn action-btn--primary text-sm">
+                <Check className="w-4 h-4" />
                 {t('states.clean')}
               </button>
-              <button onClick={onReportProblem} className="card-action-button">
+              <button onClick={onReportProblem} className="action-btn action-btn--secondary text-sm">
+                <AlertTriangle className="w-4 h-4" />
                 {t('roomCard.reportProblemButton')}
               </button>
             </div>
@@ -223,32 +225,32 @@ export const ModernRoomCard: React.FC<ModernRoomCardProps> = ({ t, room, userRol
               <div className="grid grid-cols-2 gap-2 mt-3">
                 <button 
                   onClick={onReportProblem} 
-                  className="action-btn action-btn--secondary text-xs"
+                  className="action-btn action-btn--secondary text-sm"
                 >
-                  <AlertTriangle className="w-3.5 h-3.5" />
+                  <AlertTriangle className="w-4 h-4" />
                   {t('roomCard.reportProblemButton')}
                 </button>
                 <button 
                   onClick={onReclean} 
-                  className="action-btn action-btn--secondary text-xs"
+                  className="action-btn action-btn--secondary text-sm"
                 >
-                  <RotateCcw className="w-3.5 h-3.5" />
+                  <RotateCcw className="w-4 h-4" />
                   {t('roomCard.recleanButton')}
                 </button>
                 <button
                   onClick={handleCheckInClick}
                   disabled={room.baseStatus === 'occupied'}
-                  className="action-btn action-btn--ghost text-xs disabled:opacity-40"
+                  className="action-btn action-btn--ghost text-sm disabled:opacity-40"
                 >
-                  <LogIn className="w-3.5 h-3.5" />
+                  <LogIn className="w-4 h-4" />
                   {t('roomCard.check_in')}
                 </button>
                 <button
                   onClick={onMarkForCheck}
                   disabled={room.baseStatus !== 'occupied'}
-                  className="action-btn action-btn--ghost text-xs disabled:opacity-40"
+                  className="action-btn action-btn--ghost text-sm disabled:opacity-40"
                 >
-                  <LogOut className="w-3.5 h-3.5" />
+                  <LogOut className="w-4 h-4" />
                   {t('roomCard.mark_for_check')}
                 </button>
               </div>
@@ -256,8 +258,8 @@ export const ModernRoomCard: React.FC<ModernRoomCardProps> = ({ t, room, userRol
           )}
           {userRole === 'maintenance' && (
             <div className="grid grid-cols-1 gap-2 mt-3">
-              <button onClick={onReportProblem} className="action-btn action-btn--secondary text-xs w-full">
-                <AlertTriangle className="w-3.5 h-3.5" />
+              <button onClick={onReportProblem} className="action-btn action-btn--secondary text-sm w-full">
+                <AlertTriangle className="w-4 h-4" />
                 {t('roomCard.reportProblemButton')}
               </button>
             </div>
