@@ -102,5 +102,21 @@
     "checkInTitle": "Veprim i palejuar",
     "checkInMessage": "Nuk mund të bëhet check-in në një dhomë që nuk është e pastër.",
     "acceptButton": "Prano"
+  },
+    "reportProblem": {
+    "leakyFaucet": "Rubineti pikon",
+    "acBroken": "Kondicioneri nuk punon",
+    "lightBroken": "Llamba e djegur",
+    "tvBroken": "Televizori nuk punon",
+    "lockStuck": "Bllokimi i derës"
+  },
+  "reclean": {
+    "dirtyBathroom": "Banja e pisët",
+    "dirtyBeds": "Shtretër të pisët",
+    "dirtyFloor": "Dysheme e pisët",
+    "dirtyToilet": "Tualeti i pisët",
+    "missingTowels": "Mungojnë peshqirët",
+    "fullBin": "Koshi plot",
+    "dustyFurniture": "Pluhur në mobilje"
   }
 }

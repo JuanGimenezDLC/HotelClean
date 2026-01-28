@@ -102,5 +102,21 @@
     "checkInTitle": "Akcja niedozwolona",
     "checkInMessage": "Nie można zameldować gościa w pokoju, który nie jest czysty.",
     "acceptButton": "Akceptuj"
+  },
+    "reportProblem": {
+    "leakyFaucet": "Cieknący kran",
+    "acBroken": "Klimatyzacja nie działa",
+    "lightBroken": "Żarówka przepalona",
+    "tvBroken": "Telewizor nie działa",
+    "lockStuck": "Zamek zacięty"
+  },
+  "reclean": {
+    "dirtyBathroom": "Brudna łazienka",
+    "dirtyBeds": "Brudne łóżka",
+    "dirtyFloor": "Brudna podłoga",
+    "dirtyToilet": "Brudna toaleta",
+    "missingTowels": "Brak ręczników",
+    "fullBin": "Pełny kosz",
+    "dustyFurniture": "Zakurzone meble"
   }
 }

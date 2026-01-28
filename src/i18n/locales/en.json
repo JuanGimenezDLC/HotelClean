@@ -106,5 +106,21 @@
     "checkInTitle": "Action Not Allowed",
     "checkInMessage": "Cannot check-in a room that is not clean.",
     "acceptButton": "Accept"
+  },
+    "reportProblem": {
+    "leakyFaucet": "Leaky faucet",
+    "acBroken": "AC not working",
+    "lightBroken": "Light bulb broken",
+    "tvBroken": "TV not working",
+    "lockStuck": "Lock stuck"
+  },
+  "reclean": {
+    "dirtyBathroom": "Dirty bathroom",
+    "dirtyBeds": "Dirty beds",
+    "dirtyFloor": "Dirty floor",
+    "dirtyToilet": "Dirty toilet",
+    "missingTowels": "Missing towels",
+    "fullBin": "Bin full",
+    "dustyFurniture": "Dusty furniture"
   }
 }

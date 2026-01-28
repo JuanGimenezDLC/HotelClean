@@ -102,5 +102,22 @@
     "checkInTitle": "Aktion nicht erlaubt",
     "checkInMessage": "Ein Zimmer, das nicht sauber ist, kann nicht eingecheckt werden.",
     "acceptButton": "Akzeptieren"
+  },
+    "reportProblem": {
+    "leakyFaucet": "Wasserhahn tropft",
+    "acBroken": "Klimaanlage defekt",
+    "lightBroken": "Glühbirne defekt",
+    "tvBroken": "Fernseher funktioniert nicht",
+    "lockStuck": "Schloss klemmt"
+  },
+  "reclean": {
+    "dirtyBathroom": "Schmutziges Badezimmer",
+    "dirtyBeds": "Schmutzige Betten",
+    "dirtyFloor": "Schmutziger Boden",
+    "dirtyToilet": "Schmutzige Toilette",
+    "missingTowels": "Fehlende Handtücher",
+    "fullBin": "Mülleimer voll",
+    "dustyFurniture": "Staubige Möbel"
   }
+
 }

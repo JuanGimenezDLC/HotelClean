@@ -27,13 +27,13 @@ interface RecleanModalProps {
 }
 
 const quickOptions = [
-  "Baño sucio",
-  "Camas sucias",
-  "Suelo sucio",
-  "Váter sucio",
-  "Faltan toallas",
-  "Papelera llena",
-  "Polvo en muebles"
+  { key: 'reclean.dirtyBathroom', defaultValue: "Baño sucio" },
+  { key: 'reclean.dirtyBeds', defaultValue: "Camas sucias" },
+  { key: 'reclean.dirtyFloor', defaultValue: "Suelo sucio" },
+  { key: 'reclean.dirtyToilet', defaultValue: "Váter sucio" },
+  { key: 'reclean.missingTowels', defaultValue: "Faltan toallas" },
+  { key: 'reclean.fullBin', defaultValue: "Papelera llena" },
+  { key: 'reclean.dustyFurniture', defaultValue: "Polvo en muebles" }
 ];
 
 const RecleanModal: React.FC<RecleanModalProps> = ({ isOpen, onClose, room, onMark }) => {
@@ -108,12 +108,12 @@ const RecleanModal: React.FC<RecleanModalProps> = ({ isOpen, onClose, room, onMa
             <div className="quick-options-section">
               {quickOptions.map((option) => (
                 <button
-                  key={option}
+                  key={option.key}
                   type="button"
-                  onClick={() => handleQuickOption(option)}
-                  className={`quick-option-btn ${description === option ? 'active' : ''}`}
+                  onClick={() => handleQuickOption(t(option.key, option.defaultValue))}
+                  className={`quick-option-btn ${description === t(option.key, option.defaultValue) ? 'active' : ''}`}
                 >
-                  {option}
+                  {t(option.key, option.defaultValue)}
                 </button>
               ))}
             </div>

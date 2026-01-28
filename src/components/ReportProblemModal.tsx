@@ -36,11 +36,11 @@ interface ReportProblemModalProps {
 
 // Quick options derived from the dialog component
 const quickOptions = [
-  "Grifo gotea",
-  "Aire acondicionado no funciona",
-  "Luz fundida",
-  "TV no funciona",
-  "Cerradura atascada",
+  { key: 'reportProblem.leakyFaucet', defaultValue: "Grifo gotea" },
+  { key: 'reportProblem.acBroken', defaultValue: "Aire acondicionado no funciona" },
+  { key: 'reportProblem.lightBroken', defaultValue: "Luz fundida" },
+  { key: 'reportProblem.tvBroken', defaultValue: "TV no funciona" },
+  { key: 'reportProblem.lockStuck', defaultValue: "Cerradura atascada" },
 ];
 
 const ReportProblemModal: React.FC<ReportProblemModalProps> = ({ isOpen, onClose, room, user }) => {
@@ -138,12 +138,12 @@ const ReportProblemModal: React.FC<ReportProblemModalProps> = ({ isOpen, onClose
             <div className="quick-options-section"> {/* Mimics quick options container */}
               {quickOptions.map((option) => (
                 <button
-                  key={option}
+                  key={option.key}
                   type="button"
-                  onClick={() => handleQuickOption(option)}
-                  className={`quick-option-btn ${description === option ? 'active' : ''}`}
+                  onClick={() => handleQuickOption(t(option.key, option.defaultValue))}
+                  className={`quick-option-btn ${description === t(option.key, option.defaultValue) ? 'active' : ''}`}
                 >
-                  {option}
+                  {t(option.key, option.defaultValue)}
                 </button>
               ))}
             </div>

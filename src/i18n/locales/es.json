@@ -105,5 +105,21 @@
     "checkInTitle": "Acción no permitida",
     "checkInMessage": "No se puede hacer check-in en una habitación que no está limpia.",
     "acceptButton": "Aceptar"
+  },
+  "reportProblem": {
+    "leakyFaucet": "Grifo gotea",
+    "acBroken": "Aire acondicionado no funciona",
+    "lightBroken": "Luz fundida",
+    "tvBroken": "TV no funciona",
+    "lockStuck": "Cerradura atascada"
+  },
+  "reclean": {
+    "dirtyBathroom": "Baño sucio",
+    "dirtyBeds": "Camas sucias",
+    "dirtyFloor": "Suelo sucio",
+    "dirtyToilet": "Váter sucio",
+    "missingTowels": "Faltan toallas",
+    "fullBin": "Papelera llena",
+    "dustyFurniture": "Polvo en muebles"
   }
 }
