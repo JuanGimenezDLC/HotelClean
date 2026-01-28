@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Room } from '../types';
-import { X } from 'lucide-react';
+import './ReportProblemModal.css';
 
 interface CleanConfirmationModalProps {
   isOpen: boolean;
@@ -15,35 +15,33 @@ const CleanConfirmationModal: React.FC<CleanConfirmationModalProps> = ({ isOpen,
 
   if (!isOpen) return null;
 
+  const bedTypeLabel = room.bedType === 'double' ? 'Matrimonio' : (room.bedType === 'single' ? 'Individual' : '');
+
   return (
     <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+      <div className="modal-content" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '450px' }}>
         <div className="modal-header">
-          <h5 className="modal-title">
-            {t('cleanConfirmationModal.title')}
-          </h5>
-          <button
-            type="button"
-            className="close-button"
-            onClick={onClose}
-          >
+          <h5 className="dialog-title">{t('cleanConfirmation.title', 'Confirmar Limpieza')}</h5>
+          <button type="button" className="close-button" onClick={onClose} aria-label="Close">
             &times;
           </button>
         </div>
-        
         <div className="modal-body">
-          <p>
-          {t('cleanConfirmationModal.message', { roomNumber: room.id })}
-        </p>
-
-          <div className="modal-actions" style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginTop: '20px' }}>
-            <button onClick={onClose} className="cancel-button" style={{ padding: '8px 16px', border: '1px solid #ccc', borderRadius: '4px', background: 'white', cursor: 'pointer' }}>
-            {t('cancel')}
-          </button>
-            <button onClick={onConfirm} className="confirm-button" style={{ padding: '8px 16px', border: 'none', borderRadius: '4px', background: '#007bff', color: 'white', cursor: 'pointer' }}>
-            {t('confirm')}
-          </button>
+          <p className="dialog-description">
+            {t('cleanConfirmation.message', { 
+              roomNumber: room.id, 
+              bedType: bedTypeLabel,
+              defaultValue: `¿Confirmar limpieza de habitación ${room.id}${bedTypeLabel ? ` (${bedTypeLabel})` : ''}?`
+            })}
+          </p>
         </div>
+        <div className="modal-footer">
+          <button type="button" className="button ghost" onClick={onClose}>
+            {t('common.cancel', 'Cancelar')}
+          </button>
+          <button type="button" className="button submit-button" onClick={onConfirm}>
+            {t('common.confirm', 'Confirmar')}
+          </button>
         </div>
       </div>
     </div>

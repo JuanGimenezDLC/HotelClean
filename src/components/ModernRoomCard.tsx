@@ -203,19 +203,19 @@ export const ModernRoomCard: React.FC<ModernRoomCardProps> = ({ t, room, userRol
               <div className="status-toggle-group">
                 <button
                   onClick={() => onStatusChange('clean')}
-                  className={`status-toggle-button ${room.baseStatus === 'clean' ? 'active' : ''}`}
+                  className={`status-toggle-button toggle-clean ${room.baseStatus === 'clean' ? 'active' : ''}`}
                 >
                   {t('states.clean')}
                 </button>
                 <button
                   onClick={() => onStatusChange('dirty')}
-                  className={`status-toggle-button ${room.baseStatus === 'dirty' ? 'active' : ''}`}
+                  className={`status-toggle-button toggle-dirty ${room.baseStatus === 'dirty' ? 'active' : ''}`}
                 >
                   {t('states.dirty')}
                 </button>
                 <button
                   onClick={() => onStatusChange('occupied')}
-                  className={`status-toggle-button ${room.baseStatus === 'occupied' ? 'active' : ''}`}
+                  className={`status-toggle-button toggle-occupied ${room.baseStatus === 'occupied' ? 'active' : ''}`}
                 >
                   {t('states.occupied')}
                 </button>

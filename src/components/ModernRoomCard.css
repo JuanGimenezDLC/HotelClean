@@ -252,6 +252,21 @@
   box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1); /* shadow */
 }
 
+.status-toggle-button.toggle-clean.active {
+  background-color: hsl(var(--status-clean) / 0.25);
+  color: hsl(var(--status-clean));
+}
+
+.status-toggle-button.toggle-dirty.active {
+  background-color: hsl(var(--status-dirty) / 0.25);
+  color: hsl(var(--status-dirty));
+}
+
+.status-toggle-button.toggle-occupied.active {
+  background-color: hsl(var(--status-occupied) / 0.25);
+  color: hsl(var(--status-occupied));
+}
+
 .status-toggle-button:not(.active):hover {
   color: hsl(var(--foreground));
 }
