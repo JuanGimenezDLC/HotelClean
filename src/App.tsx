@@ -4,7 +4,7 @@ import { doc, getDoc } from 'firebase/firestore';
 import { auth, db } from './firebase';
 import { User } from './types';
 import RoomList from './components/RoomList';
-import Login from './components/Login';
+import Login from './components/Login'; // Changed to default import
 import './App.css';
 
 function App() {
@@ -16,7 +16,14 @@ function App() {
       if (firebaseUser) {
         const userDoc = await getDoc(doc(db, 'users', firebaseUser.uid));
         if (userDoc.exists()) {
-          setUser({ uid: firebaseUser.uid, ...userDoc.data() } as User);
+          // Ensure the role is correctly typed. If 'role' in types.ts is a union of strings, this is fine.
+          // If it's an enum, you might need a mapping.
+          setUser({ uid: firebaseUser.uid, email: firebaseUser.email!, ...userDoc.data() } as User);
+        } else {
+          // Handle case where user document doesn't exist in Firestore but Firebase auth has the user
+          // This might mean creating a default user entry or prompting the user to complete profile.
+          console.warn('User document not found in Firestore for:', firebaseUser.uid);
+          setUser(null); // Or handle as appropriate
         }
       } else {
         setUser(null);
@@ -26,13 +33,14 @@ function App() {
     return () => unsubscribe();
   }, []);
 
+  // Placeholder for a loading spinner or component
   if (loading) {
-    return <div className="loading-spinner-container"><div className="animate-spin"></div></div>; // Or a proper loading component
+    return <div className="app-loading-container">Loading...</div>;
   }
 
   return (
     <div className="App">
-      {user ? <RoomList user={user} /> : <Login />}
+      {user ? <RoomList user={user} /> : <Login onLogin={setUser} />}
     </div>
   );
 }

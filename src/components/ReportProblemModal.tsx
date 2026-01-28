@@ -7,15 +7,13 @@ import { Room, User } from '../types';
 import { Problem } from './ModernRoomCard'; // Assuming this type is correct
 import './ReportProblemModal.css'; // We will modify this CSS
 
-// Placeholder for an icon component if needed, or just a styled div
+// Icono de advertencia (similar a AlertTriangle de lucide-react)
 const IconPlaceholder = () => (
   <div className="icon-placeholder">
-    {/* You might replace this with an actual icon component if available */}
     <svg className="w-5 h-5 text-warning" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20zm0 2a12 12 0 1 0 0-24 12 12 0 0 0 0 24z"></path>
-      <path d="M12 14h.01"></path>
-      <path d="M11 11h.01"></path>
-      <path d="M11 17h.01"></path>
+      <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+      <line x1="12" y1="9" x2="12" y2="13"></line>
+      <line x1="12" y1="17" x2="12.01" y2="17"></line>
     </svg>
   </div>
 );
@@ -128,7 +126,7 @@ const ReportProblemModal: React.FC<ReportProblemModalProps> = ({ isOpen, onClose
           <div className="dialog-header-content"> {/* Mimics DialogHeader content */}
             <IconPlaceholder /> {/* Placeholder for the icon */}
             <div className="dialog-title-description">
-              <h5 className="dialog-title">{t('reportProblemModal.title', { roomNumber: room.id })}</h5>
+              <h5 className="dialog-title">{t('reportProblemModal.title')}</h5> {/* Removed roomNumber from here */}
               <p className="dialog-description">{t('reportProblemModal.roomDescription', { roomNumber: room.id })}</p>
             </div>
           </div>

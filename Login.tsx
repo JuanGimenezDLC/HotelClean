@@ -1,140 +1,98 @@
-import React, { useState } from 'react';
-import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../firebase';
-import './Login.css';
-import { Building, Wrench, Sparkles, ArrowRight, ArrowLeft } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
+import { useState } from "react";
+import { User, UserRole } from "@/types/room";
+import { Building2, Sparkles, Wrench, ChevronRight } from "lucide-react";
 
-const roles = [
+interface LoginProps {
+  onLogin: (user: User) => void;
+}
+
+const roles: { value: UserRole; label: string; email: string; icon: React.ReactNode; description: string; color: string }[] = [
   {
-    key: 'super',
-    label: 'role.reception.label',
-    description: 'role.reception.description',
-    icon: Building,
-    className: 'role-reception',
+    value: 'super',
+    label: 'Recepción',
+    email: 'super@hotel.com',
+    icon: <Building2 className="w-7 h-7" />,
+    description: 'Control total de habitaciones',
+    color: 'from-blue-500/20 to-indigo-500/20 hover:from-blue-500/30 hover:to-indigo-500/30',
   },
   {
-    key: 'limp',
-    label: 'role.cleaning.label',
-    description: 'role.cleaning.description',
-    icon: Sparkles,
-    className: 'role-cleaning',
+    value: 'limp',
+    label: 'Limpieza',
+    email: 'limp@hotel.com',
+    icon: <Sparkles className="w-7 h-7" />,
+    description: 'Gestión de limpieza diaria',
+    color: 'from-emerald-500/20 to-teal-500/20 hover:from-emerald-500/30 hover:to-teal-500/30',
   },
   {
-    key: 'mant',
-    label: 'role.maintenance.label',
-    description: 'role.maintenance.description',
-    icon: Wrench,
-    className: 'role-maintenance',
+    value: 'mant',
+    label: 'Mantenimiento',
+    email: 'mant@hotel.com',
+    icon: <Wrench className="w-7 h-7" />,
+    description: 'Resolver problemas técnicos',
+    color: 'from-amber-500/20 to-orange-500/20 hover:from-amber-500/30 hover:to-orange-500/30',
   },
 ];
 
-const Login: React.FC = () => {
-  const { t } = useTranslation();
-  const [selectedRole, setSelectedRole] = useState<string | null>(null);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+export function Login({ onLogin }: LoginProps) {
+  const [hoveredRole, setHoveredRole] = useState<UserRole | null>(null);
 
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError('');
-    try {
-      await signInWithEmailAndPassword(auth, email, password);
-      // The onAuthStateChanged listener in App.tsx will handle the redirect
-    } catch (err: any) {
-      console.error(err);
-      if (err.code === 'auth/wrong-password' || err.code === 'auth/user-not-found' || err.code === 'auth/invalid-credential') {
-        setError(t('login.error.invalidCredentials'));
-      } else {
-        setError(t('login.error.generic'));
-      }
-    }
+  const handleLogin = (role: typeof roles[0]) => {
+    onLogin({ email: role.email, role: role.value });
   };
-
-  const handleRoleSelect = (roleKey: string) => {
-    // Pre-fill email based on role for convenience, if desired
-    // This is a minor logic adjustment for better UX
-    const roleEmails: { [key: string]: string } = {
-      super: 'super@hotel.com',
-      limp: 'limp@hotel.com',
-      mant: 'mant@hotel.com',
-    };
-    setEmail(roleEmails[roleKey] || '');
-    setSelectedRole(roleKey);
-  };
-
-  if (!selectedRole) {
-    return (
-      <div className="login-container">
-        <div className="login-card">
-          <div className="login-logo-section">
-            <div className="login-logo-wrapper">
-              <span className="login-logo-icon">H</span>
-            </div>
-            <h1 className="login-title">{t('login.title')}</h1>
-            <p className="login-subtitle">{t('login.subtitle')}</p>
-          </div>
-          <div className="login-roles-list">
-            {roles.map((role) => (
-              <button
-                key={role.key}
-                onClick={() => handleRoleSelect(role.key)}
-                className={`login-role-button ${role.className}`}
-              >
-                <div className="login-role-button-content">
-                  <div className="login-role-icon-wrapper">
-                    <role.icon className="login-role-icon" />
-                  </div>
-                  <div className="login-role-text">
-                    <p className="login-role-label">{t(role.label)}</p>
-                    <p className="login-role-description">{t(role.description)}</p>
-                  </div>
-                  <ArrowRight className="login-role-arrow" />
-                </div>
-              </button>
-            ))}
-          </div>
-          <p className="login-footer">{t('login.footer')}</p>
-        </div>
-      </div>
-    );
-  }
 
   return (
-    <div className="login-container">
-      <div className="login-card">
-        <button onClick={() => setSelectedRole(null)} className="back-button">
-          <ArrowLeft size={16} /> {t('login.backButton')}
-        </button>
-        <div className="login-logo-section">
-            <div className="login-logo-wrapper">
-              <span className="login-logo-icon">H</span>
-            </div>
-            <h1 className="login-title">{t('login.formTitle')}</h1>
-            <p className="login-subtitle">{t('login.formSubtitle', { role: t(roles.find(r => r.key === selectedRole)?.label || '') })}</p>
+    <div className="min-h-screen flex items-center justify-center p-6">
+      <div className="w-full max-w-md animate-fade-in-up">
+        {/* Logo */}
+        <div className="text-center mb-10">
+          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center mx-auto mb-4 shadow-soft">
+            <span className="text-primary font-bold text-2xl">H</span>
+          </div>
+          <h1 className="text-2xl font-bold text-foreground mb-1">Hotel Manager</h1>
+          <p className="text-muted-foreground">Selecciona tu rol para continuar</p>
         </div>
-        <form onSubmit={handleLogin} className="login-form">
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder={t('login.emailPlaceholder')}
-            required
-          />
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder={t('login.passwordPlaceholder')}
-            required
-          />
-          {error && <p className="login-error">{error}</p>}
-          <button type="submit" className="login-submit-button">{t('login.loginButton')}</button>
-        </form>
+
+        {/* Role cards */}
+        <div className="space-y-3">
+          {roles.map((role, index) => (
+            <button
+              key={role.value}
+              onClick={() => handleLogin(role)}
+              onMouseEnter={() => setHoveredRole(role.value)}
+              onMouseLeave={() => setHoveredRole(null)}
+              className={`
+                w-full p-5 rounded-2xl text-left transition-all duration-300
+                bg-gradient-to-r ${role.color}
+                border border-transparent hover:border-border/50
+                hover:shadow-medium hover:-translate-y-0.5
+                active:scale-[0.98]
+                animate-fade-in
+              `}
+              style={{ animationDelay: `${index * 100}ms` }}
+            >
+              <div className="flex items-center gap-4">
+                <div className="w-14 h-14 rounded-xl bg-card shadow-sm flex items-center justify-center text-foreground">
+                  {role.icon}
+                </div>
+                <div className="flex-1">
+                  <p className="font-semibold text-lg text-foreground">{role.label}</p>
+                  <p className="text-sm text-muted-foreground">{role.description}</p>
+                </div>
+                <ChevronRight
+                  className={`w-5 h-5 text-muted-foreground transition-transform duration-300 ${
+                    hoveredRole === role.value ? 'translate-x-1' : ''
+                  }`}
+                />
+              </div>
+            </button>
+          ))}
+        </div>
+
+        {/* Footer */}
+        <p className="text-center text-xs text-muted-foreground mt-8">
+          Sistema de gestión hotelera v1.0
+        </p>
       </div>
     </div>
   );
-};
-
-export default Login;
+}
