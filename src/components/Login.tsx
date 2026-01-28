@@ -46,7 +46,7 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
   return (
     <div className="login-page-container">
       <div className="login-content-wrapper">
-        <div className="login-form-card" style={{ maxWidth: '450px', width: '100%', margin: '0 auto' }}>
+        <div className="login-form-card">
           <h1 className="login-title">Hoteles Aspire</h1>
           <p className="login-subtitle">Inicia sesión para continuar</p>
           <form onSubmit={handleLogin} className="login-form">
