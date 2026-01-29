@@ -25,6 +25,8 @@ export interface Room {
   reportedProblems: ReportedProblem[]; // Array de problemas reportados para esta habitación
   // Se ha hecho obligatorio (sin '?') para asegurar que siempre es un array,
   // aunque esté vacío, lo que simplifica su manejo en el código.
+  type?: 'room' | 'common_area';
+  name?: string;
 }
 
 export interface User {

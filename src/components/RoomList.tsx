@@ -105,8 +105,17 @@ const RoomList: React.FC<RoomListProps> = ({ user }) => {
 
   const rooms = useMemo(() => {
     const filtered = allRooms.filter(room => {
+      const isCommonArea = room.type === 'common_area';
       const modernStatus = getModernStatus(room);
       const baseStatus = room.baseStatus || (room.status !== 'Bloqueada' ? room.status : 'Sucia');
+
+      if (filter === 'common_area') {
+        return isCommonArea;
+      }
+
+      if (isCommonArea) {
+        return false; // Exclude common areas from other filters for now
+      }
 
       switch (filter) {
         case 'Sucia':
@@ -129,13 +138,24 @@ const RoomList: React.FC<RoomListProps> = ({ user }) => {
     });
 
     return filtered.sort((a, b) => {
+      const isACommonArea = a.type === 'common_area';
+      const isBCommonArea = b.type === 'common_area';
+
+      // Group common areas together, sorting them by name
+      if (isACommonArea && isBCommonArea) {
+        return a.name!.localeCompare(b.name!); // Sort common areas by name
+      }
+      if (isACommonArea) return 1; // Common areas come after rooms
+      if (isBCommonArea) return -1; // Rooms come before common areas
+
+      // Existing sorting logic for rooms
       if (filter === 'status') {
         const statusOrder = ['Sucia', 'Ocupada', 'Limpia', 'Bloqueada'];
         const aIndex = statusOrder.indexOf(a.status);
         const bIndex = statusOrder.indexOf(b.status);
         if (aIndex !== bIndex) return aIndex - bIndex;
       }
-      // Default sort by number
+      // Default sort by number for rooms
       return a.id.localeCompare(b.id, undefined, { numeric: true });
     });
   }, [allRooms, filter, user.role, user.uid]);
@@ -379,6 +399,7 @@ const RoomList: React.FC<RoomListProps> = ({ user }) => {
                   room={{
                     id: room.id,
                     number: room.id,
+                    name: room.name,
                     status: modernStatus,
                     baseStatus: baseStatus,
                     lastCleanedBy: room.lastCleanedBy ? getUserEmail(room.lastCleanedBy) : undefined,

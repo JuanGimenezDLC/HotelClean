@@ -2,10 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { onAuthStateChanged, User as FirebaseUser } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
 import { auth, db } from './firebase';
+import { initializeRooms } from './initFirestore'; // Import initializeRooms
 import { User } from './types';
 import RoomList from './components/RoomList';
 import Login from './components/Login'; // Changed to default import
 import './App.css';
+
+// Call initializeRooms here to ensure it runs when the app loads and db is available
+initializeRooms();
 
 function App() {
   const [user, setUser] = useState<User | null>(null);

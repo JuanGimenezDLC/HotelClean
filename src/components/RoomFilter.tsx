@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Check, Circle, Wrench, User, Lock, List, SortAsc } from 'lucide-react';
+import { Check, Circle, Wrench, User, Lock, List, SortAsc, Building } from 'lucide-react';
 import './RoomFilter.css';
 
 // Define the structure for a filter option
@@ -19,6 +19,7 @@ const filterOptions: FilterOption[] = [
   { id: 'Ocupada', labelKey: 'filters.occupied_only', icon: User },
   { id: 'problem', labelKey: 'filters.problem_only', icon: Wrench },
   { id: 'Bloqueada', labelKey: 'filters.blocked_only', icon: Lock },
+  { id: 'common_area', labelKey: 'filters.common_areas', icon: Building },
 ];
 
 interface RoomFilterProps {

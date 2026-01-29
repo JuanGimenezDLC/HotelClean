@@ -99,7 +99,8 @@
     "clean_only": "Solo Limpias",
     "occupied_only": "Solo Ocupadas",
     "blocked_only": "Solo Bloqueadas",
-    "problem_only": "Solo con Problemas"
+    "problem_only": "Solo con Problemas",
+    "common_areas": "Zonas Comunes"
   },
   "warningModal": {
     "checkInTitle": "Acción no permitida",

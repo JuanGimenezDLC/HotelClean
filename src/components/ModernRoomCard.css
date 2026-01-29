@@ -23,17 +23,17 @@
 .modern-room-card.status-dirty { background-color: hsl(var(--status-dirty) / 0.1); }
 .modern-room-card.status-occupied { background-color: hsl(var(--status-occupied) / 0.1); }
 .modern-room-card.status-problem { background-color: hsl(var(--status-problem) / 0.1); }
-.modern-room-card.status-reclean { background-color: hsl(var(--status-reclean) / 0.1); }
+.modern-room-card.status-reclean { background-color: hsl(var(--status-problem) / 0.1); } /* Amarillo para Relimpieza */
 .modern-room-card.status-blocked { background-color: hsl(var(--status-blocked) / 0.1); }
-.modern-room-card.status-limpiar { background-color: hsl(var(--status-limpiar) / 0.1); }
+.modern-room-card.status-limpiar { background-color: hsl(var(--status-dirty) / 0.1); } /* Rojo para Limpiar (post check-out) */
 
 .modern-room-card.status-clean:hover { box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1), 0 0 0 2px hsl(var(--status-clean) / 0.5); }
 .modern-room-card.status-dirty:hover { box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1), 0 0 0 2px hsl(var(--status-dirty) / 0.5); }
 .modern-room-card.status-occupied:hover { box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1), 0 0 0 2px hsl(var(--status-occupied) / 0.5); }
 .modern-room-card.status-problem:hover { box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1), 0 0 0 2px hsl(var(--status-problem) / 0.5); }
-.modern-room-card.status-reclean:hover { box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1), 0 0 0 2px hsl(var(--status-reclean) / 0.5); }
+.modern-room-card.status-reclean:hover { box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1), 0 0 0 2px hsl(var(--status-problem) / 0.5); }
 .modern-room-card.status-blocked:hover { box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1), 0 0 0 2px hsl(var(--status-blocked) / 0.5); }
-.modern-room-card.status-limpiar:hover { box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1), 0 0 0 2px hsl(var(--status-limpiar) / 0.5); }
+.modern-room-card.status-limpiar:hover { box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1), 0 0 0 2px hsl(var(--status-dirty) / 0.5); }
 
 /* Card Header */
 .card-header-lovable {
@@ -80,9 +80,9 @@
 .status-badge.status-dirty { background-color: hsl(var(--status-dirty) / 0.1); color: hsl(var(--status-dirty)); }
 .status-badge.status-occupied { background-color: hsl(var(--status-occupied) / 0.1); color: hsl(var(--status-occupied)); }
 .status-badge.status-problem { background-color: hsl(var(--status-problem) / 0.1); color: hsl(var(--status-problem)); }
-.status-badge.status-reclean { background-color: hsl(var(--status-reclean) / 0.1); color: hsl(var(--status-reclean)); }
+.status-badge.status-reclean { background-color: hsl(var(--status-problem) / 0.1); color: hsl(var(--status-problem)); }
 .status-badge.status-blocked { background-color: hsl(var(--status-blocked) / 0.1); color: hsl(var(--status-blocked)); }
-.status-badge.status-limpiar { background-color: hsl(var(--status-limpiar) / 0.1); color: hsl(var(--status-limpiar)); }
+.status-badge.status-limpiar { background-color: hsl(var(--status-dirty) / 0.1); color: hsl(var(--status-dirty)); }
 
 .card-header-icons {
   display: flex;

@@ -100,7 +100,8 @@
     "clean_only": "Clean Only",
     "occupied_only": "Occupied Only",
     "blocked_only": "Blocked Only",
-    "problem_only": "Problem Only"
+    "problem_only": "Problem Only",
+    "common_areas": "Common Areas"
   },
   "warningModal": {
     "checkInTitle": "Action Not Allowed",

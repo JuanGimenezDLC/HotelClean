@@ -38,6 +38,7 @@ type RoomStatus = 'clean' | 'dirty' | 'problem' | 'occupied' | 'reclean' | 'bloc
 export interface ModernRoom {
   id: string;
   number: string;
+  name?: string;
   status: RoomStatus;
   baseStatus: 'clean' | 'dirty' | 'occupied';
   lastCleanedBy?: string;
@@ -109,6 +110,9 @@ export const ModernRoomCard: React.FC<ModernRoomCardProps> = ({ t, room, userRol
   const isOccupied = room.baseStatus === 'occupied';
   const isCleaningRequested = !!room.cleaningReason;
 
+  const displayName = room.name || room.number;
+  const displayPrefix = room.name ? null : t('roomCard.room');
+
   return (
     <>
       <div className={`modern-room-card ${config.colorClass} ${isAnimatingOut ? 'animating-out' : ''}`}>
@@ -118,8 +122,8 @@ export const ModernRoomCard: React.FC<ModernRoomCardProps> = ({ t, room, userRol
               {React.createElement(config.icon, { className: "status-badge-icon" })}
               <span>{t(config.textKey)}</span>
             </div>
-            <h3 className="card-room-number-main">{room.number}</h3>
-            <p className="card-room-number-prefix">{t('roomCard.room')}</p>
+            <h3 className="card-room-number-main">{displayName}</h3>
+            {displayPrefix && <p className="card-room-number-prefix">{displayPrefix}</p>}
           </div>
           <div className="card-header-icons">
             {canBlock && (
