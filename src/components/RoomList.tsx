@@ -150,15 +150,31 @@ const RoomList: React.FC<RoomListProps> = ({ user }) => {
   };
 
   const handleSetStatus = async (roomId: string, newBaseStatus: 'Limpia' | 'Sucia' | 'Ocupada') => {
-    const roomRef = doc(db, 'rooms', roomId);
     const room = allRooms.find((r) => r.id === roomId);
-
     if (!room) return;
+
+    const roomRef = doc(db, 'rooms', roomId);
+
+    // Special reasons for occupied room recleans that should revert to occupied
+    const specialOccupiedRecleanReasons = ["Fresh-up", "Bleibe"];
+
+    const isSpecialOccupiedReclean =
+      room.baseStatus === 'Ocupada' &&
+      room.recleaningReason &&
+      specialOccupiedRecleanReasons.includes(room.recleaningReason);
+
+    let finalStatus: 'Limpia' | 'Sucia' | 'Ocupada' = newBaseStatus;
+    let finalBaseStatus: 'Limpia' | 'Sucia' | 'Ocupada' = newBaseStatus;
+
+    if (newBaseStatus === 'Limpia' && isSpecialOccupiedReclean) {
+      finalStatus = 'Ocupada';
+      finalBaseStatus = 'Ocupada';
+    }
 
     const isBlocked = room.status === 'Bloqueada';
     const updateData: any = {
-      status: isBlocked ? 'Bloqueada' : newBaseStatus,
-      baseStatus: newBaseStatus,
+      status: isBlocked ? 'Bloqueada' : finalStatus,
+      baseStatus: finalBaseStatus,
     };
 
     if (newBaseStatus === 'Limpia') {
@@ -183,6 +199,9 @@ const RoomList: React.FC<RoomListProps> = ({ user }) => {
   };
 
   const handleReclean = async (roomId: string, reason: string, file: File | null) => {
+    const room = allRooms.find(r => r.id === roomId);
+    if (!room) return;
+
     const roomRef = doc(db, 'rooms', roomId);
     let imageUrl = '';
 
@@ -191,10 +210,12 @@ const RoomList: React.FC<RoomListProps> = ({ user }) => {
       await uploadBytes(storageRef, file);
       imageUrl = await getDownloadURL(storageRef);
     }
+    
+    const wasOccupied = room.baseStatus === 'Ocupada' || room.status === 'Ocupada';
 
     await updateDoc(roomRef, {
       status: 'Sucia',
-      baseStatus: 'Sucia',
+      baseStatus: wasOccupied ? 'Ocupada' : 'Sucia',
       recleaningReason: reason,
       recleaningImageUrl: imageUrl || null,
     });

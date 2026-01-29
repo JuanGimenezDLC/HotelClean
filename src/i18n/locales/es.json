@@ -114,6 +114,8 @@
     "lockStuck": "Cerradura atascada"
   },
   "reclean": {
+    "freshUp": "Fresh-up",
+    "bleibe": "Bleibe",
     "dirtyBathroom": "Baño sucio",
     "dirtyBeds": "Camas sucias",
     "dirtyFloor": "Suelo sucio",

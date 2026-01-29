@@ -26,7 +26,12 @@ interface RecleanModalProps {
   onMark: (reason: string, file: File | null) => Promise<void>;
 }
 
-const quickOptions = [
+const mainQuickOptions = [
+  { key: 'reclean.freshUp', defaultValue: "Fresh-up" },
+  { key: 'reclean.bleibe', defaultValue: "Bleibe" },
+];
+
+const otherQuickOptions = [
   { key: 'reclean.dirtyBathroom', defaultValue: "Baño sucio" },
   { key: 'reclean.dirtyBeds', defaultValue: "Camas sucias" },
   { key: 'reclean.dirtyFloor', defaultValue: "Suelo sucio" },
@@ -105,8 +110,20 @@ const RecleanModal: React.FC<RecleanModalProps> = ({ isOpen, onClose, room, onMa
         </div>
         <div className="modal-body">
           <form onSubmit={handleSubmit} className="dialog-form">
+            <div className="quick-options-section quick-options-section--main">
+              {mainQuickOptions.map((option) => (
+                <button
+                  key={option.key}
+                  type="button"
+                  onClick={() => handleQuickOption(t(option.key, option.defaultValue))}
+                  className={`quick-option-btn quick-option-btn--large ${description === t(option.key, option.defaultValue) ? 'active' : ''}`}
+                >
+                  {t(option.key, option.defaultValue)}
+                </button>
+              ))}
+            </div>
             <div className="quick-options-section">
-              {quickOptions.map((option) => (
+              {otherQuickOptions.map((option) => (
                 <button
                   key={option.key}
                   type="button"

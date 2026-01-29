@@ -106,7 +106,13 @@
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem; /* Mimics gap-2/gap-half */
-  margin-bottom: 1.5rem; /* Margin between quick options and textarea */
+  margin-bottom: 1rem; /* Margin between quick options and textarea */
+}
+
+.quick-options-section--main {
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
 }
 
 .quick-option-btn {
@@ -131,6 +137,11 @@
 
 .quick-option-btn:not(.active):hover {
   background-color: hsl(var(--muted) / 0.8); /* hover:bg-muted/80 */
+}
+
+.quick-option-btn--large {
+  font-size: 0.95rem;
+  padding: 0.6rem 1.2rem;
 }
 
 .textarea-section {
