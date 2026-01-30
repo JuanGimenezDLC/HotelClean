@@ -425,6 +425,44 @@ const RoomList: React.FC<RoomListProps> = ({ user }) => {
     );
   };
 
+  const renderStaffAssignments = (assignments: string[] | undefined) => {
+    if (!assignments || assignments.length === 0) {
+      return <p style={{ fontSize: '0.875rem', color: '#9ca3af', fontStyle: 'italic' }}>Sin asignaciones activas</p>;
+    }
+
+    const floors: Record<string, string[]> = {};
+    assignments.forEach(roomId => {
+      const floorChar = roomId.charAt(0);
+      const key = ['1', '2', '3'].includes(floorChar) ? `Planta ${floorChar}` : 'Otros';
+      if (!floors[key]) floors[key] = [];
+      floors[key].push(roomId);
+    });
+
+    const sortedKeys = Object.keys(floors).sort();
+
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+        {sortedKeys.map(floorKey => (
+          <div key={floorKey}>
+            <p style={{ fontSize: '0.75rem', fontWeight: '600', color: '#6b7280', marginBottom: '0.25rem' }}>{floorKey}</p>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
+              {floors[floorKey].sort().map(roomId => {
+                const room = allRooms.find(r => r.id === roomId);
+                const modernStatus = room ? getModernStatus(room) : undefined;
+                const statusStyle = getStatusColor(modernStatus);
+                return (
+                  <span key={roomId} style={{ padding: '0.25rem 0.75rem', fontSize: '0.875rem', borderRadius: '9999px', fontWeight: '500', ...statusStyle }}>
+                    {roomId}
+                  </span>
+                );
+              })}
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  };
+
   return (
     <div className={`app-container ${isSupervisor ? 'has-sidebar' : ''}`}>
       {isSupervisor && (
@@ -589,22 +627,7 @@ const RoomList: React.FC<RoomListProps> = ({ user }) => {
                         </div>
                         <div>
                           <p style={{ fontSize: '0.875rem', fontWeight: '600', color: '#374151', marginBottom: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Habitaciones Asignadas</p>
-                          {staff.assignments && staff.assignments.length > 0 ? (
-                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
-                              {staff.assignments.map(roomId => {
-                                const room = allRooms.find(r => r.id === roomId);
-                                const modernStatus = room ? getModernStatus(room) : undefined;
-                                const statusStyle = getStatusColor(modernStatus);
-                                return (
-                                  <span key={roomId} style={{ padding: '0.25rem 0.75rem', fontSize: '0.875rem', borderRadius: '9999px', fontWeight: '500', ...statusStyle }}>
-                                    {roomId}
-                                  </span>
-                                );
-                              })}
-                            </div>
-                          ) : (
-                            <p style={{ fontSize: '0.875rem', color: '#9ca3af', fontStyle: 'italic' }}>Sin asignaciones activas</p>
-                          )}
+                          {renderStaffAssignments(staff.assignments)}
                         </div>
                       </div>
                     ))}
@@ -634,22 +657,7 @@ const RoomList: React.FC<RoomListProps> = ({ user }) => {
                         </div>
                         <div>
                           <p style={{ fontSize: '0.875rem', fontWeight: '600', color: '#374151', marginBottom: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Habitaciones Asignadas</p>
-                          {staff.assignments && staff.assignments.length > 0 ? (
-                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
-                              {staff.assignments.map(roomId => {
-                                const room = allRooms.find(r => r.id === roomId);
-                                const modernStatus = room ? getModernStatus(room) : undefined;
-                                const statusStyle = getStatusColor(modernStatus);
-                                return (
-                                  <span key={roomId} style={{ padding: '0.25rem 0.75rem', fontSize: '0.875rem', borderRadius: '9999px', fontWeight: '500', ...statusStyle }}>
-                                    {roomId}
-                                  </span>
-                                );
-                              })}
-                            </div>
-                          ) : (
-                            <p style={{ fontSize: '0.875rem', color: '#9ca3af', fontStyle: 'italic' }}>Sin asignaciones activas</p>
-                          )}
+                          {renderStaffAssignments(staff.assignments)}
                         </div>
                       </div>
                     ))}
