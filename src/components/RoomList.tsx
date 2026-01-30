@@ -9,6 +9,7 @@ import { Room, User } from '../types';
 import ReportProblemModal from './ReportProblemModal';
 import RecleanModal from './RecleanModal';
 import CleanModal from './CleanModal';
+import AssignmentModal from './AssignmentModal';
 import CheckModal from './CheckModal';
 import WarningModal from './WarningModal';
 import CleanConfirmationModal from './CleanConfirmationModal'; // Importar el nuevo modal
@@ -47,6 +48,7 @@ const RoomList: React.FC<RoomListProps> = ({ user }) => {
   const [isCheckoutModalOpen, setCheckoutModalOpen] = useState(false);
   const [isCheckModalOpen, setCheckModalOpen] = useState(false);
   const [isCheckInWarningModalOpen, setCheckInWarningModalOpen] = useState(false);
+  const [isAssignmentModalOpen, setAssignmentModalOpen] = useState(false);
   const [animatingOutRoomId, setAnimatingOutRoomId] = useState<string | null>(null);
 
   const getInitialFilter = () => {
@@ -104,7 +106,14 @@ const RoomList: React.FC<RoomListProps> = ({ user }) => {
   };
 
   const rooms = useMemo(() => {
+    const userAssignments = (user.role === 'cleaner' || user.role === 'maintenance') ? user.assignments : null;
+
     const filtered = allRooms.filter(room => {
+      // 1. Filter by assignment for staff roles
+      if (userAssignments && !userAssignments.includes(room.id)) {
+        return false;
+      }
+
       const isCommonArea = room.type === 'common_area';
       const modernStatus = getModernStatus(room);
       const baseStatus = room.baseStatus || (room.status !== 'Bloqueada' ? room.status : 'Sucia');
@@ -158,7 +167,7 @@ const RoomList: React.FC<RoomListProps> = ({ user }) => {
       // Default sort by number for rooms
       return a.id.localeCompare(b.id, undefined, { numeric: true });
     });
-  }, [allRooms, filter, user.role, user.uid]);
+  }, [allRooms, filter, user]);
 
   const handleLogout = () => {
     signOut(auth);
@@ -358,6 +367,11 @@ const RoomList: React.FC<RoomListProps> = ({ user }) => {
           </div>
 
           <div className="lovable-user-actions">
+            {user.role === 'supervisor' && (
+              <button onClick={() => setAssignmentModalOpen(true)} className="assignment-button">
+                {t('header.assignments', 'Asignaciones')}
+              </button>
+            )}
             <div className="lovable-online-status">
               <div className="lovable-online-dot" />
               <span className="lovable-online-text">{t('header.onlineStatus', 'En línea')}</span>
@@ -478,6 +492,13 @@ const RoomList: React.FC<RoomListProps> = ({ user }) => {
             />
           </>
         )}
+        {/* El modal de asignaciones no depende de una habitación seleccionada, por lo que va fuera del bloque anterior */}
+        <AssignmentModal
+          isOpen={isAssignmentModalOpen}
+          onClose={() => setAssignmentModalOpen(false)}
+          staff={users.filter(u => u.role === 'cleaner' || u.role === 'maintenance')}
+          rooms={allRooms}
+        />
       </main>
     </>
   );

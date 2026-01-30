@@ -61,3 +61,23 @@
     justify-content: center;
   }
 }
+
+/* Style for the new Assignment Button in the header */
+.assignment-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background-color: transparent;
+  border: 1px solid hsl(var(--border));
+  border-radius: 6px;
+  cursor: pointer;
+  color: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.assignment-button:hover {
+  background-color: hsl(var(--muted));
+}

@@ -33,4 +33,5 @@ export interface User {
   uid: string; // Identificador único del usuario de Firebase
   email: string; // Correo electrónico del usuario
   role: 'cleaner' | 'supervisor' | 'maintenance'; // Rol del usuario en el sistema
+  assignments?: string[]; // IDs of rooms/areas assigned to the user
 }

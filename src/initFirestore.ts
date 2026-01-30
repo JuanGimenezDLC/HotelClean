@@ -40,40 +40,40 @@ export const initializeRooms = async () => {
   let currentRoomNumber = 101; // Start room numbering from 101
 
   // Process common areas first, to ensure their IDs are registered
-  initialRooms.filter(item => item.type === 'common_area').forEach((commonAreaData) => {
-    const docId = commonAreaData.name!;
-    if (!existingDocIds.has(docId)) {
-      const docRef = doc(roomsCollection, docId);
-      batch.set(docRef, commonAreaData);
-      existingDocIds.add(docId); // Mark as added
-      itemsAdded++;
-    }
-  });
+  // initialRooms.filter(item => item.type === 'common_area').forEach((commonAreaData) => {
+  //   const docId = commonAreaData.name!;
+  //   if (!existingDocIds.has(docId)) {
+  //     const docRef = doc(roomsCollection, docId);
+  //     batch.set(docRef, commonAreaData);
+  //     existingDocIds.add(docId); // Mark as added
+  //     itemsAdded++;
+  //   }
+  // });
 
   // Process rooms, ensuring they get sequential IDs if they don't exist
-  initialRooms.filter(item => !item.type || item.type !== 'common_area').forEach((roomData) => {
-    let docId = currentRoomNumber.toString();
-    // Find the next available room number if the current one is already taken
-    while (existingDocIds.has(docId)) {
-      currentRoomNumber++;
-      docId = currentRoomNumber.toString();
-    }
+  // initialRooms.filter(item => !item.type || item.type !== 'common_area').forEach((roomData) => {
+  //   let docId = currentRoomNumber.toString();
+  //   // Find the next available room number if the current one is already taken
+  //   while (existingDocIds.has(docId)) {
+  //     currentRoomNumber++;
+  //     docId = currentRoomNumber.toString();
+  //   }
     
-    // Add room data to batch if it's not already added
-    if (!existingDocIds.has(docId)) {
-      const docRef = doc(roomsCollection, docId);
-      batch.set(docRef, roomData);
-      existingDocIds.add(docId); // Mark as added
-      itemsAdded++;
-    }
-    currentRoomNumber++; // Increment for the next potential room
-  });
+  //   // Add room data to batch if it's not already added
+  //   if (!existingDocIds.has(docId)) {
+  //     const docRef = doc(roomsCollection, docId);
+  //     batch.set(docRef, roomData);
+  //     existingDocIds.add(docId); // Mark as added
+  //     itemsAdded++;
+  //   }
+  //   currentRoomNumber++; // Increment for the next potential room
+  // });
 
 
-  if (itemsAdded > 0) {
-    await batch.commit();
-    console.log(`${itemsAdded} new initial items created.`);
-  } else {
+  // if (itemsAdded > 0) {
+  //   await batch.commit();
+  //   console.log(`${itemsAdded} new initial items created.`);
+  // } else {
     console.log('All initial items already exist.');
-  }
+  // }
 };
