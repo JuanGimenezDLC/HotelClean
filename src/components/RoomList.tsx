@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { collection, onSnapshot, doc, updateDoc, Timestamp, deleteField, query, where } from 'firebase/firestore';
+import { collection, onSnapshot, doc, updateDoc, Timestamp, deleteField, query, where, getDocs, writeBatch, addDoc } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { signOut } from 'firebase/auth';
 import { useTranslation } from 'react-i18next';
@@ -20,7 +20,7 @@ import './ModernRoomCard.css';
 import './Header.css'; // Importar los nuevos estilos del encabezado
 import '../App.css'; // Make sure global styles are applied
 import './RoomFilter.css'; // Importar los estilos para el filtro
-import { User as UserIcon, LogOut, LayoutDashboard, ClipboardList, BarChart3 } from 'lucide-react'; // Added lucide-react icons
+import { User as UserIcon, LogOut, LayoutDashboard, ClipboardList, BarChart3, Calendar } from 'lucide-react'; // Added lucide-react icons
 import './Sidebar.css';
 
 interface RoomListProps {
@@ -54,6 +54,17 @@ const RoomList: React.FC<RoomListProps> = ({ user }) => {
   const [activeView, setActiveView] = useState<'cleaning' | 'assignments' | 'stats'>('cleaning');
   const isSupervisor = user.role === 'supervisor';
 
+  const formatDateLocal = (date: Date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
+  const [statsStartDate, setStatsStartDate] = useState(() => formatDateLocal(new Date(new Date().getFullYear(), new Date().getMonth(), 1)));
+  const [statsEndDate, setStatsEndDate] = useState(() => formatDateLocal(new Date()));
+  const [cleaningStats, setCleaningStats] = useState<Record<string, number>>({});
+
   const getInitialFilter = () => {
     switch (user.role) {
       case 'maintenance':
@@ -86,6 +97,34 @@ const RoomList: React.FC<RoomListProps> = ({ user }) => {
     };
   }, []);
 
+  useEffect(() => {
+    if (activeView === 'stats') {
+      const [startYear, startMonth, startDay] = statsStartDate.split('-').map(Number);
+      const start = new Date(startYear, startMonth - 1, startDay, 0, 0, 0, 0);
+
+      const [endYear, endMonth, endDay] = statsEndDate.split('-').map(Number);
+      const end = new Date(endYear, endMonth - 1, endDay, 23, 59, 59, 999);
+
+      const q = query(
+        collection(db, 'cleaning_logs'),
+        where('timestamp', '>=', Timestamp.fromDate(start)),
+        where('timestamp', '<=', Timestamp.fromDate(end))
+      );
+
+      const unsubscribe = onSnapshot(q, (snapshot) => {
+        const stats: Record<string, number> = {};
+        snapshot.forEach((doc) => {
+          const data = doc.data();
+          const userId = data.cleanedBy;
+          stats[userId] = (stats[userId] || 0) + 1;
+        });
+        setCleaningStats(stats);
+      });
+
+      return () => unsubscribe();
+    }
+  }, [activeView, statsStartDate, statsEndDate]);
+
   const getBaseStatus = (room: Room): 'clean' | 'dirty' | 'occupied' => {
     if (room.baseStatus) {
       if (room.baseStatus === 'Limpia') return 'clean';
@@ -107,6 +146,26 @@ const RoomList: React.FC<RoomListProps> = ({ user }) => {
     if (room.status === 'Sucia' && room.baseStatus === 'Ocupada') return 'dirty_occupied';
     return 'dirty';
   };
+
+  const statusCounts = useMemo(() => {
+    const counts = {
+      clean: 0,
+      dirty: 0,
+      occupied: 0,
+      problem: 0,
+      blocked: 0,
+    };
+
+    allRooms.forEach(room => {
+      const status = getModernStatus(room);
+      if (status === 'clean') counts.clean++;
+      else if (['dirty', 'dirty_occupied', 'reclean', 'limpiar'].includes(status)) counts.dirty++;
+      else if (status === 'occupied') counts.occupied++;
+      else if (status === 'problem') counts.problem++;
+      else if (status === 'blocked') counts.blocked++;
+    });
+    return counts;
+  }, [allRooms]);
 
   const rooms = useMemo(() => {
     const userAssignments = (user.role === 'cleaner' || user.role === 'maintenance') ? user.assignments : null;
@@ -214,6 +273,18 @@ const RoomList: React.FC<RoomListProps> = ({ user }) => {
       updateData.lastCleanedAt = Timestamp.now();
       updateData.recleaningReason = deleteField();
       updateData.cleaningReason = deleteField();
+
+      // Registrar en el historial de limpieza para estadísticas
+      try {
+        await addDoc(collection(db, 'cleaning_logs'), {
+          roomId: roomId,
+          cleanedBy: user.uid,
+          timestamp: Timestamp.now(),
+          roomName: room.name || roomId
+        });
+      } catch (error) {
+        console.error("Error logging cleaning:", error);
+      }
     }
 
     // --- Lógica de Animación para Limpiadores ---
@@ -668,11 +739,107 @@ const RoomList: React.FC<RoomListProps> = ({ user }) => {
               </div>
             </div>
         ) : (
-          <div style={{ padding: '3rem', textAlign: 'center', color: '#6b7280' }}>
-            <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '1rem' }}>
-              Estadísticas
-            </h2>
-            <p>Esta sección está en construcción.</p>
+          <div style={{ padding: '1.5rem' }}>
+            <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '1.5rem', color: '#111827' }}>Estadísticas de Limpieza</h2>
+            
+            <div style={{ display: 'flex', gap: '1rem', marginBottom: '2rem', flexWrap: 'wrap' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                <label style={{ fontSize: '0.875rem', fontWeight: '500', color: '#374151' }}>Fecha Inicio</label>
+                <div style={{ position: 'relative' }}>
+                  <Calendar size={16} style={{ position: 'absolute', left: '0.75rem', top: '50%', transform: 'translateY(-50%)', color: '#9ca3af' }} />
+                  <input 
+                    type="date" 
+                    value={statsStartDate} 
+                    onChange={(e) => setStatsStartDate(e.target.value)}
+                    style={{ paddingLeft: '2.5rem', paddingRight: '0.75rem', paddingTop: '0.5rem', paddingBottom: '0.5rem', borderRadius: '0.5rem', border: '1px solid #d1d5db', outline: 'none' }}
+                  />
+                </div>
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                <label style={{ fontSize: '0.875rem', fontWeight: '500', color: '#374151' }}>Fecha Fin</label>
+                <div style={{ position: 'relative' }}>
+                  <Calendar size={16} style={{ position: 'absolute', left: '0.75rem', top: '50%', transform: 'translateY(-50%)', color: '#9ca3af' }} />
+                  <input 
+                    type="date" 
+                    value={statsEndDate} 
+                    onChange={(e) => setStatsEndDate(e.target.value)}
+                    style={{ paddingLeft: '2.5rem', paddingRight: '0.75rem', paddingTop: '0.5rem', paddingBottom: '0.5rem', borderRadius: '0.5rem', border: '1px solid #d1d5db', outline: 'none' }}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Gráfico de Estado de Habitaciones (Pie Chart) */}
+            <div style={{ backgroundColor: 'white', padding: '1.5rem', borderRadius: '1rem', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', marginBottom: '2rem' }}>
+                <h3 style={{ fontSize: '1.125rem', fontWeight: '600', marginBottom: '1.5rem', color: '#374151' }}>Estado Actual de Habitaciones</h3>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '2rem', alignItems: 'center', justifyContent: 'center' }}>
+                    <div style={{ 
+                        width: '200px', 
+                        height: '200px', 
+                        borderRadius: '50%', 
+                        background: `conic-gradient(${
+                            [
+                                { count: statusCounts.clean, color: '#22c55e' }, // Green
+                                { count: statusCounts.dirty, color: '#ef4444' }, // Red
+                                { count: statusCounts.occupied, color: '#3b82f6' }, // Blue
+                                { count: statusCounts.problem, color: '#f97316' }, // Orange
+                                { count: statusCounts.blocked, color: '#6b7280' }  // Gray
+                            ]
+                            .filter(d => d.count > 0)
+                            .reduce((acc, curr) => {
+                                const total = allRooms.length || 1;
+                                const deg = (curr.count / total) * 360;
+                                acc.segments.push(`${curr.color} ${acc.currentDeg}deg ${acc.currentDeg + deg}deg`);
+                                acc.currentDeg += deg;
+                                return acc;
+                            }, { segments: [] as string[], currentDeg: 0 }).segments.join(', ') || '#f3f4f6 0deg 360deg'
+                        })` 
+                    }} />
+                    
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}><div style={{ width: '12px', height: '12px', backgroundColor: '#22c55e', borderRadius: '2px' }} /><span>Limpias: {statusCounts.clean}</span></div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}><div style={{ width: '12px', height: '12px', backgroundColor: '#ef4444', borderRadius: '2px' }} /><span>Sucias: {statusCounts.dirty}</span></div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}><div style={{ width: '12px', height: '12px', backgroundColor: '#3b82f6', borderRadius: '2px' }} /><span>Ocupadas: {statusCounts.occupied}</span></div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}><div style={{ width: '12px', height: '12px', backgroundColor: '#f97316', borderRadius: '2px' }} /><span>Problemas: {statusCounts.problem}</span></div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}><div style={{ width: '12px', height: '12px', backgroundColor: '#6b7280', borderRadius: '2px' }} /><span>Bloqueadas: {statusCounts.blocked}</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div style={{ backgroundColor: 'white', padding: '1.5rem', borderRadius: '1rem', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
+              <h3 style={{ fontSize: '1.125rem', fontWeight: '600', marginBottom: '1.5rem', color: '#374151' }}>Habitaciones Limpiadas por Persona</h3>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                {(() => {
+                  // Combinar usuarios con rol 'cleaner' y cualquier otro usuario que tenga estadísticas
+                  const allUserIds = new Set([...cleaners.map(u => u.uid), ...Object.keys(cleaningStats)]);
+                  const maxCount = Math.max(...Object.values(cleaningStats), 1); // Evitar división por cero
+                  
+                  if (allUserIds.size === 0) {
+                     return <p style={{ color: '#6b7280', textAlign: 'center', fontStyle: 'italic' }}>No hay datos para el periodo seleccionado.</p>;
+                  }
+
+                  return Array.from(allUserIds).map(userId => {
+                    const user = users.find(u => u.uid === userId);
+                    const count = cleaningStats[userId] || 0;
+                    const email = user ? user.email : 'Usuario desconocido';
+                    const percentage = (count / maxCount) * 100;
+                    return { userId, email, count, percentage };
+                  })
+                  .sort((a, b) => b.count - a.count)
+                  .map(({ userId, email, count, percentage }) => (
+                    <div key={userId}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.25rem', fontSize: '0.875rem' }}>
+                        <span style={{ fontWeight: '500', color: '#374151' }}>{email}</span>
+                        <span style={{ fontWeight: '600', color: '#4f46e5' }}>{count} habitaciones</span>
+                      </div>
+                      <div style={{ width: '100%', height: '0.75rem', backgroundColor: '#f3f4f6', borderRadius: '9999px', overflow: 'hidden' }}>
+                        <div style={{ width: `${percentage}%`, height: '100%', backgroundColor: '#4f46e5', borderRadius: '9999px', transition: 'width 0.5s ease-out' }} />
+                      </div>
+                    </div>
+                  ));
+                })()}
+              </div>
+            </div>
           </div>
         )}
         {selectedRoom && (
