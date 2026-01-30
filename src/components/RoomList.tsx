@@ -20,7 +20,8 @@ import './ModernRoomCard.css';
 import './Header.css'; // Importar los nuevos estilos del encabezado
 import '../App.css'; // Make sure global styles are applied
 import './RoomFilter.css'; // Importar los estilos para el filtro
-import { User as UserIcon, LogOut } from 'lucide-react'; // Added lucide-react icons
+import { User as UserIcon, LogOut, LayoutDashboard, ClipboardList, BarChart3 } from 'lucide-react'; // Added lucide-react icons
+import './Sidebar.css';
 
 interface RoomListProps {
   user: User;
@@ -50,6 +51,8 @@ const RoomList: React.FC<RoomListProps> = ({ user }) => {
   const [isCheckInWarningModalOpen, setCheckInWarningModalOpen] = useState(false);
   const [isAssignmentModalOpen, setAssignmentModalOpen] = useState(false);
   const [animatingOutRoomId, setAnimatingOutRoomId] = useState<string | null>(null);
+  const [activeView, setActiveView] = useState<'cleaning' | 'assignments' | 'stats'>('cleaning');
+  const isSupervisor = user.role === 'supervisor';
 
   const getInitialFilter = () => {
     switch (user.role) {
@@ -353,7 +356,39 @@ const RoomList: React.FC<RoomListProps> = ({ user }) => {
   }
 
   return (
-    <>
+    <div className={`app-container ${isSupervisor ? 'has-sidebar' : ''}`}>
+      {isSupervisor && (
+        <aside className="sidebar">
+          <div className="sidebar-header">
+            <div className="sidebar-logo">H</div>
+            <h2>Hotel Manager</h2>
+          </div>
+          <nav className="sidebar-nav">
+            <button 
+              className={`sidebar-item ${activeView === 'cleaning' ? 'active' : ''}`}
+              onClick={() => setActiveView('cleaning')}
+            >
+              <LayoutDashboard size={20} />
+              <span>Limpieza</span>
+            </button>
+            <button 
+              className={`sidebar-item ${activeView === 'assignments' ? 'active' : ''}`}
+              onClick={() => setActiveView('assignments')}
+            >
+              <ClipboardList size={20} />
+              <span>Asignaciones</span>
+            </button>
+            <button 
+              className={`sidebar-item ${activeView === 'stats' ? 'active' : ''}`}
+              onClick={() => setActiveView('stats')}
+            >
+              <BarChart3 size={20} />
+              <span>Estadísticas</span>
+            </button>
+          </nav>
+        </aside>
+      )}
+      <div className="main-wrapper">
       <header className="lovable-header">
         <div className="lovable-header-content">
           <div className="lovable-logo-group">
@@ -367,11 +402,6 @@ const RoomList: React.FC<RoomListProps> = ({ user }) => {
           </div>
 
           <div className="lovable-user-actions">
-            {user.role === 'supervisor' && (
-              <button onClick={() => setAssignmentModalOpen(true)} className="assignment-button">
-                {t('header.assignments', 'Asignaciones')}
-              </button>
-            )}
             <div className="lovable-online-status">
               <div className="lovable-online-dot" />
               <span className="lovable-online-text">{t('header.onlineStatus', 'En línea')}</span>
@@ -394,57 +424,68 @@ const RoomList: React.FC<RoomListProps> = ({ user }) => {
         </div>
       </header>
       <main className="main-content">
-        <RoomFilter
-          activeFilter={filter}
-          onFilterChange={setFilter}
-        />
+        {activeView === 'cleaning' ? (
+          <>
+            <RoomFilter
+              activeFilter={filter}
+              onFilterChange={setFilter}
+            />
 
-        <div className="lovable-grid">
-          {rooms.map((room) => {
-            const modernStatus = getModernStatus(room);
-            const baseStatus = getBaseStatus(room);
-            const unresolvedProblems = room.reportedProblems?.filter(p => !p.isResolved) || [];
-            const userRole = user.role;
+            <div className="lovable-grid">
+              {rooms.map((room) => {
+                const modernStatus = getModernStatus(room);
+                const baseStatus = getBaseStatus(room);
+                const unresolvedProblems = room.reportedProblems?.filter(p => !p.isResolved) || [];
+                const userRole = user.role;
 
-                       return (
-                <ModernRoomCard
-                  key={room.id}
-                  t={t as TFunction}
-                  room={{
-                    id: room.id,
-                    number: room.id,
-                    name: room.name,
-                    status: modernStatus,
-                    baseStatus: baseStatus,
-                    lastCleanedBy: room.lastCleanedBy ? getUserEmail(room.lastCleanedBy) : undefined,
-                    lastCleanedAt: room.lastCleanedAt ? room.lastCleanedAt.toDate().toLocaleString() : undefined,
-                    problems: unresolvedProblems,
-                    recleaningReason: room.recleaningReason,
-                    cleaningReason: room.cleaningReason,
-                    bedType: room.bedType,
-                  } as ModernRoom}
-                  userRole={userRole}
-                  isAnimatingOut={animatingOutRoomId === room.id}
-                  onStatusChange={(newStatus) => {
-                    if (newStatus === 'clean') {
-                      openCleanModal(room);
-                    } else if (newStatus === 'dirty') {
-                      handleSetStatus(room.id, 'Sucia');
-                    } else if (newStatus === 'occupied') {
-                      handleSetStatus(room.id, 'Ocupada');
-                    }
-                  }}
-                  onReportProblem={() => openReportModal(room)}
-                  onReclean={() => openRecleanModal(room)}
-                  onMarkForCheck={() => openCheckModal(room)}
-                  onResolveProblem={(problemId) => handleResolveProblem(room.id, problemId)}
-                  onCheckInAttemptOnDirty={openCheckInWarningModal}
-                  onToggleBlock={() => handleToggleBlock(room)}
-                  onRequestCleaning={() => handleToggleRequestCleaning(room)}
-                />
-            );
-          })}
-        </div>
+                          return (
+                    <ModernRoomCard
+                      key={room.id}
+                      t={t as TFunction}
+                      room={{
+                        id: room.id,
+                        number: room.id,
+                        name: room.name,
+                        status: modernStatus,
+                        baseStatus: baseStatus,
+                        lastCleanedBy: room.lastCleanedBy ? getUserEmail(room.lastCleanedBy) : undefined,
+                        lastCleanedAt: room.lastCleanedAt ? room.lastCleanedAt.toDate().toLocaleString() : undefined,
+                        problems: unresolvedProblems,
+                        recleaningReason: room.recleaningReason,
+                        cleaningReason: room.cleaningReason,
+                        bedType: room.bedType,
+                      } as ModernRoom}
+                      userRole={userRole}
+                      isAnimatingOut={animatingOutRoomId === room.id}
+                      onStatusChange={(newStatus) => {
+                        if (newStatus === 'clean') {
+                          openCleanModal(room);
+                        } else if (newStatus === 'dirty') {
+                          handleSetStatus(room.id, 'Sucia');
+                        } else if (newStatus === 'occupied') {
+                          handleSetStatus(room.id, 'Ocupada');
+                        }
+                      }}
+                      onReportProblem={() => openReportModal(room)}
+                      onReclean={() => openRecleanModal(room)}
+                      onMarkForCheck={() => openCheckModal(room)}
+                      onResolveProblem={(problemId) => handleResolveProblem(room.id, problemId)}
+                      onCheckInAttemptOnDirty={openCheckInWarningModal}
+                      onToggleBlock={() => handleToggleBlock(room)}
+                      onRequestCleaning={() => handleToggleRequestCleaning(room)}
+                    />
+                );
+              })}
+            </div>
+          </>
+        ) : (
+          <div style={{ padding: '3rem', textAlign: 'center', color: '#6b7280' }}>
+            <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '1rem' }}>
+              {activeView === 'assignments' ? 'Asignaciones' : 'Estadísticas'}
+            </h2>
+            <p>Esta sección está en construcción.</p>
+          </div>
+        )}
         {selectedRoom && (
           <>
             <ReportProblemModal
@@ -500,7 +541,8 @@ const RoomList: React.FC<RoomListProps> = ({ user }) => {
           rooms={allRooms}
         />
       </main>
-    </>
+      </div>
+    </div>
   );
 };
 
