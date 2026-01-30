@@ -355,6 +355,76 @@ const RoomList: React.FC<RoomListProps> = ({ user }) => {
     }
   }
 
+  const getStatusColor = (status: ModernRoomStatus | undefined) => {
+    switch (status) {
+        case 'dirty':
+        case 'dirty_occupied':
+            return { backgroundColor: 'hsl(var(--status-dirty))', color: 'hsl(var(--status-dirty-foreground))', border: '1px solid transparent' };
+        case 'problem':
+            return { backgroundColor: 'hsl(var(--status-problem))', color: 'hsl(var(--status-problem-foreground))', border: '1px solid transparent' };
+        case 'reclean':
+            return { backgroundColor: 'hsl(var(--status-reclean))', color: 'hsl(var(--status-reclean-foreground))', border: '1px solid transparent' };
+        case 'limpiar':
+            return { backgroundColor: 'hsl(var(--status-limpiar))', color: 'hsl(var(--status-limpiar-foreground))', border: '1px solid transparent' };
+        case 'clean':
+            return { backgroundColor: 'hsl(var(--status-clean))', color: 'hsl(var(--status-clean-foreground))', border: '1px solid transparent' };
+        case 'blocked':
+            return { backgroundColor: 'hsl(var(--status-blocked))', color: 'hsl(var(--status-blocked-foreground))', border: '1px solid transparent' };
+        case 'occupied':
+             return { backgroundColor: 'hsl(var(--status-occupied))', color: 'hsl(var(--status-occupied-foreground))', border: '1px solid transparent' };
+        default:
+            return { backgroundColor: '#f3f4f6', color: '#374151', border: '1px solid #e5e7eb' };
+    }
+  };
+
+  const cleaners = users.filter(u => u.role === 'cleaner');
+  const maintenanceStaff = users.filter(u => u.role === 'maintenance');
+
+  const renderRoomCard = (room: Room) => {
+    const modernStatus = getModernStatus(room);
+    const baseStatus = getBaseStatus(room);
+    const unresolvedProblems = room.reportedProblems?.filter(p => !p.isResolved) || [];
+    const userRole = user.role;
+
+    return (
+      <ModernRoomCard
+        key={room.id}
+        t={t as TFunction}
+        room={{
+          id: room.id,
+          number: room.id,
+          name: room.name,
+          status: modernStatus,
+          baseStatus: baseStatus,
+          lastCleanedBy: room.lastCleanedBy ? getUserEmail(room.lastCleanedBy) : undefined,
+          lastCleanedAt: room.lastCleanedAt ? room.lastCleanedAt.toDate().toLocaleString() : undefined,
+          problems: unresolvedProblems,
+          recleaningReason: room.recleaningReason,
+          cleaningReason: room.cleaningReason,
+          bedType: room.bedType,
+        } as ModernRoom}
+        userRole={userRole}
+        isAnimatingOut={animatingOutRoomId === room.id}
+        onStatusChange={(newStatus) => {
+          if (newStatus === 'clean') {
+            openCleanModal(room);
+          } else if (newStatus === 'dirty') {
+            handleSetStatus(room.id, 'Sucia');
+          } else if (newStatus === 'occupied') {
+            handleSetStatus(room.id, 'Ocupada');
+          }
+        }}
+        onReportProblem={() => openReportModal(room)}
+        onReclean={() => openRecleanModal(room)}
+        onMarkForCheck={() => openCheckModal(room)}
+        onResolveProblem={(problemId) => handleResolveProblem(room.id, problemId)}
+        onCheckInAttemptOnDirty={openCheckInWarningModal}
+        onToggleBlock={() => handleToggleBlock(room)}
+        onRequestCleaning={() => handleToggleRequestCleaning(room)}
+      />
+    );
+  };
+
   return (
     <div className={`app-container ${isSupervisor ? 'has-sidebar' : ''}`}>
       {isSupervisor && (
@@ -431,57 +501,168 @@ const RoomList: React.FC<RoomListProps> = ({ user }) => {
               onFilterChange={setFilter}
             />
 
-            <div className="lovable-grid">
-              {rooms.map((room) => {
-                const modernStatus = getModernStatus(room);
-                const baseStatus = getBaseStatus(room);
-                const unresolvedProblems = room.reportedProblems?.filter(p => !p.isResolved) || [];
-                const userRole = user.role;
+            {(() => {
+              const floors: Record<string, Room[]> = {};
+              const otherRooms: Room[] = [];
+              
+              rooms.forEach(room => {
+                  const firstChar = room.id.charAt(0);
+                  if (['1', '2', '3'].includes(firstChar)) {
+                      const key = `Planta ${firstChar}`;
+                      if (!floors[key]) floors[key] = [];
+                      floors[key].push(room);
+                  } else {
+                      otherRooms.push(room);
+                  }
+              });
 
+              return (
+                  <>
+                      {['Planta 1', 'Planta 2', 'Planta 3'].map(floorName => {
+                          if (!floors[floorName] || floors[floorName].length === 0) return null;
                           return (
-                    <ModernRoomCard
-                      key={room.id}
-                      t={t as TFunction}
-                      room={{
-                        id: room.id,
-                        number: room.id,
-                        name: room.name,
-                        status: modernStatus,
-                        baseStatus: baseStatus,
-                        lastCleanedBy: room.lastCleanedBy ? getUserEmail(room.lastCleanedBy) : undefined,
-                        lastCleanedAt: room.lastCleanedAt ? room.lastCleanedAt.toDate().toLocaleString() : undefined,
-                        problems: unresolvedProblems,
-                        recleaningReason: room.recleaningReason,
-                        cleaningReason: room.cleaningReason,
-                        bedType: room.bedType,
-                      } as ModernRoom}
-                      userRole={userRole}
-                      isAnimatingOut={animatingOutRoomId === room.id}
-                      onStatusChange={(newStatus) => {
-                        if (newStatus === 'clean') {
-                          openCleanModal(room);
-                        } else if (newStatus === 'dirty') {
-                          handleSetStatus(room.id, 'Sucia');
-                        } else if (newStatus === 'occupied') {
-                          handleSetStatus(room.id, 'Ocupada');
-                        }
-                      }}
-                      onReportProblem={() => openReportModal(room)}
-                      onReclean={() => openRecleanModal(room)}
-                      onMarkForCheck={() => openCheckModal(room)}
-                      onResolveProblem={(problemId) => handleResolveProblem(room.id, problemId)}
-                      onCheckInAttemptOnDirty={openCheckInWarningModal}
-                      onToggleBlock={() => handleToggleBlock(room)}
-                      onRequestCleaning={() => handleToggleRequestCleaning(room)}
-                    />
-                );
-              })}
-            </div>
+                              <div key={floorName} style={{ marginBottom: '2rem' }}>
+                                  <h3 style={{ fontSize: '1.25rem', fontWeight: 'bold', color: '#374151', marginBottom: '1rem', paddingBottom: '0.5rem', borderBottom: '1px solid #e5e7eb' }}>
+                                      {floorName}
+                                  </h3>
+                                  <div className="lovable-grid">
+                                      {floors[floorName].map(renderRoomCard)}
+                                  </div>
+                              </div>
+                          );
+                      })}
+                      {otherRooms.length > 0 && (
+                          <div style={{ marginBottom: '2rem' }}>
+                              <h3 style={{ fontSize: '1.25rem', fontWeight: 'bold', color: '#374151', marginBottom: '1rem', paddingBottom: '0.5rem', borderBottom: '1px solid #e5e7eb' }}>
+                                  Otros
+                              </h3>
+                              <div className="lovable-grid">
+                                  {otherRooms.map(renderRoomCard)}
+                              </div>
+                          </div>
+                      )}
+                  </>
+              );
+            })()}
           </>
+        ) : activeView === 'assignments' ? (
+            <div style={{ padding: '0 1rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
+                <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#111827', margin: 0 }}>Asignaciones de Personal</h2>
+                <button 
+                  onClick={() => setAssignmentModalOpen(true)}
+                  style={{ 
+                    backgroundColor: '#4f46e5', 
+                    color: 'white', 
+                    border: 'none', 
+                    padding: '0.75rem 1.5rem', 
+                    borderRadius: '0.5rem', 
+                    cursor: 'pointer',
+                    fontWeight: '500',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.5rem'
+                  }}
+                >
+                  <ClipboardList size={18} />
+                  Gestionar Asignaciones
+                </button>
+              </div>
+              
+              {/* Cleaners Section */}
+              <div style={{ marginBottom: '2.5rem' }}>
+                <h3 style={{ fontSize: '1.25rem', fontWeight: '600', color: '#374151', borderBottom: '1px solid #e5e7eb', paddingBottom: '0.5rem', marginBottom: '1.5rem' }}>
+                  Personal de Limpieza
+                </h3>
+                {cleaners.length > 0 ? (
+                  <div className="lovable-grid">
+                    {cleaners.map(staff => (
+                      <div key={staff.uid} style={{ backgroundColor: 'white', padding: '1.5rem', borderRadius: '1rem', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem' }}>
+                          <div style={{ width: '48px', height: '48px', borderRadius: '50%', backgroundColor: '#eef2ff', color: '#4f46e5', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: '1.25rem' }}>
+                            {staff.email.charAt(0).toUpperCase()}
+                          </div>
+                          <div>
+                            <p style={{ fontWeight: '600', color: '#111827', margin: 0, fontSize: '1rem' }}>{staff.email}</p>
+                            <p style={{ fontSize: '0.875rem', color: '#6b7280', margin: 0 }}>{roleLabels[staff.role] || staff.role}</p>
+                          </div>
+                        </div>
+                        <div>
+                          <p style={{ fontSize: '0.875rem', fontWeight: '600', color: '#374151', marginBottom: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Habitaciones Asignadas</p>
+                          {staff.assignments && staff.assignments.length > 0 ? (
+                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
+                              {staff.assignments.map(roomId => {
+                                const room = allRooms.find(r => r.id === roomId);
+                                const modernStatus = room ? getModernStatus(room) : undefined;
+                                const statusStyle = getStatusColor(modernStatus);
+                                return (
+                                  <span key={roomId} style={{ padding: '0.25rem 0.75rem', fontSize: '0.875rem', borderRadius: '9999px', fontWeight: '500', ...statusStyle }}>
+                                    {roomId}
+                                  </span>
+                                );
+                              })}
+                            </div>
+                          ) : (
+                            <p style={{ fontSize: '0.875rem', color: '#9ca3af', fontStyle: 'italic' }}>Sin asignaciones activas</p>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p style={{ color: '#6b7280', fontStyle: 'italic' }}>No hay personal de limpieza.</p>
+                )}
+              </div>
+
+              {/* Maintenance Section */}
+              <div>
+                <h3 style={{ fontSize: '1.25rem', fontWeight: '600', color: '#374151', borderBottom: '1px solid #e5e7eb', paddingBottom: '0.5rem', marginBottom: '1.5rem' }}>
+                  Personal de Mantenimiento
+                </h3>
+                {maintenanceStaff.length > 0 ? (
+                  <div className="lovable-grid">
+                    {maintenanceStaff.map(staff => (
+                      <div key={staff.uid} style={{ backgroundColor: 'white', padding: '1.5rem', borderRadius: '1rem', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem' }}>
+                          <div style={{ width: '48px', height: '48px', borderRadius: '50%', backgroundColor: '#eef2ff', color: '#4f46e5', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: '1.25rem' }}>
+                            {staff.email.charAt(0).toUpperCase()}
+                          </div>
+                          <div>
+                            <p style={{ fontWeight: '600', color: '#111827', margin: 0, fontSize: '1rem' }}>{staff.email}</p>
+                            <p style={{ fontSize: '0.875rem', color: '#6b7280', margin: 0 }}>{roleLabels[staff.role] || staff.role}</p>
+                          </div>
+                        </div>
+                        <div>
+                          <p style={{ fontSize: '0.875rem', fontWeight: '600', color: '#374151', marginBottom: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Habitaciones Asignadas</p>
+                          {staff.assignments && staff.assignments.length > 0 ? (
+                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
+                              {staff.assignments.map(roomId => {
+                                const room = allRooms.find(r => r.id === roomId);
+                                const modernStatus = room ? getModernStatus(room) : undefined;
+                                const statusStyle = getStatusColor(modernStatus);
+                                return (
+                                  <span key={roomId} style={{ padding: '0.25rem 0.75rem', fontSize: '0.875rem', borderRadius: '9999px', fontWeight: '500', ...statusStyle }}>
+                                    {roomId}
+                                  </span>
+                                );
+                              })}
+                            </div>
+                          ) : (
+                            <p style={{ fontSize: '0.875rem', color: '#9ca3af', fontStyle: 'italic' }}>Sin asignaciones activas</p>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p style={{ color: '#6b7280', fontStyle: 'italic' }}>No hay personal de mantenimiento.</p>
+                )}
+              </div>
+            </div>
         ) : (
           <div style={{ padding: '3rem', textAlign: 'center', color: '#6b7280' }}>
             <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '1rem' }}>
-              {activeView === 'assignments' ? 'Asignaciones' : 'Estadísticas'}
+              Estadísticas
             </h2>
             <p>Esta sección está en construcción.</p>
           </div>
