@@ -63,6 +63,7 @@ interface ModernRoomCardProps {
   onCheckInAttemptOnDirty: () => void;
   onRequestCleaning: () => void;
   isAnimatingOut?: boolean;
+  isCleanActionDisabled?: boolean;
 }
 
 const statusConfig = {
@@ -76,7 +77,7 @@ const statusConfig = {
   limpiar: { textKey: 'states.limpiar', icon: Sparkles, colorClass: 'status-limpiar' },
 };
 
-export const ModernRoomCard: React.FC<ModernRoomCardProps> = ({ t, room, userRole, onStatusChange, onReportProblem, onReclean, onResolveProblem, onToggleBlock, onMarkForCheck, onCheckInAttemptOnDirty, onRequestCleaning, isAnimatingOut }) => {
+export const ModernRoomCard: React.FC<ModernRoomCardProps> = ({ t, room, userRole, onStatusChange, onReportProblem, onReclean, onResolveProblem, onToggleBlock, onMarkForCheck, onCheckInAttemptOnDirty, onRequestCleaning, isAnimatingOut, isCleanActionDisabled }) => {
   const [imageModalUrl, setImageModalUrl] = useState<string | null>(null);
   const [isConfirmModalOpen, setConfirmModalOpen] = useState(false);
   const [problemToResolve, setProblemToResolve] = useState<Problem | null>(null);
@@ -194,7 +195,12 @@ export const ModernRoomCard: React.FC<ModernRoomCardProps> = ({ t, room, userRol
         <div className="card-footer-actions">
           {userRole === 'cleaner' && (
             <div className="grid grid-cols-2 gap-2">
-              <button onClick={() => onStatusChange('clean')} className="action-btn action-btn--primary text-sm">
+              <button 
+                onClick={() => onStatusChange('clean')} 
+                className="action-btn action-btn--primary text-sm"
+                disabled={isCleanActionDisabled}
+                style={isCleanActionDisabled ? { opacity: 0.5, cursor: 'not-allowed' } : {}}
+              >
                 <Check className="w-4 h-4" />
                 {t('states.clean')}
               </button>

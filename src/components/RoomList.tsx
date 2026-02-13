@@ -20,7 +20,7 @@ import './ModernRoomCard.css';
 import './Header.css'; // Importar los nuevos estilos del encabezado
 import '../App.css'; // Make sure global styles are applied
 import './RoomFilter.css'; // Importar los estilos para el filtro
-import { User as UserIcon, LogOut, LayoutDashboard, ClipboardList, BarChart3, Calendar } from 'lucide-react'; // Added lucide-react icons
+import { User as UserIcon, LogOut, LayoutDashboard, ClipboardList, BarChart3, Calendar, PackageSearch, History } from 'lucide-react'; // Added lucide-react icons
 import './Sidebar.css';
 
 interface RoomListProps {
@@ -51,7 +51,8 @@ const RoomList: React.FC<RoomListProps> = ({ user }) => {
   const [isCheckInWarningModalOpen, setCheckInWarningModalOpen] = useState(false);
   const [isAssignmentModalOpen, setAssignmentModalOpen] = useState(false);
   const [animatingOutRoomId, setAnimatingOutRoomId] = useState<string | null>(null);
-  const [activeView, setActiveView] = useState<'cleaning' | 'assignments' | 'stats'>('cleaning');
+  const [activeView, setActiveView] = useState<'cleaning' | 'assignments' | 'stats' | 'lost-found' | 'history'>('cleaning');
+  const [historyImageModalUrl, setHistoryImageModalUrl] = useState<string | null>(null);
   const isSupervisor = user.role === 'supervisor';
 
   const formatDateLocal = (date: Date) => {
@@ -230,6 +231,32 @@ const RoomList: React.FC<RoomListProps> = ({ user }) => {
       return a.id.localeCompare(b.id, undefined, { numeric: true });
     });
   }, [allRooms, filter, user]);
+
+  const allIncidents = useMemo(() => {
+    const incidents: Array<{
+      roomId: string;
+      roomName?: string;
+      problem: any;
+    }> = [];
+
+    allRooms.forEach(room => {
+      if (room.reportedProblems && room.reportedProblems.length > 0) {
+        room.reportedProblems.forEach(problem => {
+          incidents.push({
+            roomId: room.id,
+            roomName: room.name,
+            problem
+          });
+        });
+      }
+    });
+
+    return incidents.sort((a, b) => {
+      const dateA = a.problem.reportedAt?.toDate ? a.problem.reportedAt.toDate() : new Date(0);
+      const dateB = b.problem.reportedAt?.toDate ? b.problem.reportedAt.toDate() : new Date(0);
+      return dateB.getTime() - dateA.getTime();
+    });
+  }, [allRooms]);
 
   const handleLogout = () => {
     signOut(auth);
@@ -476,7 +503,11 @@ const RoomList: React.FC<RoomListProps> = ({ user }) => {
         } as ModernRoom}
         userRole={userRole}
         isAnimatingOut={animatingOutRoomId === room.id}
+        isCleanActionDisabled={userRole === 'cleaner' && modernStatus === 'clean'}
         onStatusChange={(newStatus) => {
+          if (userRole === 'cleaner' && modernStatus === 'clean' && newStatus === 'clean') {
+            return;
+          }
           if (newStatus === 'clean') {
             openCleanModal(room);
           } else if (newStatus === 'dirty') {
@@ -563,6 +594,20 @@ const RoomList: React.FC<RoomListProps> = ({ user }) => {
             >
               <BarChart3 size={20} />
               <span>Estadísticas</span>
+            </button>
+            <button 
+              className={`sidebar-item ${activeView === 'lost-found' ? 'active' : ''}`}
+              onClick={() => setActiveView('lost-found')}
+            >
+              <PackageSearch size={20} />
+              <span>Objetos Perdidos</span>
+            </button>
+            <button 
+              className={`sidebar-item ${activeView === 'history' ? 'active' : ''}`}
+              onClick={() => setActiveView('history')}
+            >
+              <History size={20} />
+              <span>Historial Incidencias</span>
             </button>
           </nav>
         </aside>
@@ -738,7 +783,7 @@ const RoomList: React.FC<RoomListProps> = ({ user }) => {
                 )}
               </div>
             </div>
-        ) : (
+        ) : activeView === 'stats' ? (
           <div style={{ padding: '1.5rem' }}>
             <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '1.5rem', color: '#111827' }}>Estadísticas de Limpieza</h2>
             
@@ -841,6 +886,91 @@ const RoomList: React.FC<RoomListProps> = ({ user }) => {
               </div>
             </div>
           </div>
+        ) : activeView === 'lost-found' ? (
+          <div style={{ padding: '1.5rem' }}>
+            <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '1.5rem', color: '#111827' }}>Objetos Perdidos</h2>
+            <div style={{ padding: '3rem', textAlign: 'center', backgroundColor: 'white', borderRadius: '1rem', border: '1px dashed #e5e7eb' }}>
+              <PackageSearch size={48} style={{ margin: '0 auto 1rem', color: '#9ca3af' }} />
+              <p style={{ color: '#6b7280', fontSize: '1.125rem' }}>Gestión de objetos perdidos próximamente disponible.</p>
+              <p style={{ color: '#9ca3af', fontSize: '0.875rem', marginTop: '0.5rem' }}>Aquí podrás registrar y buscar objetos olvidados por los huéspedes.</p>
+            </div>
+          </div>
+        ) : (
+          <div style={{ padding: '1.5rem', maxWidth: '100%', overflowX: 'auto' }}>
+            <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '1.5rem', color: '#111827' }}>Historial de Incidencias</h2>
+            <div style={{ backgroundColor: 'white', borderRadius: '0.5rem', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', overflow: 'hidden' }}>
+              <div style={{ overflowX: 'auto' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.875rem', minWidth: '800px' }}>
+                  <thead style={{ backgroundColor: '#f9fafb', borderBottom: '1px solid #e5e7eb' }}>
+                    <tr>
+                      <th style={{ padding: '0.75rem 1.5rem', textAlign: 'left', fontWeight: '600', color: '#6b7280' }}>Habitación</th>
+                      <th style={{ padding: '0.75rem 1.5rem', textAlign: 'left', fontWeight: '600', color: '#6b7280' }}>Descripción</th>
+                      <th style={{ padding: '0.75rem 1.5rem', textAlign: 'left', fontWeight: '600', color: '#6b7280' }}>Reportado por</th>
+                      <th style={{ padding: '0.75rem 1.5rem', textAlign: 'left', fontWeight: '600', color: '#6b7280' }}>Fecha</th>
+                      <th style={{ padding: '0.75rem 1.5rem', textAlign: 'left', fontWeight: '600', color: '#6b7280' }}>Estado</th>
+                      <th style={{ padding: '0.75rem 1.5rem', textAlign: 'left', fontWeight: '600', color: '#6b7280' }}>Foto</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {allIncidents.length > 0 ? (
+                      allIncidents.map((incident, index) => {
+                        const user = users.find(u => u.uid === incident.problem.reportedBy);
+                        const reportedBy = user ? user.email : 'Desconocido';
+                        const date = incident.problem.reportedAt?.toDate ? incident.problem.reportedAt.toDate().toLocaleString() : 'N/A';
+                        
+                        return (
+                          <tr key={`${incident.roomId}-${incident.problem.id}-${index}`} style={{ borderBottom: '1px solid #e5e7eb' }}>
+                            <td style={{ padding: '0.75rem 1.5rem', color: '#111827', fontWeight: '500' }}>
+                              {incident.roomName || incident.roomId}
+                            </td>
+                            <td style={{ padding: '0.75rem 1.5rem', color: '#374151' }}>
+                              {incident.problem.description}
+                            </td>
+                            <td style={{ padding: '0.75rem 1.5rem', color: '#374151' }}>
+                              {reportedBy}
+                            </td>
+                            <td style={{ padding: '0.75rem 1.5rem', color: '#374151' }}>
+                              {date}
+                            </td>
+                            <td style={{ padding: '0.75rem 1.5rem' }}>
+                              <span style={{ 
+                                display: 'inline-flex', 
+                                alignItems: 'center', 
+                                padding: '0.125rem 0.625rem', 
+                                borderRadius: '9999px', 
+                                fontSize: '0.75rem', 
+                                fontWeight: '500',
+                                backgroundColor: incident.problem.isResolved ? '#dcfce7' : '#fee2e2',
+                                color: incident.problem.isResolved ? '#166534' : '#991b1b'
+                              }}>
+                                {incident.problem.isResolved ? 'Resuelto' : 'Pendiente'}
+                              </span>
+                            </td>
+                            <td style={{ padding: '0.75rem 1.5rem' }}>
+                              {incident.problem.imageUrl && (
+                                <button 
+                                  onClick={() => setHistoryImageModalUrl(incident.problem.imageUrl)}
+                                  style={{ color: '#4f46e5', textDecoration: 'underline', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
+                                >
+                                  Ver
+                                </button>
+                              )}
+                            </td>
+                          </tr>
+                        );
+                      })
+                    ) : (
+                      <tr>
+                        <td colSpan={6} style={{ padding: '2rem', textAlign: 'center', color: '#6b7280' }}>
+                          No hay incidencias registradas.
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
         )}
         {selectedRoom && (
           <>
@@ -896,6 +1026,12 @@ const RoomList: React.FC<RoomListProps> = ({ user }) => {
           staff={users.filter(u => u.role === 'cleaner' || u.role === 'maintenance')}
           rooms={allRooms}
         />
+
+        {historyImageModalUrl && (
+          <div className="image-modal-overlay" onClick={() => setHistoryImageModalUrl(null)}>
+            <img src={historyImageModalUrl} alt="Evidencia" />
+          </div>
+        )}
       </main>
       </div>
     </div>
