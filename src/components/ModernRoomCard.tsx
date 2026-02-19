@@ -21,6 +21,7 @@ import {
   RotateCcw,
   LogIn,
   LogOut,
+  PackagePlus,
 } from 'lucide-react';
 
 export interface Problem {
@@ -62,6 +63,7 @@ interface ModernRoomCardProps {
   onMarkForCheck: () => void;
   onCheckInAttemptOnDirty: () => void;
   onRequestCleaning: () => void;
+  onReportLostItem: () => void;
   isAnimatingOut?: boolean;
   isCleanActionDisabled?: boolean;
 }
@@ -77,7 +79,7 @@ const statusConfig = {
   limpiar: { textKey: 'states.limpiar', icon: Sparkles, colorClass: 'status-limpiar' },
 };
 
-export const ModernRoomCard: React.FC<ModernRoomCardProps> = ({ t, room, userRole, onStatusChange, onReportProblem, onReclean, onResolveProblem, onToggleBlock, onMarkForCheck, onCheckInAttemptOnDirty, onRequestCleaning, isAnimatingOut, isCleanActionDisabled }) => {
+export const ModernRoomCard: React.FC<ModernRoomCardProps> = ({ t, room, userRole, onStatusChange, onReportProblem, onReclean, onResolveProblem, onToggleBlock, onMarkForCheck, onCheckInAttemptOnDirty, onRequestCleaning, onReportLostItem, isAnimatingOut, isCleanActionDisabled }) => {
   const [imageModalUrl, setImageModalUrl] = useState<string | null>(null);
   const [isConfirmModalOpen, setConfirmModalOpen] = useState(false);
   const [problemToResolve, setProblemToResolve] = useState<Problem | null>(null);
@@ -207,6 +209,10 @@ export const ModernRoomCard: React.FC<ModernRoomCardProps> = ({ t, room, userRol
               <button onClick={onReportProblem} className="action-btn action-btn--secondary text-sm">
                 <AlertTriangle className="w-4 h-4" />
                 {t('roomCard.reportProblemButton')}
+              </button>
+              <button onClick={onReportLostItem} className="action-btn action-btn--secondary text-sm col-span-2 flex justify-center items-center gap-2">
+                <PackagePlus className="w-4 h-4" />
+                {t('roomCard.lostItemButton', 'Objeto Perdido')}
               </button>
             </div>
           )}

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { collection, onSnapshot, doc, updateDoc, Timestamp, deleteField, query, where, getDocs, writeBatch, addDoc } from 'firebase/firestore';
+import { collection, onSnapshot, doc, updateDoc, Timestamp, deleteField, query, where, getDocs, writeBatch, addDoc, orderBy } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { signOut } from 'firebase/auth';
 import { useTranslation } from 'react-i18next';
@@ -13,6 +13,7 @@ import AssignmentModal from './AssignmentModal';
 import CheckModal from './CheckModal';
 import WarningModal from './WarningModal';
 import CleanConfirmationModal from './CleanConfirmationModal'; // Importar el nuevo modal
+import LostItemModal from './LostItemModal';
 import LanguageSelector from './LanguageSelector';
 import { ModernRoomCard, ModernRoom } from './ModernRoomCard';
 import RoomFilter from './RoomFilter'; // Importar el nuevo componente de filtro
@@ -50,6 +51,7 @@ const RoomList: React.FC<RoomListProps> = ({ user }) => {
   const [isCheckModalOpen, setCheckModalOpen] = useState(false);
   const [isCheckInWarningModalOpen, setCheckInWarningModalOpen] = useState(false);
   const [isAssignmentModalOpen, setAssignmentModalOpen] = useState(false);
+  const [isLostItemModalOpen, setLostItemModalOpen] = useState(false);
   const [animatingOutRoomId, setAnimatingOutRoomId] = useState<string | null>(null);
   const [activeView, setActiveView] = useState<'cleaning' | 'assignments' | 'stats' | 'lost-found' | 'history'>('cleaning');
   const [historyImageModalUrl, setHistoryImageModalUrl] = useState<string | null>(null);
@@ -65,6 +67,7 @@ const RoomList: React.FC<RoomListProps> = ({ user }) => {
   const [statsStartDate, setStatsStartDate] = useState(() => formatDateLocal(new Date(new Date().getFullYear(), new Date().getMonth(), 1)));
   const [statsEndDate, setStatsEndDate] = useState(() => formatDateLocal(new Date()));
   const [cleaningStats, setCleaningStats] = useState<Record<string, number>>({});
+  const [lostItems, setLostItems] = useState<any[]>([]);
 
   const getInitialFilter = () => {
     switch (user.role) {
@@ -125,6 +128,17 @@ const RoomList: React.FC<RoomListProps> = ({ user }) => {
       return () => unsubscribe();
     }
   }, [activeView, statsStartDate, statsEndDate]);
+
+  useEffect(() => {
+    if (activeView === 'lost-found') {
+      const q = query(collection(db, 'lost_items'), orderBy('reportedAt', 'desc'));
+      const unsubscribe = onSnapshot(q, (snapshot) => {
+        const items = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        setLostItems(items);
+      });
+      return () => unsubscribe();
+    }
+  }, [activeView]);
 
   const getBaseStatus = (room: Room): 'clean' | 'dirty' | 'occupied' => {
     if (room.baseStatus) {
@@ -393,6 +407,27 @@ const RoomList: React.FC<RoomListProps> = ({ user }) => {
     setCheckInWarningModalOpen(true);
   };
 
+  const openLostItemModal = (room: Room) => {
+    setSelectedRoom(room);
+    setLostItemModalOpen(true);
+  };
+
+  const handleSaveLostItem = async (description: string, file: File) => {
+    if (!selectedRoom) return;
+    
+    const storageRef = ref(storage, `lost_items/${selectedRoom.id}_${Date.now()}_${file.name}`);
+    await uploadBytes(storageRef, file);
+    const imageUrl = await getDownloadURL(storageRef);
+
+    await addDoc(collection(db, 'lost_items'), {
+      roomId: selectedRoom.id,
+      description,
+      imageUrl,
+      reportedBy: user.uid,
+      reportedAt: Timestamp.now(),
+      status: 'open'
+    });
+  };
 
   const handleResolveProblem = async (roomId: string, problemId: string) => {
     const roomRef = doc(db, 'rooms', roomId);
@@ -523,6 +558,7 @@ const RoomList: React.FC<RoomListProps> = ({ user }) => {
         onCheckInAttemptOnDirty={openCheckInWarningModal}
         onToggleBlock={() => handleToggleBlock(room)}
         onRequestCleaning={() => handleToggleRequestCleaning(room)}
+            onReportLostItem={() => openLostItemModal(room)}
       />
     );
   };
@@ -889,10 +925,56 @@ const RoomList: React.FC<RoomListProps> = ({ user }) => {
         ) : activeView === 'lost-found' ? (
           <div style={{ padding: '1.5rem' }}>
             <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '1.5rem', color: '#111827' }}>Objetos Perdidos</h2>
-            <div style={{ padding: '3rem', textAlign: 'center', backgroundColor: 'white', borderRadius: '1rem', border: '1px dashed #e5e7eb' }}>
-              <PackageSearch size={48} style={{ margin: '0 auto 1rem', color: '#9ca3af' }} />
-              <p style={{ color: '#6b7280', fontSize: '1.125rem' }}>Gestión de objetos perdidos próximamente disponible.</p>
-              <p style={{ color: '#9ca3af', fontSize: '0.875rem', marginTop: '0.5rem' }}>Aquí podrás registrar y buscar objetos olvidados por los huéspedes.</p>
+            <div className="lovable-grid">
+              {lostItems.length > 0 ? (
+                lostItems.map((item) => {
+                  const reportedDate = item.reportedAt?.toDate ? item.reportedAt.toDate().toLocaleString() : 'Fecha desconocida';
+                  const finder = users.find(u => u.uid === item.reportedBy)?.email || 'Desconocido';
+                  
+                  return (
+                    <div key={item.id} style={{ backgroundColor: 'white', borderRadius: '0.75rem', overflow: 'hidden', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', border: '1px solid #e5e7eb' }}>
+                      <div style={{ height: '200px', overflow: 'hidden', position: 'relative' }}>
+                        <img 
+                          src={item.imageUrl} 
+                          alt="Objeto perdido" 
+                          style={{ width: '100%', height: '100%', objectFit: 'cover', cursor: 'pointer' }}
+                          onClick={() => setHistoryImageModalUrl(item.imageUrl)}
+                        />
+                        <div style={{ position: 'absolute', top: '0.5rem', right: '0.5rem', backgroundColor: 'rgba(0,0,0,0.6)', color: 'white', padding: '0.25rem 0.75rem', borderRadius: '9999px', fontSize: '0.75rem', fontWeight: '600' }}>
+                          Hab. {item.roomId}
+                        </div>
+                      </div>
+                      <div style={{ padding: '1rem' }}>
+                        <p style={{ fontSize: '0.875rem', color: '#6b7280', marginBottom: '0.5rem' }}>
+                          {reportedDate}
+                        </p>
+                        <p style={{ fontSize: '1rem', fontWeight: '500', color: '#111827', marginBottom: '0.5rem' }}>
+                          {item.description || 'Sin descripción'}
+                        </p>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '1rem' }}>
+                          <span style={{ fontSize: '0.75rem', color: '#9ca3af' }}>
+                            Encontrado por: {finder}
+                          </span>
+                          <span style={{ 
+                            fontSize: '0.75rem', 
+                            padding: '0.125rem 0.5rem', 
+                            borderRadius: '0.25rem', 
+                            backgroundColor: item.status === 'returned' ? '#dcfce7' : '#fef3c7',
+                            color: item.status === 'returned' ? '#166534' : '#92400e'
+                          }}>
+                            {item.status === 'returned' ? 'Entregado' : 'Pendiente'}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })
+              ) : (
+                <div style={{ gridColumn: '1 / -1', padding: '3rem', textAlign: 'center', backgroundColor: 'white', borderRadius: '1rem', border: '1px dashed #e5e7eb' }}>
+                  <PackageSearch size={48} style={{ margin: '0 auto 1rem', color: '#9ca3af' }} />
+                  <p style={{ color: '#6b7280', fontSize: '1.125rem' }}>No hay objetos perdidos registrados.</p>
+                </div>
+              )}
             </div>
           </div>
         ) : (
@@ -1018,6 +1100,14 @@ const RoomList: React.FC<RoomListProps> = ({ user }) => {
               message={t('warningModal.checkInMessage')}
             />
           </>
+        )}
+        {selectedRoom && (
+          <LostItemModal
+            isOpen={isLostItemModalOpen}
+            onClose={() => setLostItemModalOpen(false)}
+            room={selectedRoom}
+            onSave={handleSaveLostItem}
+          />
         )}
         {/* El modal de asignaciones no depende de una habitación seleccionada, por lo que va fuera del bloque anterior */}
         <AssignmentModal
